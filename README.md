@@ -1,10 +1,14 @@
 ## Metadados
 
-Nome: Guilherme da Silva Ferreira Batista  RGM: 47302518
-Nome: Guilherme Petrucelli Domingos  RGM: 47270161
-Nome: Jaime Luiz de Oliveira Neto  RGM: 47336951
-Nome: Matheus Montagner  RGM: 47209470
-Nome: Vinicius Marques de Melo  RGM: 47213426
+| Nome | RGM |
+|---|---|
+| Guilherme da Silva Ferreira Batista | 47302518 |
+| Guilherme Petrucelli Domingos | 47270161 |
+| Jaime Luiz de Oliveira Neto | 47336951 |
+| Matheus Montagner | 47209470 |
+| Vinicius Marques de Melo | 47213426 |
+
+---
 
 ## 1. Caracterização da Organização
 
