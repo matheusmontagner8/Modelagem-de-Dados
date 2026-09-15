@@ -82,7 +82,6 @@ Nome: Vinicius Marques de Melo  RGM: 47213426
 ## 4. Regras de Negócio
 
 - **Regras operacionais:**
-  - Um pedido faturado via boleto está sujeito a um limite de crédito (referência observada: R$10.000,00); acima disso, ou para lojista novo, é exigida aprovação financeira antes do faturamento.
   - Inscrição Estadual só é obrigatória quando o perfil do cliente é Atacado/Lojista.
   - Toda variação de produto (SKU) pertence a exatamente um modelo; um modelo pode ter uma ou várias variações.
   - A baixa de estoque de insumo ocorre automaticamente na abertura da Ordem de Produção (reserva de material necessário).
