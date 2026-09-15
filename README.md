@@ -406,19 +406,4 @@ Avaliados por 360º entre os integrantes do grupo — não preenchido neste READ
 
 ---
 
-## Resumo dos Pesos
 
-| Dimensão | Peso total |
-|----------|-----------|
-| Conceitual (contexto, requisitos/regras, modelagem, justificativa técnica) | 30% |
-| Procedimental (requisitos, fluxogramas, dicionário de dados, DER) | 50% |
-| Atitudinal (participação, comprometimento, colaboração, autonomia) | 20% |
-
-**Entrega final:** README.md completo + DER + Dicionário de Dados em HTML (com exceção dos cursos GTI) anexado no repositório GitHub do grupo.
-
----
-
-### Checklist do que ainda falta ao grupo (não gerável por IA)
-
-- [ ] Nome real da organização, endereço, contato e evidências de visita (Seção 1)
-- [ ] Fluxogramas (opcional, Seção 2)
