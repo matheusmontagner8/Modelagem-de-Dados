@@ -419,6 +419,4 @@ Avaliados por 360º entre os integrantes do grupo — não preenchido neste READ
 ### Checklist do que ainda falta ao grupo (não gerável por IA)
 
 - [ ] Nome real da organização, endereço, contato e evidências de visita (Seção 1)
-- [ ] Confirmar em campo se as regras de negócio da Seção 4 (limite de R$10.000, comissão de 5% etc.) batem com a realidade observada, ou ajustá-las
-- [x] DER na notação de Chen/BrModeloWeb (Seção 7) — se o professor exigir o arquivo nativo do BrModeloWeb (`.brM3`/projeto salvo na ferramenta), o grupo ainda precisa recriá-lo lá; o que está aqui é a imagem/SVG equivalente.
 - [ ] Fluxogramas (opcional, Seção 2)
