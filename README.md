@@ -1,21 +1,18 @@
-# Entrega 1 — Modelo Conceitual (DER)
-### Modelagem de um sistema de gestão de informações para uma organização de pequeno porte
-
-> **⚠️ AVISO DO GRUPO — LER ANTES DE ENTREGAR:** este README foi preenchido a partir do *Questionário de Levantamento de Requisitos* já respondido para uma "Indústria & Comércio de Bolsas de Couro". Esse questionário **não trazia o nome da organização, endereço, contato nem evidências de visita** (os campos de identificação do formulário estavam em branco). Os itens marcados com `🔴 PENDENTE` abaixo exigem que o grupo substitua pelo dado real da organização escolhida — o enunciado da atividade é explícito: **a organização precisa existir de fato**, com pesquisa de campo comprovada. Não entreguem o `🔴 PENDENTE` como está.
-
----
-
 ## Metadados
 
-- **Nomes dos alunos e RGM:** 🔴 PENDENTE — preencher com os integrantes do grupo.
+Nome: Guilherme da Silva Ferreira Batista  RGM: 47302518
+Nome: Guilherme Petrucelli Domingos  RGM: 47270161
+Nome: Jaime Luiz de Oliveira Neto  RGM: 47336951
+Nome: Matheus Montagner  RGM: 47209470
+Nome: Vinicius Marques de Melo  RGM: 47213426
 
 ## 1. Caracterização da Organização
-*(vale 7,5% — Dimensão Conceitual)*
 
-- **Nome e natureza da organização:** 🔴 PENDENTE. O questionário usado como base trata de uma "Indústria & Comércio de Bolsas de Couro" — uma empresa com fins lucrativos que fabrica e vende bolsas de couro (produção própria + venda direta e por canais diversos). Substituam pelo nome real da organização escolhida pelo grupo, mantendo a mesma natureza de negócio se for essa a organização visitada.
-- **Contexto e porte:** com fins lucrativos; opera simultaneamente como **indústria** (fabricação artesanal/semi-artesanal, com etapas de corte, costura e montagem executadas por artesãos internos e facções terceirizadas) e **comércio** (venda em loja física, e-commerce, WhatsApp e representantes externos). O uso de facções terceirizadas e o controle de aproveitamento de couro por corte sugerem uma operação de pequeno a médio porte, com produção sob encomenda/lote (não em larga escala industrial). Confirmem esses números com a visita de campo: quantidade de artesãos/funcionários, volume médio de pedidos por mês e faturamento aproximado.
+
+- **Nome e natureza da organização:**  🔴 PENDENTE. O questionário usado como base trata de uma "Indústria & Comércio de Bolsas de Couro" — uma empresa com fins lucrativos que fabrica e vende bolsas de couro (produção própria + venda direta e por canais diversos). Substituam pelo nome real da organização escolhida pelo grupo, mantendo a mesma natureza de negócio se for essa a organização visitada.
+- **Contexto e porte:** com fins lucrativos; opera simultaneamente como indústria (fabricação artesanal/semi-artesanal, com etapas de corte, costura e montagem executadas por artesãos internos e facções terceirizadas) e comércio (venda em loja física, e-commerce, WhatsApp e representantes externos). O uso de facções terceirizadas e o controle de aproveitamento de couro por corte sugerem uma operação de pequeno a médio porte, com produção sob encomenda/lote (não em larga escala industrial). Confirmem esses números com a visita de campo: quantidade de artesãos/funcionários, volume médio de pedidos por mês e faturamento aproximado.
 - **Problemas e necessidades identificados:** o levantamento de requisitos aponta processos hoje prováveis de estarem descentralizados/manuais: controle de estoque de insumos (couro, ferragens, zíperes) sem rastreabilidade de lote; ausência de regra formal de crédito para vendas a prazo; cálculo de custo/preço de venda não padronizado (ficha técnica); acompanhamento de produção sem visibilidade de status; e falta de integração entre vendas, estoque e financeiro (títulos a pagar/receber gerados manualmente). Confirmem com a organização real quais desses pontos realmente batem com a "crise operacional" observada.
-- **Justificativa da escolha:** 🔴 PENDENTE — expliquem por que a organização escolhida foi essa (acesso garantido, riqueza de processos observáveis, porte adequado nem tão simples nem inviável de modelar).
+- **Justificativa da escolha:** Uma empresa que a gente sabia que ia ter acesso fácil e que consideramos de porte médio, não deixando nem tão simples e nem tão complicado o nosso trabalho.
 - **Evidências da organização:** 🔴 PENDENTE — anexem fotos da visita, link da organização no Google (Maps/Meu Negócio, site ou rede social), endereço completo e forma de contato (telefone/e-mail do responsável).
 
 ---
