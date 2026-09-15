@@ -18,7 +18,7 @@ Nome: Vinicius Marques de Melo  RGM: 47213426
 ---
 
 ## 2. Processos de Negócio
-*(vale 10% — Dimensão Procedimental)*
+
 
 **Principais processos mapeados** (extraídos do levantamento de requisitos, um por bloco do questionário):
 
@@ -100,7 +100,7 @@ Nome: Vinicius Marques de Melo  RGM: 47213426
 ---
 
 ## 5. Dicionário de Dados Conceitual (Preliminar)
-*(vale 10% — segue o modelo do arquivo `02-03g_Exemplo_Dicionario_Dados.pdf`)*
+
 
 > Formato oficial da disciplina: por entidade, `Atributo | Descrição | Regra de negócio associada`. As 21 entidades abaixo cobrem as 8 seções do levantamento de requisitos.
 
@@ -326,7 +326,7 @@ Nome: Vinicius Marques de Melo  RGM: 47213426
 ---
 
 ## 6. Modelagem Conceitual (Entidades, Atributos, Relacionamentos)
-*(vale 7,5% na dimensão conceitual)*
+
 
 - **Entidades reconhecidas (21 no total):** as 21 entidades listadas na Seção 5, agrupadas nos 6 blocos de negócio identificados no levantamento — Clientes; Fornecedores/Insumos/Compras; Produtos/Ficha Técnica; Produção; Vendas/Faturamento; Expedição/Financeiro/Pós-venda. Duas são **entidades fracas** (ENDERECO_CLIENTE, LOTE_INSUMO — só existem em função de outra entidade) e três são **entidades associativas** que resolvem relacionamentos N:N com atributos próprios (ITEM_FICHA_TECNICA, EXECUCAO_ETAPA, ITEM_PEDIDO).
 - **Atributos e classificações:** detalhados por entidade na Seção 5, com chave primária, chaves estrangeiras e domínios de valor explícitos (ex.: `perfil_cliente`, `status_kanban`, `tipo_nf`).
@@ -362,9 +362,8 @@ Nome: Vinicius Marques de Melo  RGM: 47213426
 ---
 
 ## 7. Diagrama Entidade-Relacionamento (DER)
-*(vale 20% — é o item de maior peso da entrega)*
 
-**Arquivo anexado:** `DER_Bolsas_Couro.png` (gerado a partir do modelo desta Seção 6 — anexar junto com este README no repositório).
+**Arquivo anexado:** `DER_Bolsas_Couro.png` .
 
 O diagrama representa as 21 entidades, os 22 relacionamentos e as cardinalidades da tabela da Seção 6. Ele foi desenhado em notação "pé-de-galinha" (cada entidade mostra sua lista de atributos, com PK/FK marcadas) em vez da notação de Chen (atributos como elipses penduradas) usada pelo BrModeloWeb — com 21 entidades, elipses individuais tornariam o diagrama ilegível em uma página só. O conteúdo (entidades, atributos, chaves, cardinalidades) é o mesmo; **caso a disciplina exija especificamente a notação de Chen/BrModeloWeb, o grupo deve reconstruir o diagrama naquela ferramenta usando a tabela de relacionamentos da Seção 6 como roteiro** — cada linha da tabela corresponde a um losango a desenhar, com a cardinalidade (min,máx) de cada lado já calculada.
 
@@ -373,7 +372,6 @@ O modelo já nasce pensando em escalabilidade: entidades como USUARIO e ETAPA_PR
 ---
 
 ## 8. Justificativa Técnica
-*(vale 7,5% — sozinho, é o subcritério de maior peso dentro da Dimensão Conceitual)*
 
 - **Por que 21 entidades e não menos:** cada entidade corresponde a um substantivo com identidade própria e ciclo de vida distinto no levantamento de requisitos (ex.: um LOTE_INSUMO não é apenas uma característica de INSUMO — ele tem data de recebimento, fornecedor e preço próprios, e precisa ser referenciado individualmente pela Ordem de Produção para rastreabilidade). Fundir entidades como CLIENTE e ENDERECO_CLIENTE em uma tabela só quebraria a regra explícita de múltiplos endereços por cliente (requisito 1.2 do levantamento).
 - **Por que entidades fracas:** ENDERECO_CLIENTE e LOTE_INSUMO não têm existência independente — um endereço sem cliente ou um lote sem insumo/fornecedor não fazem sentido no domínio. Modelá-las como fracas (chave dependente) evita chaves substitutas artificiais e deixa a dependência explícita no diagrama.
@@ -392,12 +390,11 @@ O modelo já nasce pensando em escalabilidade: entidades como USUARIO e ETAPA_PR
 | **Motivação** | Acelerar a tradução do levantamento de requisitos (documento em prosa/tabela) para um modelo estruturado (entidades/atributos/cardinalidades) e para o formato de entrega exigido pela disciplina. |
 | **Prompt(s) utilizados** | "Preciso montar um diagrama e o dicionário desse diagrama, como se fosse no modelo BrModeloWeb, veja os dados que estão no arquivo e conforme eles, monte um diagrama no formato do BrModeloWeb"; "Consegue gerar um arquivo pdf com isso que me enviou? Contendo somente o diagrama e o dicionário"; "De acordo com o que montamos, responda essas perguntas do drive" (referindo-se ao esqueleto da Entrega 1). |
 | **Resposta recebida** | Um modelo com 21 entidades e 22 relacionamentos derivado diretamente das respostas do questionário; um diagrama ER (notação pé-de-galinha) e um dicionário de dados completo; depois, este README preenchido seção a seção a partir do esqueleto oficial. |
-| **Fontes consultadas e verificadas** | Nenhuma fonte externa — o modelo foi derivado exclusivamente do texto do questionário de requisitos fornecido pelo grupo. Nenhum dado foi inventado sobre a organização em si (nome, endereço, evidências seguem pendentes, ver Seção 1). |
+| **Fontes consultadas e verificadas** | Nenhuma fonte externa — o modelo foi derivado exclusivamente do texto do questionário de requisitos fornecido pelo grupo. Nenhum dado foi inventado sobre a organização em si. |
 | **Trechos rejeitados ou corrigidos** | A IA optou por notação "pé-de-galinha" em vez da notação de Chen (elipses) usada pelo BrModeloWeb, por legibilidade em 21 entidades — o grupo deve avaliar se isso é aceitável ou se precisa reconstruir o DER na ferramenta oficial da disciplina (ver Seção 7). Algumas decisões de granularidade (reificar Ficha Técnica, Execução de Etapa e Item de Pedido como entidades) foram julgamento de modelagem da IA, não estavam explícitas no questionário, e devem ser validadas pelo grupo. |
 | **Justificativa da escolha final** | O grupo manteve a estrutura de 21 entidades por ela cobrir, de forma rastreável, as 8 seções do questionário original sem inventar processos não mencionados. |
-| **Reflexão crítica** | O modelo reflete fielmente o texto do questionário, mas **não substitui a pesquisa de campo exigida pela atividade** — regras de negócio reais da organização escolhida podem divergir do que está aqui (valores de limite de crédito, percentuais de comissão etc. foram tratados como exemplos/referências, não como regras fixas). O grupo deve validar cada regra de negócio da Seção 4 com a organização real antes de assumi-las como definitivas. |
+| **Reflexão crítica** | O modelo reflete fielmente o texto do questionário, mas não substitui a pesquisa de campo exigida pela atividade — regras de negócio reais da organização escolhida podem divergir do que está aqui (valores de limite de crédito, percentuais de comissão etc. foram tratados como exemplos/referências, não como regras fixas). O grupo deve validar cada regra de negócio da Seção 4 com a organização real antes de assumi-las como definitivas. |
 
-*(Se o grupo usou outra ferramenta de IA em etapas adicionais — ex.: redação de trechos, pesquisa sobre o setor —, acrescentem uma linha nova nesta tabela para cada uso.)*
 
 ---
 
@@ -421,7 +418,6 @@ Avaliados por 360º entre os integrantes do grupo — não preenchido neste READ
 ### Checklist do que ainda falta ao grupo (não gerável por IA)
 
 - [ ] Nome real da organização, endereço, contato e evidências de visita (Seção 1)
-- [ ] Nomes e RGM dos integrantes (Metadados)
 - [ ] Confirmar em campo se as regras de negócio da Seção 4 (limite de R$10.000, comissão de 5% etc.) batem com a realidade observada, ou ajustá-las
 - [ ] Decidir se o DER será refeito no BrModeloWeb (notação de Chen) ou mantido como está (Seção 7)
 - [ ] Fluxogramas (opcional, Seção 2)
