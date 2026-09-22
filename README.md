@@ -33,7 +33,6 @@
 7. **Expedição e pós-venda** — picking & packing, integração logística e garantia (RMA).
 8. **Gestão financeira e relatórios gerenciais** — Contas a Pagar/Receber automáticos e indicadores (Curva ABC, DRE, fluxo de caixa).
 
-- **Fluxogramas:** *(opcional — recomenda-se pelo menos o fluxo da Ordem de Produção, por ser o processo com mais etapas sequenciais)* 🔴 PENDENTE se o grupo optar por incluir.
 
 ---
 
@@ -401,9 +400,6 @@ O modelo já nasce pensando em escalabilidade: entidades como USUARIO e ETAPA_PR
 
 ---
 
-## Critérios Atitudinais (20%)
-Avaliados por 360º entre os integrantes do grupo — não preenchido neste README.
 
----
 
 
