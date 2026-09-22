@@ -17,7 +17,20 @@
 - **Contexto e porte:** com fins lucrativos; opera simultaneamente como indústria e comércio (venda em loja física, e-commerce, WhatsApp e representantes externos). O uso de facções terceirizadas e o controle de aproveitamento de couro por corte sugerem uma operação de pequeno a médio porte, com produção sob encomenda/lote (não em larga escala industrial). Volume médio de pedidos por mês entre 50 a 70, aumentando nas datas comemorativas (Dia das Mães e Natal).
 - **Problemas e necessidades identificados:** o levantamento de requisitos aponta processos hoje prováveis de estarem descentralizados/manuais: controle de estoque de insumos (couro, ferragens, zíperes) sem rastreabilidade de lote; ausência de regra formal de crédito para vendas a prazo; cálculo de custo/preço de venda não padronizado (ficha técnica); acompanhamento de produção sem visibilidade de status; e falta de integração entre vendas, estoque e financeiro (títulos a pagar/receber gerados manualmente).
 - **Justificativa da escolha:** Uma empresa que a gente sabia que ia ter acesso fácil e que consideramos de porte médio, não deixando nem tão simples e nem tão complicado o nosso trabalho.
-- **Evidências da organização:** PENDENTE — anexem fotos da visita, link da organização no Google (Maps/Meu Negócio, site ou rede social), Endereço: Rua Alpiste, 116 - Jd. Eliane - São Paulo - SP. Contato na empresa: Osmar Lingiard, telefone para contato: 11 97334-4846, email: osmar@specia.com.br.
+- **Evidências da organização:** Endereço: Rua Alpiste, 116 - Jd. Eliane - São Paulo - SP. Contato na empresa: Osmar Lingiard, telefone para contato: 11 97334-4846, email: osmar@specia.com.br. 🔴 Falta apenas o link da organização no Google (Maps/Meu Negócio, site ou rede social).
+
+<p align="center">
+  <img src="evidencias/01-bancada-producao.jpg" width="32%" />
+  <img src="evidencias/02-responsavel-escritorio.jpg" width="32%" />
+  <img src="evidencias/03-estoque-corredor-g.jpg" width="32%" />
+</p>
+<p align="center">
+  <img src="evidencias/04-oficina-costura.jpg" width="32%" />
+  <img src="evidencias/05-estoque-insumos.jpg" width="32%" />
+  <img src="evidencias/06-fachada.jpg" width="32%" />
+</p>
+
+*Da esquerda para a direita, de cima para baixo: bancada de produção (corte/costura), Osmar (responsável) no escritório, estoque de bolsas prontas (corredor G), oficina com as máquinas de costura, estoque de insumos/materiais, fachada do prédio na Rua Alpiste.*
 
 ## 2. Processos de Negócio
 
