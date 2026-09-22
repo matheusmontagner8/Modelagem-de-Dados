@@ -115,284 +115,133 @@
 ## 5. Dicionário de Dados Conceitual (Preliminar)
 
 
-> Formato oficial da disciplina: por entidade, `Atributo | Descrição | Regra de negócio associada`. As 21 entidades abaixo cobrem as 8 seções do levantamento de requisitos.
-
-### CLIENTE
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| cod_cliente | Identificador interno do cliente | Chave primária |
-| razao_social_nome | Razão social (PJ) ou nome completo (PF) | Obrigatório |
-| cnpj_cpf | Documento fiscal do cliente | Usado na consulta de restrição de crédito |
-| inscricao_estadual | Registro estadual do cliente | Obrigatório apenas se perfil = Atacado/Lojista |
-| email_nfe | E-mail para envio da nota fiscal eletrônica | — |
-| telefone_whatsapp | Contato principal | — |
-| nome_comprador_responsavel | Pessoa de contato para compras | — |
-| perfil_cliente | Classificação comercial | Domínio: Varejo Final / Atacado-Lojista — define a régua de preço |
-| limite_credito | Teto de faturamento via boleto | Referência observada: R$10.000,00 |
-| status_aprovacao_financeira | Situação de aprovação de crédito | Domínio: Pendente / Aprovado / Reprovado — obrigatório para novo lojista |
-
-### ENDERECO_CLIENTE *(entidade fraca — depende de CLIENTE)*
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| cod_endereco | Identificador do endereço | Chave primária |
-| cod_cliente | Cliente ao qual o endereço pertence | Chave estrangeira → CLIENTE |
-| tipo_endereco | Finalidade do endereço | Domínio: Matriz / Entrega / Cobrança |
-| logradouro | Rua/avenida e número | — |
-| cidade | Cidade | — |
-| uf | Unidade federativa | — |
-| cep | Código postal | — |
+> Formato oficial da disciplina: por entidade, `Atributo | Descrição | Regra de negócio associada`. As 9 entidades abaixo correspondem ao DER atual (`Diagrama/DER_9_Entidades_com_titulo_legenda (2).png`), um recorte enxuto do fluxo de custos de produção e vendas — fornecedor → insumo → ficha técnica → produto (bolsa/acessório) → pedido → cliente.
 
 ### FORNECEDOR
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
-| cod_fornecedor | Identificador do fornecedor | Chave primária |
-| razao_social | Nome empresarial do fornecedor | — |
-| cnpj | Documento fiscal | — |
-| inscricao_estadual | Registro estadual | — |
-| categoria_insumo | Tipo de insumo fornecido | Domínio: Curtume/Couro, Ferragens/Fivelas, Zíperes/Aviamentos, Embalagens/Caixas |
-| contato_vendedor | Pessoa de contato comercial | — |
-| prazo_medio_entrega_dias | Lead time médio de entrega | Usado no planejamento de produção |
+| id_fornecedor | Identificador | Chave primária, gerada pelo sistema. É única e não pode ser reutilizada. |
+| razao_social | Nome empresarial | Obrigatório. Nome utilizado em compras e no histórico de avaliação do fornecedor. |
+| cnpj | CNPJ | Obrigatório e único. Não pode existir mais de um fornecedor com o mesmo CNPJ. Dado protegido pela LGPD. |
+| inscricao_estadual | Registro estadual | Opcional. Deve ser preenchido quando o fornecedor possuir inscrição estadual. |
+| email | E-mail comercial | Opcional. Canal de contato comercial com o fornecedor. |
+| telefone | Telefone | Opcional. Contato direto com o fornecedor. |
+| contato_vendedor | Vendedor de referência | Nome da pessoa responsável pelo atendimento comercial do fornecedor. |
+| categoria_insumo | Tipo de insumo vendido | Obrigatório. Aceita: Curtume/Couro, Ferragens/Fivelas, Zíperes/Aviamentos ou Embalagens/Caixas. |
+| prazo_medio_entrega_dias | Prazo de entrega em dias | Número inteiro maior que zero. Impacta o planejamento: quanto maior o prazo, mais cedo o insumo deve ser comprado. |
 
 ### INSUMO
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
-| cod_insumo | Identificador do insumo | Chave primária |
-| descricao_insumo | Nome do insumo (ex.: Couro Bovino Caramelo) | — |
-| categoria_insumo | Categoria do insumo | — |
-| unidade_medida | Unidade de controle de estoque | Domínio: dm², m², unidade, metro, kg, litro |
-| estoque_minimo | Saldo mínimo configurável | Dispara alerta automático de recompra |
-| saldo_estoque_atual | Saldo atual em estoque | Atualizado a cada entrada/baixa |
+| id_insumo | Identificador | Chave primária, gerada pelo sistema. |
+| nome_insumo | Nome do material | Obrigatório. Exemplos: couro bovino caramelo, zíper, fivela e forro. |
+| categoria_insumo | Grupo do material | Usa o mesmo conjunto de categorias do fornecedor, permitindo identificar fornecedores aptos a vender o insumo. |
+| unidade_medida | Unidade de controle | Obrigatória. Aceita: dm², m², unidade, metro, kg ou litro. Estoque e ficha técnica devem usar a mesma unidade. |
+| estoque_minimo | Saldo mínimo | Quando estoque_atual for igual ou menor que este valor, o sistema deve gerar alerta de recompra. |
+| estoque_atual | Saldo em estoque | Nunca pode ser negativo. Aumenta com compras recebidas e diminui com o consumo na produção. |
+| custo_unitario | Custo por unidade de medida | Deve ser maior que zero. É o custo de referência usado para calcular a matéria-prima. |
 
-### LOTE_INSUMO *(entidade fraca — depende de INSUMO, FORNECEDOR e COMPRA)*
+### FICHA_TECNICA *(entidade associativa — identificada por PRODUTO + INSUMO)*
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
-| cod_lote | Identificador do lote | Chave primária |
-| cod_insumo | Insumo recebido | Chave estrangeira → INSUMO |
-| cod_fornecedor | Fornecedor de origem | Chave estrangeira → FORNECEDOR |
-| cod_compra | Compra que originou o lote | Chave estrangeira → COMPRA |
-| numero_lote | Identificação do lote (ex.: 2026-A) | Garante rastreabilidade de cor/textura |
-| data_recebimento | Data de entrada no estoque | — |
-| quantidade_recebida | Quantidade recebida | — |
-| cor_tonalidade | Cor/tonalidade do insumo (couro) | — |
-| preco_pago | Preço pago nesse recebimento | Alimenta o histórico de preço por fornecedor |
+| quantidade_necessaria | Quantidade por peça | Deve ser maior que zero e seguir a unidade_medida do insumo. Cada insumo aparece uma única vez na ficha de um produto. |
+| percentual_perda | Perda técnica no corte | Informado como fração entre 0 e 1 (ex.: 10% = 0,10). Compõe o custo como quantidade × (1 + perda). |
 
-### COMPRA
+### PRODUTO *(supertipo)*
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
-| cod_compra | Identificador da compra | Chave primária |
-| cod_fornecedor | Fornecedor da compra | Chave estrangeira → FORNECEDOR |
-| numero_compra | Número/identificação da compra | — |
-| data_compra | Data da compra | — |
-| forma_entrada | Origem do lançamento | Domínio: XML de NF-e / Manual |
-| valor_total | Valor total da compra | — |
-| taxa_pontualidade_entrega | Percentual de pontualidade apurado | Alimenta a avaliação histórica do fornecedor |
+| id_produto | Identificador | Chave primária, gerada pelo sistema. É a mesma chave usada por BOLSA e ACESSORIO. |
+| nome_modelo | Nome do modelo | Obrigatório. Exemplo: Bolsa Tote. |
+| custo_mao_obra | Mão de obra por peça | Valor informado, não calculado. Representa custos de corte e costura e é somado ao custo de matéria-prima. |
+| markup | Multiplicador de margem | Valor informado e maior que 1. Exemplo: 2,5 representa preço equivalente a 2,5 vezes o custo. |
+| custo_materia_prima *(derivado)* | Custo dos insumos | Não é digitado. Soma de quantidade_necessaria × (1 + percentual_perda) × custo_unitario para cada insumo da ficha. |
+| preco_tabela *(derivado)* | Preço de venda sugerido | Não é digitado. Calculado por (custo_materia_prima + custo_mao_obra) × markup. Recalculado quando seus componentes mudarem. |
 
-### CONTAS_PAGAR
+### BOLSA *(subtipo de PRODUTO)*
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
-| cod_titulo_pagar | Identificador do título | Chave primária |
-| cod_compra | Compra que gerou o título | Chave estrangeira → COMPRA |
-| valor | Valor do título | — |
-| data_vencimento | Data de vencimento | — |
-| data_pagamento | Data em que foi pago | Nulo até a baixa |
-| status_pagamento | Situação do título | Domínio: Aberto / Pago / Atrasado |
+| tamanho | Dimensão da bolsa | Obrigatório para produtos classificados como bolsa. Herda também os atributos de PRODUTO. |
+| cor | Cor da bolsa | Obrigatória para bolsa. |
+| tipo_alca | Tipo de alça | Obrigatório para bolsa. |
+| pecas_composicao *(multivalorado)* | Peças que formam a bolsa | Deve conter pelo menos uma peça, como tampa, frente, costa, fundo ou orla. |
 
-### MODELO_PRODUTO
+### ACESSORIO *(subtipo de PRODUTO)*
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
-| cod_modelo | Identificador do modelo | Chave primária |
-| nome_modelo | Nome do modelo (ex.: Bolsa Tote) | — |
-| descricao | Descrição do modelo | — |
+| tipo_peca | Tipo do acessório | Obrigatório. Exemplos: cinto e porta-cartões. Um acessório não pode possuir atributos específicos de bolsa. |
 
-### VARIACAO_PRODUTO *(SKU)*
+### CLIENTE
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
-| cod_sku | Identificador da variação | Chave primária |
-| cod_modelo | Modelo ao qual pertence | Chave estrangeira → MODELO_PRODUTO |
-| codigo_sku | Código comercial (ex.: SKU-BOLSA-TOTE-CAR-UNI) | — |
-| cor | Cor da variação | — |
-| tipo_couro | Tipo de couro utilizado | Ex.: Bovino Vaqueta, Mestiço |
-| tipo_ferragem | Tipo de ferragem utilizada | Ex.: Dourada, Prata, Escovada |
-| preco_venda_sugerido | Preço de venda calculado | (insumos + mão de obra + rateio) × markup |
-| tempo_estimado_mao_obra_min | Tempo estimado de produção | — |
+| id_cliente | Identificador | Chave primária, gerada pelo sistema. |
+| nome | Razão social ou nome | Obrigatório. Razão social para pessoa jurídica e nome completo para pessoa física. |
+| cpf_cnpj | CPF ou CNPJ | Obrigatório e único. Usado na consulta de crédito. Dado protegido pela LGPD. |
+| inscricao_estadual | Registro estadual | Obrigatória quando perfil_cliente for Atacado/Lojista. Para Varejo Final, deve ficar vazia. |
+| email | E-mail | Usado para comunicação e envio de NF-e ao cliente. |
+| telefone | Telefone ou WhatsApp | Canal principal de contato. |
+| nome_comprador_responsavel | Contato de compras | Pessoa que faz pedidos em nome do cliente, principalmente no atacado. |
+| perfil_cliente | Tipo de cliente | Aceita: Varejo Final ou Atacado/Lojista. Define a regra de preço e a obrigatoriedade de inscrição estadual. |
+| limite_credito | Teto de compra a prazo | Valor máximo permitido para vendas em boleto. O total do pedido não pode ultrapassar esse limite. |
+| status_aprovacao_financeira | Situação do crédito | Aceita: Pendente, Aprovado ou Reprovado. Novo cliente lojista inicia como Pendente e só compra em boleto quando Aprovado. |
 
-### ITEM_FICHA_TECNICA *(entidade associativa — BOM)*
+### PEDIDO
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
-| cod_sku | Variação de produto | Chave primária composta + FK → VARIACAO_PRODUTO |
-| cod_insumo | Insumo utilizado | Chave primária composta + FK → INSUMO |
-| quantidade_necessaria | Quantidade do insumo por unidade produzida | Ex.: dm² de couro, unidades de zíper, metros de linha |
-| unidade_medida_item | Unidade da quantidade necessária | — |
+| id_pedido | Identificador | Chave primária, gerada pelo sistema. |
+| data_pedido | Data do pedido | Obrigatória. Preenchida no registro do pedido. |
+| canal_venda | Canal de venda | Aceita: Loja Física, E-commerce, WhatsApp ou Representante. |
+| forma_pagamento | Forma de pagamento | Aceita: PIX, Cartão ou Boleto. Boleto só é permitido quando o cliente estiver Aprovado e dentro do limite_credito. |
+| condicao_parcelamento | Parcelas ou prazo | Depende da forma de pagamento: PIX à vista; Cartão com número de parcelas; Boleto com prazos em dias (ex.: 30/60/90). |
+| status_pedido | Situação do pedido | Obrigatório. Evolui no processo comercial (ex.: aberto, faturado, expedido). |
+| valor_total *(derivado)* | Total do pedido | Não é digitado. Soma de quantidade × preco_unitario_praticado − desconto de todos os itens. |
 
-### ARTESAO_FACCAO
+### ITEM_PEDIDO *(entidade associativa — identificada por PEDIDO + PRODUTO)*
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
-| cod_artesao | Identificador do artesão/facção | Chave primária |
-| nome | Nome do artesão ou razão social da facção | — |
-| tipo_vinculo | Natureza do vínculo | Domínio: Artesão Interno / Facção Terceirizada |
-| telefone | Contato | — |
-
-### ETAPA_PRODUCAO *(catálogo)*
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| cod_etapa | Identificador da etapa | Chave primária |
-| nome_etapa | Nome da etapa | Modelagem, Corte, Preparação/Colagem, Costura, Montagem/Ferragens, Acabamento/Revisão, Embalagem |
-| ordem_sequencial | Posição da etapa no fluxo produtivo | Define a sequência do Kanban |
-
-### ORDEM_PRODUCAO
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| cod_op | Identificador da ordem de produção | Chave primária |
-| cod_sku | Variação de produto a ser produzida | Chave estrangeira → VARIACAO_PRODUTO |
-| numero_op | Número da OP | — |
-| data_abertura | Data de abertura | Dispara a reserva/baixa automática de insumos |
-| quantidade_produzir | Quantidade a produzir | — |
-| status_kanban | Status atual da OP | Domínio: Aguardando / Em Corte / Em Costura / Finalizado |
-
-### EXECUCAO_ETAPA *(entidade associativa)*
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| cod_execucao | Identificador da execução | Chave primária |
-| cod_op | Ordem de produção | Chave estrangeira → ORDEM_PRODUCAO |
-| cod_etapa | Etapa executada | Chave estrangeira → ETAPA_PRODUCAO |
-| cod_artesao | Responsável pela execução | Chave estrangeira → ARTESAO_FACCAO — base do pagamento por produção |
-| data_inicio | Início da execução | — |
-| data_fim | Fim da execução | — |
-| percentual_aproveitamento | % de aproveitamento do couro | Aplicável à etapa de Corte |
-| percentual_perda | % de perda/retalho | Aplicável à etapa de Corte |
-
-### USUARIO
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| cod_usuario | Identificador do usuário | Chave primária |
-| nome | Nome do usuário | — |
-| login | Login de acesso | — |
-| senha_hash | Senha (armazenada com hash) | — |
-| perfil_acesso | Perfil de acesso ao sistema | Domínio: Vendedor / Gerente de Produção / Financeiro / Administrador |
-| tipo_vendedor | Natureza do vínculo comercial | Domínio: Interno / Representante Externo (nulo se não for vendedor) |
-| percentual_comissao | Percentual de comissão | Padrão 5%, diferenciado por atacado/varejo |
-
-### PEDIDO_VENDA
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| cod_pedido | Identificador do pedido | Chave primária |
-| cod_cliente | Cliente do pedido | Chave estrangeira → CLIENTE |
-| cod_usuario | Vendedor/representante responsável | Chave estrangeira → USUARIO |
-| numero_pedido | Número do pedido | — |
-| data_pedido | Data do pedido | — |
-| canal_venda | Canal de venda | Domínio: Loja Física / E-commerce / WhatsApp / Representante |
-| forma_pagamento | Forma de pagamento | Domínio: PIX / Cartão / Boleto |
-| condicao_parcelamento | Condição de parcelamento | Ex.: 30/60/90 dias (boleto atacado) |
-| status_pedido | Situação do pedido | — |
-
-### ITEM_PEDIDO *(entidade associativa)*
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| cod_item_pedido | Identificador do item | Chave primária |
-| cod_pedido | Pedido ao qual pertence | Chave estrangeira → PEDIDO_VENDA |
-| cod_sku | Produto vendido | Chave estrangeira → VARIACAO_PRODUTO |
-| quantidade | Quantidade vendida | — |
-| preco_unitario_praticado | Preço unitário praticado | — |
-| desconto | Desconto aplicado | — |
-
-### NOTA_FISCAL
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| cod_nf | Identificador da nota | Chave primária |
-| cod_pedido | Pedido faturado | Chave estrangeira → PEDIDO_VENDA |
-| numero_nf | Número da nota | — |
-| tipo_nf | Tipo de documento fiscal | Domínio: NF-e (mercantil) / NFC-e (cupom varejo) |
-| data_emissao | Data de emissão | — |
-| valor_total | Valor total da nota | — |
-
-### CONTAS_RECEBER
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| cod_titulo_receber | Identificador do título | Chave primária |
-| cod_pedido | Pedido que gerou o título | Chave estrangeira → PEDIDO_VENDA |
-| valor | Valor do título | — |
-| data_vencimento | Data de vencimento | — |
-| data_recebimento | Data em que foi recebido | — |
-| status_recebimento | Situação do título | Domínio: Aberto / Recebido / Atrasado |
-
-### EXPEDICAO *(1:1 com pedido)*
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| cod_expedicao | Identificador da expedição | Chave primária |
-| cod_pedido | Pedido expedido | Chave estrangeira → PEDIDO_VENDA |
-| data_envio | Data de envio | — |
-| transportadora | Transportadora utilizada | Ex.: Correios, Melhor Envio, parceira |
-| codigo_rastreio | Código de rastreamento | — |
-| checklist_conferencia | Conferência realizada | Via leitura de código de barras |
-| dust_bag_incluso | Saquinho protetor incluído | — |
-
-### RMA_GARANTIA
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| cod_rma | Identificador do chamado | Chave primária |
-| cod_item_pedido | Item associado à garantia | Chave estrangeira → ITEM_PEDIDO (não ao pedido inteiro) |
-| data_abertura | Data de abertura do chamado | — |
-| motivo_defeito | Motivo relatado | — |
-| status_rma | Situação do chamado | Domínio: Aberto / Em Reparo / Devolvido |
-| data_devolucao | Data de devolução ao cliente | — |
+| quantidade | Unidades vendidas | Número inteiro maior que zero. Um produto aparece uma vez por pedido; para vender mais, aumenta-se a quantidade. |
+| preco_unitario_praticado | Preço aplicado na venda | Fica congelado no momento da venda. Alterações posteriores no preco_tabela não modificam pedidos antigos. |
+| desconto | Desconto do item | Opcional. Não pode ser superior a quantidade × preco_unitario_praticado. |
 
 ---
 
 ## 6. Modelagem Conceitual (Entidades, Atributos, Relacionamentos)
 
 
-- **Entidades reconhecidas (21 no total):** as 21 entidades listadas na Seção 5, agrupadas nos 6 blocos de negócio identificados no levantamento — Clientes; Fornecedores/Insumos/Compras; Produtos/Ficha Técnica; Produção; Vendas/Faturamento; Expedição/Financeiro/Pós-venda. Duas são **entidades fracas** (ENDERECO_CLIENTE, LOTE_INSUMO — só existem em função de outra entidade) e três são **entidades associativas** que resolvem relacionamentos N:N com atributos próprios (ITEM_FICHA_TECNICA, EXECUCAO_ETAPA, ITEM_PEDIDO).
-- **Atributos e classificações:** detalhados por entidade na Seção 5, com chave primária, chaves estrangeiras e domínios de valor explícitos (ex.: `perfil_cliente`, `status_kanban`, `tipo_nf`).
-- **Relacionamentos pertinentes (22 no total):**
+- **Entidades reconhecidas (9 no total):** FORNECEDOR, INSUMO, FICHA_TECNICA, PRODUTO, BOLSA, ACESSORIO, CLIENTE, PEDIDO e ITEM_PEDIDO — cobrindo o fluxo de custo de produção e venda (compra de insumo → ficha técnica → precificação do produto → pedido → cliente). Duas são **entidades associativas** com atributos próprios (FICHA_TECNICA, ITEM_PEDIDO), e PRODUTO é um **supertipo** especializado em BOLSA e ACESSORIO.
+- **Atributos e classificações:** detalhados por entidade na Seção 5, com chave primária e domínios de valor explícitos (ex.: `perfil_cliente`, `categoria_insumo`, `forma_pagamento`). Atributos derivados (`custo_materia_prima`, `preco_tabela`, `valor_total`) estão marcados como tal — não são digitados, são calculados a partir de outros atributos.
+- **Especialização PRODUTO → BOLSA / ACESSORIO:** total e disjunta (símbolo "TD" no diagrama) — todo produto é obrigatoriamente bolsa OU acessório, nunca os dois, e não existe produto que não seja nenhum dos dois. BOLSA e ACESSORIO herdam todos os atributos de PRODUTO.
+- **Relacionamentos pertinentes (6 no total, mais a especialização):**
 
-| # | Entidade A | Card. A | Verbo | Card. B | Entidade B |
-|---|---|---|---|---|---|
-| 01 | CLIENTE | (1,1) | possui | (0,N) | ENDERECO_CLIENTE |
-| 02 | FORNECEDOR | (1,1) | fornece | (0,N) | LOTE_INSUMO |
-| 03 | INSUMO | (1,1) | é recebido como | (0,N) | LOTE_INSUMO |
-| 04 | COMPRA | (1,1) | gera | (0,N) | LOTE_INSUMO |
-| 05 | FORNECEDOR | (1,1) | recebe pedido de | (0,N) | COMPRA |
-| 06 | COMPRA | (1,1) | gera | (0,N) | CONTAS_PAGAR |
-| 07 | MODELO_PRODUTO | (1,1) | possui | (1,N) | VARIACAO_PRODUTO |
-| 08 | VARIACAO_PRODUTO | (1,1) | é detalhada em | (0,N) | ITEM_FICHA_TECNICA |
-| 09 | INSUMO | (1,1) | compõe | (0,N) | ITEM_FICHA_TECNICA |
-| 10 | VARIACAO_PRODUTO | (1,1) | é produzida em | (0,N) | ORDEM_PRODUCAO |
-| 11 | ORDEM_PRODUCAO | (1,1) | se desdobra em | (0,N) | EXECUCAO_ETAPA |
-| 12 | ETAPA_PRODUCAO | (1,1) | classifica | (0,N) | EXECUCAO_ETAPA |
-| 13 | ARTESAO_FACCAO | (1,1) | realiza | (0,N) | EXECUCAO_ETAPA |
-| 14 | LOTE_INSUMO | (0,N) | é consumido em | (0,N) | ORDEM_PRODUCAO |
-| 15 | CLIENTE | (1,1) | realiza | (0,N) | PEDIDO_VENDA |
-| 16 | USUARIO | (1,1) | atende | (0,N) | PEDIDO_VENDA |
-| 17 | PEDIDO_VENDA | (1,1) | contém | (1,N) | ITEM_PEDIDO |
-| 18 | VARIACAO_PRODUTO | (1,1) | é vendida em | (0,N) | ITEM_PEDIDO |
-| 19 | PEDIDO_VENDA | (1,1) | gera | (0,N) | NOTA_FISCAL |
-| 20 | PEDIDO_VENDA | (1,1) | gera | (0,N) | CONTAS_RECEBER |
-| 21 | PEDIDO_VENDA | (1,1) | possui | (0,1) | EXPEDICAO |
-| 22 | ITEM_PEDIDO | (1,1) | pode gerar | (0,N) | RMA_GARANTIA |
+| # | Entidade A | Card. A | Verbo | Card. B | Entidade B | Observação |
+|---|---|---|---|---|---|---|
+| 01 | FORNECEDOR | (1,N) | abastece | (0,N) | INSUMO | N:N — um fornecedor fornece vários insumos e um insumo pode vir de vários fornecedores |
+| 02 | INSUMO | (1,1) | constitui | (0,N) | FICHA_TECNICA | cada linha da ficha técnica usa exatamente um insumo |
+| 03 | PRODUTO | (1,1) | detalha-se em | (0,N) | FICHA_TECNICA | 02+03 resolvem o N:N Produto×Insumo via FICHA_TECNICA |
+| 04 | PRODUTO | (1,1) | integra | (0,N) | ITEM_PEDIDO | um produto pode integrar vários itens de pedido |
+| 05 | PEDIDO | (1,1) | compreende | (1,N) | ITEM_PEDIDO | todo pedido tem ao menos um item |
+| 06 | CLIENTE | (1,1) | efetua | (0,N) | PEDIDO | cliente pode ter zero ou vários pedidos |
 
-- **Restrições e políticas organizacionais aplicadas ao modelo:** o limite de crédito e a aprovação financeira (Seção 4) aparecem como atributos de CLIENTE que condicionam a cardinalidade opcional de PEDIDO_VENDA; a rastreabilidade de lote exigida pela organização motivou LOTE_INSUMO ser entidade própria (e não apenas um atributo de INSUMO); o pagamento por produção exigiu que EXECUCAO_ETAPA carregasse o artesão responsável em vez de um campo solto na Ordem de Produção.
+- **Restrições e políticas organizacionais aplicadas ao modelo:** o limite de crédito e o status de aprovação financeira (Seção 4) ficam em CLIENTE e condicionam, na regra de negócio, se um PEDIDO pode usar boleto; a obrigatoriedade de inscrição estadual depende do `perfil_cliente`; o custo e o preço de venda de PRODUTO são sempre derivados da FICHA_TECNICA, nunca digitados diretamente, para manter a precificação rastreável até o insumo.
 
 ---
 
 ## 7. Diagrama Entidade-Relacionamento (DER)
 
-**Arquivos anexados:** `DER_Bolsas_Couro.png` (e `DER_Bolsas_Couro.svg`, versão vetorial da mesma imagem) — gerados a partir do modelo desta Seção 6.
+**Arquivos anexados:** `Diagrama/DER_9_Entidades_com_titulo_legenda (2).png` (imagem) e `Dicionario_de_Dados.html` (dicionário completo, mesmo conteúdo da Seção 5).
 
-O diagrama segue a notação de Chen usada pelo BrModeloWeb: entidades como **retângulos**, relacionamentos como **losangos** rotulados com o verbo, atributos como **elipses** presas à entidade (ou ao relacionamento, no único caso de atributo de relacionamento do modelo — `quantidade_consumida` em "consumido em"), com a **chave primária sublinhada**. Entidade fraca (ENDERECO_CLIENTE) e seu relacionamento identificador ("possui") aparecem com borda dupla. As cardinalidades (mín,máx) ficam junto de cada ponta da linha, exatamente como na tabela da Seção 6.
+O diagrama segue a notação de Chen usada pelo BrModeloWeb: entidades como **retângulos**, relacionamentos como **losangos** rotulados com o verbo, atributos como **elipses**, com a **chave primária identificada por contorno destacado**. A especialização PRODUTO → BOLSA/ACESSORIO usa o círculo "TD" (Total e Disjunta) padrão da notação de Chen. As cardinalidades (mín,máx) ficam junto de cada ponta da linha, exatamente como na tabela da Seção 6. Seguindo a notação conceitual pura, o diagrama não mostra atributos de chave estrangeira — essa informação já está representada pela própria linha do relacionamento.
 
-Uma diferença importante em relação ao dicionário da Seção 5: seguindo a notação conceitual pura, o diagrama **não mostra atributos de chave estrangeira** (ex.: `cod_cliente` dentro de ENDERECO_CLIENTE) — essa informação já está representada pela própria linha do relacionamento. As FKs voltam a aparecer no dicionário porque ali o objetivo é documentar a estrutura completa, inclusive o que se tornará chave estrangeira na Entrega 2.
-
-O modelo já nasce pensando em escalabilidade: entidades como USUARIO e ETAPA_PRODUCAO são catálogos abertos (novos perfis/etapas não exigem redesenho), e o bloco financeiro (CONTAS_PAGAR/CONTAS_RECEBER) está desacoplado o suficiente para integrar com um módulo de BI na Entrega 2 sem alterar as entidades operacionais.
+Este recorte de 9 entidades prioriza o núcleo de custo e venda (o que é preciso para precificar e vender uma peça) e deixou de fora, nesta etapa, os módulos de produção detalhada (ordem de produção, etapas, artesãos), logística/pós-venda e financeiro descritos nas Seções 2 a 4 — que seguem documentados como requisito levantado, para uma modelagem futura.
 
 ---
 
 ## 8. Justificativa Técnica
 
-- **Por que 21 entidades e não menos:** cada entidade corresponde a um substantivo com identidade própria e ciclo de vida distinto no levantamento de requisitos (ex.: um LOTE_INSUMO não é apenas uma característica de INSUMO — ele tem data de recebimento, fornecedor e preço próprios, e precisa ser referenciado individualmente pela Ordem de Produção para rastreabilidade). Fundir entidades como CLIENTE e ENDERECO_CLIENTE em uma tabela só quebraria a regra explícita de múltiplos endereços por cliente (requisito 1.2 do levantamento).
-- **Por que entidades fracas:** ENDERECO_CLIENTE e LOTE_INSUMO não têm existência independente — um endereço sem cliente ou um lote sem insumo/fornecedor não fazem sentido no domínio. Modelá-las como fracas (chave dependente) evita chaves substitutas artificiais e deixa a dependência explícita no diagrama.
-- **Por que entidades associativas em vez de relacionamentos N:N "soltos":** ITEM_FICHA_TECNICA, EXECUCAO_ETAPA e ITEM_PEDIDO carregam atributos próprios (quantidade, percentual de aproveitamento, preço praticado) que não pertencem a nenhuma das duas entidades que conectam — a notação exige reificá-los como entidade para acomodar esses atributos e permitir que outras entidades (como RMA_GARANTIA) referenciem um item específico, e não o par inteiro.
-- **Por que essas cardinalidades e não outras:** cada cardinalidade (0,N) reflete uma regra observada no levantamento (ex.: cliente pode ou não ter pedidos, então CLIENTE–PEDIDO_VENDA é (1,1)-(0,N)); já PEDIDO_VENDA–ITEM_PEDIDO é (1,N) do lado do item porque um pedido sem nenhum item não existe operacionalmente.
-- **Alternativas descartadas:** cogitou-se tratar Endereço como atributo multivalorado simples de Cliente (sem entidade própria) — descartado porque endereço tem atributos compostos (logradouro/cidade/UF/CEP) e tipo (matriz/entrega/cobrança), o que exige estrutura própria. Cogitou-se também um único relacionamento genérico "Produto consome Insumo" sem reificação — descartado porque a quantidade necessária por insumo é informação de primeira classe para o cálculo de custo (RF10).
+- **Por que 9 entidades e não mais:** o grupo optou por modelar primeiro o núcleo que responde à pergunta "quanto custa e por quanto vender uma peça" — fornecedor, insumo, ficha técnica e produto — mais o lado comercial mínimo — cliente, pedido, item de pedido. Módulos como ordem de produção e financeiro (Seções 2-4) ficaram fora deste DER por decisão de escopo, não por esquecimento.
+- **Por que FICHA_TECNICA e ITEM_PEDIDO como entidades associativas:** ambas carregam atributos próprios (quantidade_necessaria/percentual_perda; quantidade/preco_unitario_praticado/desconto) que não pertencem a nenhuma das duas entidades que conectam — a notação exige reificá-los como entidade para acomodar esses atributos.
+- **Por que PRODUTO como supertipo (BOLSA/ACESSORIO):** bolsa e acessório compartilham identificador, nome do modelo, mão de obra, markup e os atributos derivados de custo — mas cada um tem atributos exclusivos (tamanho/cor/alça para bolsa; tipo_peca para acessório). Generalização/especialização evita repetir os atributos comuns em duas entidades soltas e ainda documenta, no próprio diagrama, que um produto é sempre um dos dois (TD).
+- **Por que essas cardinalidades e não outras:** FORNECEDOR–INSUMO é N:N porque, na prática, mais de um fornecedor vende o mesmo tipo de insumo (ex.: couro) e um fornecedor vende vários insumos; PEDIDO–ITEM_PEDIDO é (1,N) do lado do item porque um pedido sem nenhum item não existe operacionalmente.
+- **Alternativas descartadas:** cogitou-se manter BOLSA e ACESSORIO como uma única entidade PRODUTO com campos opcionais (tamanho/cor/alça nulos para acessório) — descartado porque misturaria atributos obrigatórios de um subtipo com atributos irrelevantes do outro, violando a regra "um acessório não pode possuir atributos específicos de bolsa".
 
 ---
 
@@ -401,13 +250,13 @@ O modelo já nasce pensando em escalabilidade: entidades como USUARIO e ETAPA_PR
 
 | Item | Registro |
 |---|---|
-| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — usado em quatro momentos: (1) leitura do questionário de requisitos e construção do modelo conceitual (entidades, atributos, relacionamentos, cardinalidades) e do dicionário de dados; (2) geração de um primeiro diagrama ER (notação "pé-de-galinha"); (3) preenchimento deste README a partir do esqueleto oficial da Entrega 1; (4) reconstrução do diagrama na notação de Chen (retângulo/losango/elipse) usada pelo BrModeloWeb, a pedido explícito do professor. |
-| **Motivação** | Acelerar a tradução do levantamento de requisitos (documento em prosa/tabela) para um modelo estruturado (entidades/atributos/cardinalidades) e para o formato de entrega exigido pela disciplina — inclusive a notação específica pedida pelo professor. |
-| **Prompt(s) utilizados** | "Preciso montar um diagrama e o dicionário desse diagrama, como se fosse no modelo BrModeloWeb, veja os dados que estão no arquivo (relatório) e conforme eles, monte um diagrama no formato do BrModeloWEb e o seu dicionário."; "Consegue gerar um arquivo pdf com esse arquivo que montou? Contendo somente o diagrama e o dicionário"; "Ajustar diagrama para o mesmo modelo de BrModeloWeb.". |
-| **Resposta recebida** | Um modelo com 21 entidades e 22 relacionamentos; um dicionário de dados completo; este README preenchido; e, por fim, o DER redesenhado em notação de Chen genuína (entidades/relacionamentos/atributos como retângulo/losango/elipse, PK sublinhada, cardinalidades nas pontas), a versão que está de fato anexada na Seção 7. |
-| **Fontes consultadas e verificadas** | Nenhuma fonte externa — o modelo foi derivado exclusivamente do texto do questionário de requisitos fornecido pelo grupo. Nenhum dado foi inventado sobre a organização em si. |
-| **Trechos rejeitados ou corrigidos** | A primeira versão do diagrama usava notação "pé-de-galinha" por preferência da IA (legibilidade); o professor pediu explicitamente a notação de Chen/BrModeloWeb, então o diagrama foi refeito do zero. Nessa reconstrução, a IA também corrigiu um erro de fidelidade conceitual da primeira versão: atributos de chave estrangeira (ex.: `cod_cliente` em ENDERECO_CLIENTE) tinham sido deixados como atributos visíveis, o que não é correto em um diagrama conceitual puro — eles foram removidos das entidades e passaram a ser representados apenas pela linha do relacionamento. |
-| **Justificativa da escolha final** | O grupo manteve a estrutura de 21 entidades por ela cobrir, de forma rastreável, as 8 seções do questionário original sem inventar processos não mencionados. |
+| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — usado em cinco momentos: (1) leitura do questionário de requisitos e construção de um primeiro modelo conceitual (21 entidades) e dicionário de dados; (2) geração de um primeiro diagrama ER (notação "pé-de-galinha"); (3) preenchimento deste README a partir do esqueleto oficial da Entrega 1; (4) reconstrução desse primeiro diagrama na notação de Chen (retângulo/losango/elipse) usada pelo BrModeloWeb, a pedido explícito do professor; (5) depois que o grupo (Guilherme) remodelou o DER para um recorte mais enxuto de 9 entidades direto no BrModeloWeb, reorganização do dicionário de dados HTML já produzido pelo grupo para a raiz do repositório e reescrita das Seções 5–8 deste README para descrever esse modelo de 9 entidades, em vez do modelo de 21 que havia ficado desatualizado. |
+| **Motivação** | Acelerar a tradução do levantamento de requisitos para um modelo estruturado e para o formato de entrega exigido pela disciplina; depois, manter o README consistente com o DER e o dicionário que o grupo efetivamente anexou, já que o grupo reduziu o escopo do modelo de forma independente entre uma sessão e outra. |
+| **Prompt(s) utilizados** | "Preciso montar um diagrama e o dicionário desse diagrama, como se fosse no modelo BrModeloWeb..."; "Consegue gerar um arquivo pdf com esse arquivo que montou? Contendo somente o diagrama e o dicionário"; "Ajustar diagrama para o mesmo modelo de BrModeloWeb"; "adicione essas fotos no readme, na parte de evidências"; "De acordo com o dicionário e o diagrama que estão agora, crie o arquivo de dicionário de dados em html". |
+| **Resposta recebida** | Um primeiro modelo (21 entidades) com diagrama e dicionário; este README preenchido; o DER redesenhado em notação de Chen; e, nesta última etapa, a constatação de que o dicionário HTML já existia (feito pelo grupo) e batia com o DER de 9 entidades atual — então ele foi movido para a raiz do repositório como `Dicionario_de_Dados.html` e as Seções 5 a 8 do README foram reescritas para descrever esse mesmo modelo de 9 entidades, mantendo as Seções 1 a 4 como o levantamento de requisitos mais amplo. |
+| **Fontes consultadas e verificadas** | Nenhuma fonte externa. O primeiro modelo veio do questionário de requisitos fornecido pelo grupo; a reescrita das Seções 5–8 veio do dicionário HTML e do diagrama PNG que o próprio grupo já havia anexado ao repositório (não foi inventado nenhum dado novo). |
+| **Trechos rejeitados ou corrigidos** | A primeira versão do diagrama (pé-de-galinha) foi descartada e refeita em Chen a pedido do professor; nessa reconstrução também foram removidos atributos de chave estrangeira das entidades (erro de fidelidade conceitual da primeira versão). Depois, o modelo de 21 entidades inteiro foi substituído pelas Seções 5–8 baseadas no modelo de 9 entidades que o grupo passou a usar — o texto anterior (21 entidades) não foi mantido por estar desatualizado em relação ao DER de fato anexado. |
+| **Justificativa da escolha final** | As Seções 5–8 agora descrevem exatamente o que está anexado (`Diagrama/DER_9_Entidades_com_titulo_legenda (2).png` e `Dicionario_de_Dados.html`), em vez de um modelo mais amplo que não corresponde mais ao diagrama entregue. As Seções 1–4 (requisitos e regras de negócio) não foram reduzidas, pois continuam válidas como levantamento — só o recorte modelado no DER desta entrega ficou menor. |
 | **Reflexão crítica** | O modelo reflete fielmente o texto do questionário, mas não substitui a pesquisa de campo exigida pela atividade — regras de negócio reais da organização escolhida podem divergir do que está aqui (valores de limite de crédito, percentuais de comissão etc. foram tratados como exemplos/referências, não como regras fixas). O grupo deve validar cada regra de negócio da Seção 4 com a organização real antes de assumi-las como definitivas. |
 
 
