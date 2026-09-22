@@ -17,7 +17,7 @@
 - **Contexto e porte:** com fins lucrativos; opera simultaneamente como indústria e comércio (venda em loja física, e-commerce, WhatsApp e representantes externos). O uso de facções terceirizadas e o controle de aproveitamento de couro por corte sugerem uma operação de pequeno a médio porte, com produção sob encomenda/lote (não em larga escala industrial). Volume médio de pedidos por mês entre 50 a 70, aumentando nas datas comemorativas (Dia das Mães e Natal).
 - **Problemas e necessidades identificados:** o levantamento de requisitos aponta processos hoje prováveis de estarem descentralizados/manuais: controle de estoque de insumos (couro, ferragens, zíperes) sem rastreabilidade de lote; ausência de regra formal de crédito para vendas a prazo; cálculo de custo/preço de venda não padronizado (ficha técnica); acompanhamento de produção sem visibilidade de status; e falta de integração entre vendas, estoque e financeiro (títulos a pagar/receber gerados manualmente).
 - **Justificativa da escolha:** Uma empresa que a gente sabia que ia ter acesso fácil e que consideramos de porte médio, não deixando nem tão simples e nem tão complicado o nosso trabalho.
-- **Evidências da organização:** Endereço: Rua Alpiste, 116 - Jd. Eliane - São Paulo - SP. Contato na empresa: Osmar Lingiard, telefone para contato: 11 97334-4846, email: osmar@specia.com.br. 🔴 Falta apenas o link da organização no Google (Maps/Meu Negócio, site ou rede social).
+- **Evidências da organização:** Endereço: Rua Alpiste, 116 - Jd. Eliane - São Paulo - SP. Contato na empresa: Osmar Lingiard, telefone para contato: 11 97334-4846, email: osmar@specia.com.br.
 
 <p align="center">
   <img src="evidencias/01-bancada-producao.jpg" width="32%" />
@@ -115,7 +115,6 @@
 ## 5. Dicionário de Dados Conceitual (Preliminar)
 
 
-> Formato oficial da disciplina: por entidade, `Atributo | Descrição | Regra de negócio associada`. As 9 entidades abaixo correspondem ao DER atual (`Diagrama/DER_9_Entidades_com_titulo_legenda (2).png`), um recorte enxuto do fluxo de custos de produção e vendas — fornecedor → insumo → ficha técnica → produto (bolsa/acessório) → pedido → cliente.
 
 ### FORNECEDOR
 | Atributo | Descrição | Regra de negócio associada |
@@ -147,7 +146,7 @@
 | quantidade_necessaria | Quantidade por peça | Deve ser maior que zero e seguir a unidade_medida do insumo. Cada insumo aparece uma única vez na ficha de um produto. |
 | percentual_perda | Perda técnica no corte | Informado como fração entre 0 e 1 (ex.: 10% = 0,10). Compõe o custo como quantidade × (1 + perda). |
 
-### PRODUTO *(supertipo)*
+### PRODUTO 
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
 | id_produto | Identificador | Chave primária, gerada pelo sistema. É a mesma chave usada por BOLSA e ACESSORIO. |
@@ -231,13 +230,11 @@
 
 O diagrama segue a notação de Chen usada pelo BrModeloWeb: entidades como **retângulos**, relacionamentos como **losangos** rotulados com o verbo, atributos como **elipses**, com a **chave primária identificada por contorno destacado**. A especialização PRODUTO → BOLSA/ACESSORIO usa o círculo "TD" (Total e Disjunta) padrão da notação de Chen. As cardinalidades (mín,máx) ficam junto de cada ponta da linha, exatamente como na tabela da Seção 6. Seguindo a notação conceitual pura, o diagrama não mostra atributos de chave estrangeira — essa informação já está representada pela própria linha do relacionamento.
 
-Este recorte de 9 entidades prioriza o núcleo de custo e venda (o que é preciso para precificar e vender uma peça) e deixou de fora, nesta etapa, os módulos de produção detalhada (ordem de produção, etapas, artesãos), logística/pós-venda e financeiro descritos nas Seções 2 a 4 — que seguem documentados como requisito levantado, para uma modelagem futura.
 
 ---
 
 ## 8. Justificativa Técnica
 
-- **Por que 9 entidades e não mais:** o grupo optou por modelar primeiro o núcleo que responde à pergunta "quanto custa e por quanto vender uma peça" — fornecedor, insumo, ficha técnica e produto — mais o lado comercial mínimo — cliente, pedido, item de pedido. Módulos como ordem de produção e financeiro (Seções 2-4) ficaram fora deste DER por decisão de escopo, não por esquecimento.
 - **Por que FICHA_TECNICA e ITEM_PEDIDO como entidades associativas:** ambas carregam atributos próprios (quantidade_necessaria/percentual_perda; quantidade/preco_unitario_praticado/desconto) que não pertencem a nenhuma das duas entidades que conectam — a notação exige reificá-los como entidade para acomodar esses atributos.
 - **Por que PRODUTO como supertipo (BOLSA/ACESSORIO):** bolsa e acessório compartilham identificador, nome do modelo, mão de obra, markup e os atributos derivados de custo — mas cada um tem atributos exclusivos (tamanho/cor/alça para bolsa; tipo_peca para acessório). Generalização/especialização evita repetir os atributos comuns em duas entidades soltas e ainda documenta, no próprio diagrama, que um produto é sempre um dos dois (TD).
 - **Por que essas cardinalidades e não outras:** FORNECEDOR–INSUMO é N:N porque, na prática, mais de um fornecedor vende o mesmo tipo de insumo (ex.: couro) e um fornecedor vende vários insumos; PEDIDO–ITEM_PEDIDO é (1,N) do lado do item porque um pedido sem nenhum item não existe operacionalmente.
@@ -246,7 +243,6 @@ Este recorte de 9 entidades prioriza o núcleo de custo e venda (o que é precis
 ---
 
 ## 9. Uso de Inteligência Artificial
-*(documentação obrigatória)*
 
 | Item | Registro |
 |---|---|
