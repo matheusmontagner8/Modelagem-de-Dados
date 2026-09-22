@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dicionário de Dados Conceitual — DER de 9 entidades</title>
+<style>
+  :root{
+    --navy:#1a1a2e;
+    --accent:#5b5f97;
+    --light:#eef0fb;
+    --rowalt:#f7f7fb;
+    --line:#d8d8e0;
+    --text:#2a2a35;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:0;
+    background:#f4f5fa;
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+    color:var(--text);
+  }
+  .page{
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 40px 28px 80px;
+  }
+  h1{
+    font-size: 26px;
+    color: var(--navy);
+    margin: 0 0 6px;
+  }
+  .subtitle{
+    font-size: 14px;
+    color:#555;
+    line-height:1.6;
+    margin-bottom: 30px;
+    text-align: justify;
+  }
+  h2.section{
+    font-size: 20px;
+    color: var(--navy);
+    margin: 40px 0 12px;
+    border-bottom: 2px solid var(--navy);
+    padding-bottom: 6px;
+  }
+  .entity{
+    margin-bottom: 26px;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  .entity-header{
+    background: var(--navy);
+    color: white;
+    padding: 10px 16px;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .entity-note{
+    background: white;
+    padding: 8px 16px 0;
+    font-size: 13px;
+    font-style: italic;
+    color:#555;
+  }
+  table{
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+  }
+  thead th{
+    background: var(--accent);
+    color: white;
+    text-align: left;
+    font-size: 13px;
+    padding: 9px 12px;
+    border-bottom: 2px solid var(--navy);
+  }
+  tbody td{
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    vertical-align: top;
+    text-align: justify;
+  }
+  tbody tr:nth-child(even){
+    background: var(--rowalt);
+  }
+  td.attr{
+    font-weight: 600;
+    color: var(--navy);
+    white-space: nowrap;
+    text-align: left;
+  }
+  td.attr small{
+    display:block;
+    font-weight: 400;
+    font-style: italic;
+    color:#666;
+    font-size: 11px;
+  }
+  col.attr-col{ width: 22%; }
+  col.desc-col{ width: 26%; }
+  col.rule-col{ width: 52%; }
+  .footer-note{
+    margin-top: 50px;
+    font-size: 12px;
+    color:#888;
+    text-align:center;
+  }
+  @media print{
+    body{ background:white; }
+    .entity{ box-shadow:none; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <h1>Dicionário de Dados Conceitual — DER de 9 entidades</h1>
+  <p class="subtitle">
+    Formato: Atributo | Descrição | Regra de negócio associada. Escopo atualizado: corresponde ao DER
+    atual com 9 entidades — FORNECEDOR, INSUMO, FICHA_TECNICA, PRODUTO, BOLSA, ACESSORIO, ITEM_PEDIDO,
+    PEDIDO e CLIENTE. Chaves estrangeiras não aparecem porque o modelo é conceitual; os relacionamentos
+    já as representam.
+  </p>
+
+  <!-- FORNECEDOR -->
+  <div class="entity">
+    <div class="entity-header">FORNECEDOR</div>
+    <table>
+      <colgroup><col class="attr-col"><col class="desc-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr></thead>
+      <tbody>
+        <tr><td class="attr">id_fornecedor</td><td>Identificador</td><td>Chave primária, gerada pelo sistema. É única e não pode ser reutilizada.</td></tr>
+        <tr><td class="attr">razao_social</td><td>Nome empresarial</td><td>Obrigatório. Nome utilizado em compras e no histórico de avaliação do fornecedor.</td></tr>
+        <tr><td class="attr">cnpj</td><td>CNPJ</td><td>Obrigatório e único. Não pode existir mais de um fornecedor com o mesmo CNPJ. Dado protegido pela LGPD.</td></tr>
+        <tr><td class="attr">inscricao_estadual</td><td>Registro estadual</td><td>Opcional. Deve ser preenchido quando o fornecedor possuir inscrição estadual.</td></tr>
+        <tr><td class="attr">email</td><td>E-mail comercial</td><td>Opcional. Canal de contato comercial com o fornecedor.</td></tr>
+        <tr><td class="attr">telefone</td><td>Telefone</td><td>Opcional. Contato direto com o fornecedor.</td></tr>
+        <tr><td class="attr">contato_vendedor</td><td>Vendedor de referência</td><td>Nome da pessoa responsável pelo atendimento comercial do fornecedor.</td></tr>
+        <tr><td class="attr">categoria_insumo</td><td>Tipo de insumo vendido</td><td>Obrigatório. Aceita: Curtume/Couro, Ferragens/Fivelas, Zíperes/Aviamentos ou Embalagens/Caixas.</td></tr>
+        <tr><td class="attr">prazo_medio_entrega_dias</td><td>Prazo de entrega em dias</td><td>Número inteiro maior que zero. Impacta o planejamento: quanto maior o prazo, mais cedo o insumo deve ser comprado.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- INSUMO -->
+  <div class="entity">
+    <div class="entity-header">INSUMO</div>
+    <table>
+      <colgroup><col class="attr-col"><col class="desc-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr></thead>
+      <tbody>
+        <tr><td class="attr">id_insumo</td><td>Identificador</td><td>Chave primária, gerada pelo sistema.</td></tr>
+        <tr><td class="attr">nome_insumo</td><td>Nome do material</td><td>Obrigatório. Exemplos: couro bovino caramelo, zíper, fivela e forro.</td></tr>
+        <tr><td class="attr">categoria_insumo</td><td>Grupo do material</td><td>Usa o mesmo conjunto de categorias do fornecedor, permitindo identificar fornecedores aptos a vender o insumo.</td></tr>
+        <tr><td class="attr">unidade_medida</td><td>Unidade de controle</td><td>Obrigatória. Aceita: dm², m², unidade, metro, kg ou litro. Estoque e ficha técnica devem usar a mesma unidade.</td></tr>
+        <tr><td class="attr">estoque_minimo</td><td>Saldo mínimo</td><td>Quando estoque_atual for igual ou menor que este valor, o sistema deve gerar alerta de recompra.</td></tr>
+        <tr><td class="attr">estoque_atual</td><td>Saldo em estoque</td><td>Nunca pode ser negativo. Aumenta com compras recebidas e diminui com o consumo na produção.</td></tr>
+        <tr><td class="attr">custo_unitario</td><td>Custo por unidade de medida</td><td>Deve ser maior que zero. É o custo de referência usado para calcular a matéria-prima; no modelo completo, pode ser obtido do preço pago do lote.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- FICHA_TECNICA -->
+  <div class="entity">
+    <div class="entity-header">FICHA_TECNICA</div>
+    <div class="entity-note">Entidade associativa identificada por PRODUTO + INSUMO.</div>
+    <table>
+      <colgroup><col class="attr-col"><col class="desc-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr></thead>
+      <tbody>
+        <tr><td class="attr">quantidade_necessaria</td><td>Quantidade por peça</td><td>Deve ser maior que zero e seguir a unidade_medida do insumo. Cada insumo aparece uma única vez na ficha de um produto.</td></tr>
+        <tr><td class="attr">percentual_perda</td><td>Perda técnica no corte</td><td>Informado como fração entre 0 e 1. Exemplo: 10% = 0,10. Compõe o custo como quantidade × (1 + perda).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PRODUTO -->
+  <div class="entity">
+    <div class="entity-header">PRODUTO</div>
+    <table>
+      <colgroup><col class="attr-col"><col class="desc-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr></thead>
+      <tbody>
+        <tr><td class="attr">id_produto</td><td>Identificador</td><td>Chave primária, gerada pelo sistema. É a mesma chave usada por BOLSA e ACESSORIO.</td></tr>
+        <tr><td class="attr">nome_modelo</td><td>Nome do modelo</td><td>Obrigatório. Exemplo: Bolsa Tote.</td></tr>
+        <tr><td class="attr">custo_mao_obra</td><td>Mão de obra por peça</td><td>Valor informado, não calculado. Representa custos de corte e costura e é somado ao custo de matéria-prima.</td></tr>
+        <tr><td class="attr">markup</td><td>Multiplicador de margem</td><td>Valor informado e maior que 1. Exemplo: 2,5 representa preço equivalente a 2,5 vezes o custo.</td></tr>
+        <tr><td class="attr">custo_materia_prima<small>(derivado)</small></td><td>Custo dos insumos</td><td>Derivado. Não é digitado. Calculado pela soma de quantidade_necessaria × (1 + percentual_perda) × custo_unitario para cada insumo da ficha.</td></tr>
+        <tr><td class="attr">preco_tabela<small>(derivado)</small></td><td>Preço de venda sugerido</td><td>Derivado. Não é digitado. Calculado por (custo_materia_prima + custo_mao_obra) × markup. Deve ser recalculado quando seus componentes mudarem.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- BOLSA -->
+  <div class="entity">
+    <div class="entity-header">BOLSA</div>
+    <div class="entity-note">Especialização de PRODUTO.</div>
+    <table>
+      <colgroup><col class="attr-col"><col class="desc-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr></thead>
+      <tbody>
+        <tr><td class="attr">tamanho</td><td>Dimensão da bolsa</td><td>Obrigatório para produtos classificados como bolsa. Herda também os atributos de PRODUTO.</td></tr>
+        <tr><td class="attr">cor</td><td>Cor da bolsa</td><td>Obrigatória para bolsa.</td></tr>
+        <tr><td class="attr">tipo_alca</td><td>Tipo de alça</td><td>Obrigatório para bolsa.</td></tr>
+        <tr><td class="attr">pecas_composicao<small>(multivalorado)</small></td><td>Peças que formam a bolsa</td><td>Deve conter pelo menos uma peça, como tampa, frente, costa, fundo ou orla.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ACESSORIO -->
+  <div class="entity">
+    <div class="entity-header">ACESSORIO</div>
+    <div class="entity-note">Especialização de PRODUTO.</div>
+    <table>
+      <colgroup><col class="attr-col"><col class="desc-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr></thead>
+      <tbody>
+        <tr><td class="attr">tipo_peca</td><td>Tipo do acessório</td><td>Obrigatório. Exemplos: cinto e porta-cartões. Um acessório não pode possuir atributos específicos de bolsa.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CLIENTE -->
+  <div class="entity">
+    <div class="entity-header">CLIENTE</div>
+    <table>
+      <colgroup><col class="attr-col"><col class="desc-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr></thead>
+      <tbody>
+        <tr><td class="attr">id_cliente</td><td>Identificador</td><td>Chave primária, gerada pelo sistema.</td></tr>
+        <tr><td class="attr">nome</td><td>Razão social ou nome</td><td>Obrigatório. Usa razão social para pessoa jurídica e nome completo para pessoa física.</td></tr>
+        <tr><td class="attr">cpf_cnpj</td><td>CPF ou CNPJ</td><td>Obrigatório e único. Usado na consulta de crédito. Dado protegido pela LGPD.</td></tr>
+        <tr><td class="attr">inscricao_estadual</td><td>Registro estadual</td><td>Obrigatória quando perfil_cliente for Atacado/Lojista. Para Varejo Final, deve ficar vazia.</td></tr>
+        <tr><td class="attr">email</td><td>E-mail</td><td>Usado para comunicação e envio de NF-e ao cliente.</td></tr>
+        <tr><td class="attr">telefone</td><td>Telefone ou WhatsApp</td><td>Canal principal de contato.</td></tr>
+        <tr><td class="attr">nome_comprador_responsavel</td><td>Contato de compras</td><td>Pessoa que faz pedidos em nome do cliente, principalmente no atacado.</td></tr>
+        <tr><td class="attr">perfil_cliente</td><td>Tipo de cliente</td><td>Aceita: Varejo Final ou Atacado/Lojista. Define a regra de preço e a obrigatoriedade de inscrição estadual.</td></tr>
+        <tr><td class="attr">limite_credito</td><td>Teto de compra a prazo</td><td>Valor máximo permitido para vendas em boleto. O total do pedido não pode ultrapassar esse limite.</td></tr>
+        <tr><td class="attr">status_aprovacao_financeira</td><td>Situação do crédito</td><td>Aceita: Pendente, Aprovado ou Reprovado. Novo cliente lojista inicia como Pendente e só pode comprar em boleto quando Aprovado.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PEDIDO -->
+  <div class="entity">
+    <div class="entity-header">PEDIDO</div>
+    <table>
+      <colgroup><col class="attr-col"><col class="desc-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr></thead>
+      <tbody>
+        <tr><td class="attr">id_pedido</td><td>Identificador</td><td>Chave primária, gerada pelo sistema.</td></tr>
+        <tr><td class="attr">data_pedido</td><td>Data do pedido</td><td>Obrigatória. Preenchida no registro do pedido.</td></tr>
+        <tr><td class="attr">canal_venda</td><td>Canal de venda</td><td>Aceita: Loja Física, E-commerce, WhatsApp ou Representante. Pode definir regras como comissão e tipo de nota fiscal.</td></tr>
+        <tr><td class="attr">forma_pagamento</td><td>Forma de pagamento</td><td>Aceita: PIX, Cartão ou Boleto. Boleto só é permitido quando o cliente estiver Aprovado e o pedido estiver dentro do limite_credito.</td></tr>
+        <tr><td class="attr">condicao_parcelamento</td><td>Parcelas ou prazo</td><td>Depende da forma de pagamento: PIX à vista; Cartão com número de parcelas; Boleto com prazos em dias, como 30/60/90.</td></tr>
+        <tr><td class="attr">status_pedido</td><td>Situação do pedido</td><td>Obrigatório. Evolui no processo comercial, por exemplo: aberto, faturado ou expedido.</td></tr>
+        <tr><td class="attr">valor_total<small>(derivado)</small></td><td>Total do pedido</td><td>Derivado. Não é digitado. Corresponde à soma de quantidade × preco_unitario_praticado − desconto de todos os itens.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ITEM_PEDIDO -->
+  <div class="entity">
+    <div class="entity-header">ITEM_PEDIDO</div>
+    <div class="entity-note">Entidade associativa identificada por PEDIDO + PRODUTO.</div>
+    <table>
+      <colgroup><col class="attr-col"><col class="desc-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr></thead>
+      <tbody>
+        <tr><td class="attr">quantidade</td><td>Unidades vendidas</td><td>Número inteiro maior que zero. Um produto aparece uma vez por pedido; para vender mais unidades, aumenta-se a quantidade.</td></tr>
+        <tr><td class="attr">preco_unitario_praticado</td><td>Preço aplicado na venda</td><td>Fica congelado no momento da venda. Alterações posteriores no preco_tabela não modificam pedidos antigos.</td></tr>
+        <tr><td class="attr">desconto</td><td>Desconto do item</td><td>Opcional. Não pode ser superior a quantidade × preco_unitario_praticado.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ESPECIALIZAÇÃO -->
+  <h2 class="section">Especialização — PRODUTO para BOLSA / ACESSORIO</h2>
+  <table>
+    <colgroup><col style="width:16%"><col style="width:22%"><col style="width:62%"></colgroup>
+    <thead><tr><th>Item</th><th>Descrição</th><th>Regra de negócio associada</th></tr></thead>
+    <tbody>
+      <tr><td class="attr">Supertipo</td><td>PRODUTO</td><td>Guarda atributos comuns: id_produto, nome_modelo, custo_mao_obra, markup e atributos derivados.</td></tr>
+      <tr><td class="attr">Subtipos</td><td>BOLSA e ACESSORIO</td><td>Herdam todos os atributos de PRODUTO e adicionam os próprios atributos.</td></tr>
+      <tr><td class="attr">Tipo TD</td><td>Total e Disjunta</td><td>Total: todo produto é obrigatoriamente bolsa ou acessório. Disjunta: um produto não pode ser os dois ao mesmo tempo.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- RELACIONAMENTOS -->
+  <h2 class="section">Dicionário de relacionamentos</h2>
+  <table>
+    <colgroup><col style="width:17%"><col style="width:25%"><col style="width:58%"></colgroup>
+    <thead><tr><th>Relacionamento</th><th>Entidades (cardinalidade)</th><th>Descrição e regra de negócio</th></tr></thead>
+    <tbody>
+      <tr><td class="attr">abastece</td><td>FORNECEDOR (1,N) — INSUMO (0,N)</td><td>Relação N:N: um fornecedor fornece vários insumos e um insumo pode ser adquirido de vários fornecedores. O custo de referência fica em INSUMO.custo_unitario.</td></tr>
+      <tr><td class="attr">constitui</td><td>INSUMO (1,1) — FICHA_TECNICA (0,N)</td><td>Cada linha da ficha técnica utiliza exatamente um insumo. Um insumo pode participar de várias fichas.</td></tr>
+      <tr><td class="attr">detalha-se em</td><td>PRODUTO (1,1) — FICHA_TECNICA (0,N)</td><td>A ficha técnica de um produto possui várias linhas, normalmente uma por insumo. Junto a constitui, resolve o N:N entre produto e insumo.</td></tr>
+      <tr><td class="attr">Especialização TD</td><td>PRODUTO — BOLSA / ACESSORIO</td><td>Todo produto é obrigatoriamente bolsa ou acessório, nunca ambos.</td></tr>
+      <tr><td class="attr">integra</td><td>PRODUTO (1,1) — ITEM_PEDIDO (0,N)</td><td>Cada item de pedido refere-se a um produto; um produto pode integrar vários itens.</td></tr>
+      <tr><td class="attr">compreende</td><td>PEDIDO (1,1) — ITEM_PEDIDO (1,N)</td><td>Um pedido deve conter ao menos um item; cada item pertence a um único pedido.</td></tr>
+      <tr><td class="attr">efetua</td><td>CLIENTE (1,1) — PEDIDO (0,N)</td><td>Um cliente pode realizar zero ou vários pedidos; cada pedido pertence a exatamente um cliente.</td></tr>
+    </tbody>
+  </table>
+
+  <!-- FLUXO -->
+  <h2 class="section">Fluxo ponta a ponta</h2>
+  <table>
+    <colgroup><col style="width:17%"><col style="width:30%"><col style="width:53%"></colgroup>
+    <thead><tr><th>Etapa</th><th>Entidades e relacionamentos</th><th>Explicação</th></tr></thead>
+    <tbody>
+      <tr><td class="attr">1. Entrada de matéria-prima</td><td>FORNECEDOR — abastece — INSUMO</td><td>O fornecedor vende os materiais. O insumo mantém categoria, unidade, estoque mínimo, saldo atual e custo unitário de referência.</td></tr>
+      <tr><td class="attr">2. Engenharia de produto</td><td>INSUMO — constitui — FICHA_TECNICA — detalha-se em — PRODUTO</td><td>A ficha técnica é a lista de materiais por produto e informa quantidade necessária e perda técnica.</td></tr>
+      <tr><td class="attr">3. Formação de preço</td><td>PRODUTO</td><td>Calcula custo_materia_prima e preco_tabela com base nos insumos, mão de obra e markup.</td></tr>
+      <tr><td class="attr">4. Hierarquia de produto</td><td>PRODUTO — TD — BOLSA / ACESSORIO</td><td>Classifica todo produto como bolsa ou acessório.</td></tr>
+      <tr><td class="attr">5. Saída comercial</td><td>PRODUTO — ITEM_PEDIDO — PEDIDO — CLIENTE</td><td>Registra os produtos vendidos, preço praticado, desconto, total do pedido e regras de crédito do cliente.</td></tr>
+      <tr><td class="attr">Rastreabilidade</td><td>FORNECEDOR &gt; INSUMO &gt; FICHA_TECNICA &gt; PRODUTO &gt; ITEM_PEDIDO &gt; PEDIDO &gt; CLIENTE</td><td>Permite rastrear a origem do insumo, seu consumo no produto e sua venda ao cliente.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="footer-note">Dicionário de Dados Conceitual — DER de 9 entidades</p>
+
+</div>
+</body>
+</html>
