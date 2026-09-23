@@ -307,8 +307,8 @@
     <thead><tr><th>Relacionamento</th><th>Entidades (cardinalidade)</th><th>Descrição e regra de negócio</th></tr></thead>
     <tbody>
       <tr><td class="attr">fornece</td><td>FORNECEDOR (1,1) — INSUMO (0,N)</td><td>Um fornecedor fornece vários insumos; cada insumo está associado a exatamente um fornecedor neste modelo.</td></tr>
-      <tr><td class="attr">compõe</td><td>INSUMO (0,N) — FICHA_TÉCNICA (0,N)</td><td>Um insumo pode compor várias linhas de ficha técnica (usado em vários produtos), tal como registrado no diagrama.</td></tr>
-      <tr><td class="attr">detalha</td><td>FICHA_TÉCNICA (1,1) — PRODUTO (1,1)</td><td>Liga a ficha técnica ao produto que ela detalha, conforme desenhado no DER atual.</td></tr>
+      <tr><td class="attr">compõe</td><td>INSUMO (1,1) — FICHA_TÉCNICA (0,N)</td><td>Cada linha da ficha técnica usa exatamente um insumo; um insumo pode compor várias linhas de ficha técnica (usado em vários produtos).</td></tr>
+      <tr><td class="attr">detalha</td><td>FICHA_TÉCNICA (0,N) — PRODUTO (1,1)</td><td>A ficha técnica de um produto tem uma linha por insumo utilizado; cada linha detalha exatamente um produto.</td></tr>
       <tr><td class="attr">Especialização TD</td><td>PRODUTO (1,1) — BOLSA (1,1) / ACESSÓRIO (1,1)</td><td>Todo produto é obrigatoriamente bolsa ou acessório, nunca ambos (Total e Disjunta).</td></tr>
       <tr><td class="attr">integra</td><td>PRODUTO (1,1) — ITEM_PEDIDO (0,N)</td><td>Cada item de pedido refere-se a um produto; um produto pode integrar vários itens.</td></tr>
       <tr><td class="attr">pertence_a</td><td>ITEM_PEDIDO (0,N) — PEDIDO (1,1)</td><td>Cada item pertence a exatamente um pedido; um pedido pode ter vários itens.</td></tr>
