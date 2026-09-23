@@ -240,7 +240,7 @@ Este recorte de 9 entidades prioriza o núcleo de custo e venda (o que é precis
 
 ## 8. Justificativa Técnica
 
-- **Por que 9 entidades e não mais:** o grupo optou por modelar primeiro o núcleo que responde à pergunta "o que é preciso para produzir e vender uma peça" — fornecedor, insumo, ficha técnica e produto — mais o lado comercial mínimo — cliente, pedido, item de pedido. Módulos como ordem de produção e financeiro (Seções 2-4) ficaram fora deste DER por decisão de escopo, não por esquecimento.
+- **Por que 9 entidades e não mais:** o grupo optou por modelar primeiro o núcleo que responde à pergunta "o que é preciso para produzir e vender uma peça" — fornecedor, insumo, ficha técnica e produto, mais o lado comercial mínimo.
 - **Por que FICHA_TÉCNICA e ITEM_PEDIDO como entidades associativas:** ambas carregam atributos próprios (quantidade_necessaria; quantidade/preco_unitario/subtotal) que não pertencem a nenhuma das duas entidades que conectam — a notação exige reificá-los como entidade para acomodar esses atributos.
 - **Por que PRODUTO como supertipo (BOLSA/ACESSORIO):** bolsa e acessório compartilham identificador, nome, descrição, preço base, categoria e estoque — mas cada um tem atributos exclusivos (tamanho/tipo_alça para bolsa; tipo_acessorio/compatibilidade para acessório). Generalização/especialização evita repetir os atributos comuns em duas entidades soltas e ainda documenta, no próprio diagrama, que um produto é sempre um dos dois (TD).
 - **Por que marcar as FKs no diagrama conceitual:** o grupo optou por uma notação híbrida (conceitual + indicação de FK) para deixar mais claro, já nesta entrega, quais atributos migrarão como chave estrangeira no modelo lógico da Entrega 2 — uma antecipação deliberada, não um erro de camada.
