@@ -115,130 +115,136 @@
 ## 5. Dicionário de Dados Conceitual (Preliminar)
 
 
+> Formato oficial da disciplina: por entidade, `Atributo | Descrição | Regra de negócio associada`. As 9 entidades abaixo correspondem ao DER atual (`Diagrama/Diagrama.png`): fornecedor → insumo → ficha técnica → produto (bolsa/acessório) → item de pedido → pedido → cliente. Diferente de um DER conceitual "puro", este diagrama identifica explicitamente as chaves estrangeiras (marcadas "(FK)"), convenção que o grupo adotou para deixar visível, já nesta etapa, quais atributos vão virar FK no modelo lógico.
 
 ### FORNECEDOR
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
-| id_fornecedor | Identificador | Chave primária, gerada pelo sistema. É única e não pode ser reutilizada. |
-| razao_social | Nome empresarial | Obrigatório. Nome utilizado em compras e no histórico de avaliação do fornecedor. |
-| cnpj | CNPJ | Obrigatório e único. Não pode existir mais de um fornecedor com o mesmo CNPJ. Dado protegido pela LGPD. |
-| inscricao_estadual | Registro estadual | Opcional. Deve ser preenchido quando o fornecedor possuir inscrição estadual. |
-| email | E-mail comercial | Opcional. Canal de contato comercial com o fornecedor. |
-| telefone | Telefone | Opcional. Contato direto com o fornecedor. |
-| contato_vendedor | Vendedor de referência | Nome da pessoa responsável pelo atendimento comercial do fornecedor. |
-| categoria_insumo | Tipo de insumo vendido | Obrigatório. Aceita: Curtume/Couro, Ferragens/Fivelas, Zíperes/Aviamentos ou Embalagens/Caixas. |
-| prazo_medio_entrega_dias | Prazo de entrega em dias | Número inteiro maior que zero. Impacta o planejamento: quanto maior o prazo, mais cedo o insumo deve ser comprado. |
+| id_fornecedor | Identificador | Chave primária, gerada pelo sistema. |
+| nome | Nome do fornecedor | Obrigatório. |
+| cnpj | CNPJ | Obrigatório e único. Dado protegido pela LGPD. |
+| telefone | Telefone | Contato direto com o fornecedor. |
+| email | E-mail comercial | Canal de contato comercial com o fornecedor. |
+| endereco | Endereço | Endereço comercial do fornecedor. |
+| data_cadastro | Data de cadastro | Preenchida automaticamente na criação do registro. |
+| categoria_fornecedor | Categoria do fornecedor | Classifica o tipo de insumo que o fornecedor costuma vender (ex.: couro, ferragens, zíperes, embalagens). |
 
 ### INSUMO
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
 | id_insumo | Identificador | Chave primária, gerada pelo sistema. |
-| nome_insumo | Nome do material | Obrigatório. Exemplos: couro bovino caramelo, zíper, fivela e forro. |
-| categoria_insumo | Grupo do material | Usa o mesmo conjunto de categorias do fornecedor, permitindo identificar fornecedores aptos a vender o insumo. |
-| unidade_medida | Unidade de controle | Obrigatória. Aceita: dm², m², unidade, metro, kg ou litro. Estoque e ficha técnica devem usar a mesma unidade. |
-| estoque_minimo | Saldo mínimo | Quando estoque_atual for igual ou menor que este valor, o sistema deve gerar alerta de recompra. |
-| estoque_atual | Saldo em estoque | Nunca pode ser negativo. Aumenta com compras recebidas e diminui com o consumo na produção. |
-| custo_unitario | Custo por unidade de medida | Deve ser maior que zero. É o custo de referência usado para calcular a matéria-prima. |
+| nome_insumo | Nome do material | Obrigatório. Exemplos: couro bovino caramelo, zíper, fivela, forro. |
+| tipo_insumo | Grupo do material | Classifica o insumo (couro, ferragem, zíper, embalagem). |
+| unidade_medida | Unidade de controle | Obrigatória (dm², m², unidade, metro, kg ou litro). |
+| estoque_atual | Saldo em estoque | Nunca pode ser negativo. |
+| preco_unitario | Preço por unidade de medida | Custo de referência do insumo. |
 
-### FICHA_TECNICA *(entidade associativa — identificada por PRODUTO + INSUMO)*
+### FICHA_TÉCNICA *(entidade associativa — chave composta PRODUTO + INSUMO)*
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
-| quantidade_necessaria | Quantidade por peça | Deve ser maior que zero e seguir a unidade_medida do insumo. Cada insumo aparece uma única vez na ficha de um produto. |
-| percentual_perda | Perda técnica no corte | Informado como fração entre 0 e 1 (ex.: 10% = 0,10). Compõe o custo como quantidade × (1 + perda). |
+| produto_id | Produto ao qual a linha pertence | Chave primária composta + chave estrangeira → PRODUTO. |
+| insumo_id | Insumo utilizado nessa linha | Chave primária composta + chave estrangeira → INSUMO. |
+| quantidade_necessaria | Quantidade por peça | Deve ser maior que zero e seguir a unidade_medida do insumo. |
 
-### PRODUTO 
+### PRODUTO *(supertipo)*
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
-| id_produto | Identificador | Chave primária, gerada pelo sistema. É a mesma chave usada por BOLSA e ACESSORIO. |
-| nome_modelo | Nome do modelo | Obrigatório. Exemplo: Bolsa Tote. |
-| custo_mao_obra | Mão de obra por peça | Valor informado, não calculado. Representa custos de corte e costura e é somado ao custo de matéria-prima. |
-| markup | Multiplicador de margem | Valor informado e maior que 1. Exemplo: 2,5 representa preço equivalente a 2,5 vezes o custo. |
-| custo_materia_prima *(derivado)* | Custo dos insumos | Não é digitado. Soma de quantidade_necessaria × (1 + percentual_perda) × custo_unitario para cada insumo da ficha. |
-| preco_tabela *(derivado)* | Preço de venda sugerido | Não é digitado. Calculado por (custo_materia_prima + custo_mao_obra) × markup. Recalculado quando seus componentes mudarem. |
+| id_produto | Identificador | Chave primária, gerada pelo sistema. Mesma chave usada por BOLSA e ACESSÓRIO. |
+| nome | Nome do produto | Obrigatório. Exemplo: Bolsa Tote. |
+| descricao | Descrição do produto | Texto livre com detalhes do modelo. |
+| preco_base | Preço base de venda | Valor de referência para a venda do produto. |
+| categoria | Categoria do produto | Classificação comercial (linha, coleção ou departamento). |
+| estoque_total | Saldo de produtos prontos | Quantidade disponível para venda. |
 
 ### BOLSA *(subtipo de PRODUTO)*
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
-| tamanho | Dimensão da bolsa | Obrigatório para produtos classificados como bolsa. Herda também os atributos de PRODUTO. |
+| id_bolsa | Identificador | Mesmo valor de id_produto do PRODUTO correspondente. |
+| material | Material principal | Obrigatório para bolsa. |
 | cor | Cor da bolsa | Obrigatória para bolsa. |
+| tamanho | Dimensão da bolsa | Obrigatório para bolsa. |
 | tipo_alca | Tipo de alça | Obrigatório para bolsa. |
-| pecas_composicao *(multivalorado)* | Peças que formam a bolsa | Deve conter pelo menos uma peça, como tampa, frente, costa, fundo ou orla. |
 
-### ACESSORIO *(subtipo de PRODUTO)*
+### ACESSÓRIO *(subtipo de PRODUTO)*
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
-| tipo_peca | Tipo do acessório | Obrigatório. Exemplos: cinto e porta-cartões. Um acessório não pode possuir atributos específicos de bolsa. |
+| id_acessorio | Identificador | Mesmo valor de id_produto do PRODUTO correspondente. |
+| material | Material principal | Obrigatório para acessório. |
+| cor | Cor do acessório | Obrigatória para acessório. |
+| tipo_acessorio | Tipo do acessório | Obrigatório. Exemplos: cinto, porta-cartões. |
+| compatibilidade | Compatibilidade com outros produtos | Opcional. |
 
-### CLIENTE
+### ITEM_PEDIDO *(entidade associativa — identificador próprio)*
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
-| id_cliente | Identificador | Chave primária, gerada pelo sistema. |
-| nome | Razão social ou nome | Obrigatório. Razão social para pessoa jurídica e nome completo para pessoa física. |
-| cpf_cnpj | CPF ou CNPJ | Obrigatório e único. Usado na consulta de crédito. Dado protegido pela LGPD. |
-| inscricao_estadual | Registro estadual | Obrigatória quando perfil_cliente for Atacado/Lojista. Para Varejo Final, deve ficar vazia. |
-| email | E-mail | Usado para comunicação e envio de NF-e ao cliente. |
-| telefone | Telefone ou WhatsApp | Canal principal de contato. |
-| nome_comprador_responsavel | Contato de compras | Pessoa que faz pedidos em nome do cliente, principalmente no atacado. |
-| perfil_cliente | Tipo de cliente | Aceita: Varejo Final ou Atacado/Lojista. Define a regra de preço e a obrigatoriedade de inscrição estadual. |
-| limite_credito | Teto de compra a prazo | Valor máximo permitido para vendas em boleto. O total do pedido não pode ultrapassar esse limite. |
-| status_aprovacao_financeira | Situação do crédito | Aceita: Pendente, Aprovado ou Reprovado. Novo cliente lojista inicia como Pendente e só compra em boleto quando Aprovado. |
+| id_item_pedido | Identificador | Chave primária, gerada pelo sistema. |
+| produto_id | Produto vendido | Chave estrangeira → PRODUTO. |
+| pedido_id | Pedido ao qual o item pertence | Chave estrangeira → PEDIDO. |
+| quantidade | Unidades vendidas | Número inteiro maior que zero. |
+| preco_unitario | Preço aplicado na venda | Fica congelado no momento da venda. |
+| subtotal | Total do item | quantidade × preco_unitario. |
 
 ### PEDIDO
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
 | id_pedido | Identificador | Chave primária, gerada pelo sistema. |
-| data_pedido | Data do pedido | Obrigatória. Preenchida no registro do pedido. |
-| canal_venda | Canal de venda | Aceita: Loja Física, E-commerce, WhatsApp ou Representante. |
-| forma_pagamento | Forma de pagamento | Aceita: PIX, Cartão ou Boleto. Boleto só é permitido quando o cliente estiver Aprovado e dentro do limite_credito. |
-| condicao_parcelamento | Parcelas ou prazo | Depende da forma de pagamento: PIX à vista; Cartão com número de parcelas; Boleto com prazos em dias (ex.: 30/60/90). |
-| status_pedido | Situação do pedido | Obrigatório. Evolui no processo comercial (ex.: aberto, faturado, expedido). |
-| valor_total *(derivado)* | Total do pedido | Não é digitado. Soma de quantidade × preco_unitario_praticado − desconto de todos os itens. |
+| data_pedido | Data do pedido | Obrigatória. |
+| status | Situação do pedido | Obrigatório (ex.: aberto, faturado, expedido). |
+| valor_total | Total do pedido | Soma do subtotal de todos os itens. |
+| forma_pagamento | Forma de pagamento | Aceita: PIX, Cartão ou Boleto. |
+| observacoes | Observações do pedido | Opcional. |
 
-### ITEM_PEDIDO *(entidade associativa — identificada por PEDIDO + PRODUTO)*
+### CLIENTE
 | Atributo | Descrição | Regra de negócio associada |
 |---|---|---|
-| quantidade | Unidades vendidas | Número inteiro maior que zero. Um produto aparece uma vez por pedido; para vender mais, aumenta-se a quantidade. |
-| preco_unitario_praticado | Preço aplicado na venda | Fica congelado no momento da venda. Alterações posteriores no preco_tabela não modificam pedidos antigos. |
-| desconto | Desconto do item | Opcional. Não pode ser superior a quantidade × preco_unitario_praticado. |
+| id_cliente | Identificador | Chave primária, gerada pelo sistema. |
+| nome | Nome do cliente | Obrigatório. |
+| cpf | CPF | Obrigatório e único. Dado protegido pela LGPD. |
+| telefone | Telefone ou WhatsApp | Canal principal de contato. |
+| email | E-mail | Comunicação e envio de comprovantes. |
+| endereco | Endereço | Endereço de entrega e/ou cobrança. |
+| data_cadastro | Data de cadastro | Preenchida automaticamente na criação do registro. |
 
 ---
 
 ## 6. Modelagem Conceitual (Entidades, Atributos, Relacionamentos)
 
 
-- **Entidades reconhecidas (9 no total):** FORNECEDOR, INSUMO, FICHA_TECNICA, PRODUTO, BOLSA, ACESSORIO, CLIENTE, PEDIDO e ITEM_PEDIDO — cobrindo o fluxo de custo de produção e venda (compra de insumo → ficha técnica → precificação do produto → pedido → cliente). Duas são **entidades associativas** com atributos próprios (FICHA_TECNICA, ITEM_PEDIDO), e PRODUTO é um **supertipo** especializado em BOLSA e ACESSORIO.
-- **Atributos e classificações:** detalhados por entidade na Seção 5, com chave primária e domínios de valor explícitos (ex.: `perfil_cliente`, `categoria_insumo`, `forma_pagamento`). Atributos derivados (`custo_materia_prima`, `preco_tabela`, `valor_total`) estão marcados como tal — não são digitados, são calculados a partir de outros atributos.
-- **Especialização PRODUTO → BOLSA / ACESSORIO:** total e disjunta (símbolo "TD" no diagrama) — todo produto é obrigatoriamente bolsa OU acessório, nunca os dois, e não existe produto que não seja nenhum dos dois. BOLSA e ACESSORIO herdam todos os atributos de PRODUTO.
+- **Entidades reconhecidas (9 no total):** FORNECEDOR, INSUMO, FICHA_TÉCNICA, PRODUTO, BOLSA, ACESSÓRIO, ITEM_PEDIDO, PEDIDO e CLIENTE. Duas são **entidades associativas** (FICHA_TÉCNICA, ITEM_PEDIDO), e PRODUTO é um **supertipo** especializado em BOLSA e ACESSÓRIO.
+- **Atributos e classificações:** detalhados por entidade na Seção 5. O diagrama marca explicitamente as chaves estrangeiras (`produto_id (FK)`, `insumo_id (FK)`, `pedido_id (FK)`) — uma antecipação deliberada do modelo lógico, diferente da notação conceitual estritamente pura.
+- **Especialização PRODUTO → BOLSA / ACESSÓRIO:** total e disjunta (símbolo "TD" no diagrama) — todo produto é obrigatoriamente bolsa OU acessório, nunca os dois. BOLSA e ACESSÓRIO herdam todos os atributos de PRODUTO.
 - **Relacionamentos pertinentes (6 no total, mais a especialização):**
 
 | # | Entidade A | Card. A | Verbo | Card. B | Entidade B | Observação |
 |---|---|---|---|---|---|---|
-| 01 | FORNECEDOR | (1,N) | abastece | (0,N) | INSUMO | N:N — um fornecedor fornece vários insumos e um insumo pode vir de vários fornecedores |
-| 02 | INSUMO | (1,1) | constitui | (0,N) | FICHA_TECNICA | cada linha da ficha técnica usa exatamente um insumo |
-| 03 | PRODUTO | (1,1) | detalha-se em | (0,N) | FICHA_TECNICA | 02+03 resolvem o N:N Produto×Insumo via FICHA_TECNICA |
+| 01 | FORNECEDOR | (1,1) | fornece | (0,N) | INSUMO | um fornecedor fornece vários insumos; cada insumo tem um único fornecedor |
+| 02 | INSUMO | (0,N) | compõe | (0,N) | FICHA_TÉCNICA | conforme desenhado no DER atual |
+| 03 | FICHA_TÉCNICA | (1,1) | detalha | (1,1) | PRODUTO | liga a ficha técnica ao produto que ela detalha |
 | 04 | PRODUTO | (1,1) | integra | (0,N) | ITEM_PEDIDO | um produto pode integrar vários itens de pedido |
-| 05 | PEDIDO | (1,1) | compreende | (1,N) | ITEM_PEDIDO | todo pedido tem ao menos um item |
-| 06 | CLIENTE | (1,1) | efetua | (0,N) | PEDIDO | cliente pode ter zero ou vários pedidos |
+| 05 | ITEM_PEDIDO | (0,N) | pertence_a | (1,1) | PEDIDO | cada item pertence a exatamente um pedido |
+| 06 | PEDIDO | (0,N) | é_efetuado_por | (1,1) | CLIENTE | cada pedido é efetuado por exatamente um cliente |
 
-- **Restrições e políticas organizacionais aplicadas ao modelo:** o limite de crédito e o status de aprovação financeira (Seção 4) ficam em CLIENTE e condicionam, na regra de negócio, se um PEDIDO pode usar boleto; a obrigatoriedade de inscrição estadual depende do `perfil_cliente`; o custo e o preço de venda de PRODUTO são sempre derivados da FICHA_TECNICA, nunca digitados diretamente, para manter a precificação rastreável até o insumo.
+- **Restrições e políticas organizacionais aplicadas ao modelo:** a categoria do fornecedor orienta que tipo de insumo ele fornece; o preço de venda do item de pedido (`preco_unitario`) fica congelado no momento da venda, independente de mudanças futuras no `preco_base` do produto; todo produto precisa se especializar em bolsa ou acessório, nunca os dois.
 
 ---
 
 ## 7. Diagrama Entidade-Relacionamento (DER)
 
-**Arquivos anexados:** `Diagrama/DER_9_Entidades_com_titulo_legenda (2).png` (imagem) e `Dicionario_de_Dados.html` (dicionário completo, mesmo conteúdo da Seção 5).
+**Arquivos anexados:** `Diagrama/Diagrama.png` (imagem) e `Dicionario_de_Dados.html` (dicionário completo, mesmo conteúdo da Seção 5).
 
-O diagrama segue a notação de Chen usada pelo BrModeloWeb: entidades como **retângulos**, relacionamentos como **losangos** rotulados com o verbo, atributos como **elipses**, com a **chave primária identificada por contorno destacado**. A especialização PRODUTO → BOLSA/ACESSORIO usa o círculo "TD" (Total e Disjunta) padrão da notação de Chen. As cardinalidades (mín,máx) ficam junto de cada ponta da linha, exatamente como na tabela da Seção 6. Seguindo a notação conceitual pura, o diagrama não mostra atributos de chave estrangeira — essa informação já está representada pela própria linha do relacionamento.
+O diagrama segue a notação de Chen: entidades como **retângulos**, relacionamentos como **losangos** rotulados com o verbo, atributos como **elipses**, com a **chave primária em elipse de contorno destacado (azul)**. Diferente de um DER conceitual estritamente puro, este diagrama marca explicitamente as **chaves estrangeiras** dentro da entidade (ex.: `produto_id (FK)` em ITEM_PEDIDO) — convenção documentada na própria legenda do diagrama. A especialização PRODUTO → BOLSA/ACESSÓRIO usa o triângulo "TD" (Total e Disjunta). As cardinalidades (mín,máx) ficam junto de cada ponta da linha, exatamente como na tabela da Seção 6.
 
+Este recorte de 9 entidades prioriza o núcleo de custo e venda (o que é preciso para cadastrar, produzir e vender uma peça) e deixou de fora, nesta etapa, os módulos de produção detalhada (ordem de produção, etapas, artesãos), logística/pós-venda e financeiro descritos nas Seções 2 a 4 — que seguem documentados como requisito levantado, para uma modelagem futura.
 
 ---
 
 ## 8. Justificativa Técnica
 
-- **Por que FICHA_TECNICA e ITEM_PEDIDO como entidades associativas:** ambas carregam atributos próprios (quantidade_necessaria/percentual_perda; quantidade/preco_unitario_praticado/desconto) que não pertencem a nenhuma das duas entidades que conectam — a notação exige reificá-los como entidade para acomodar esses atributos.
-- **Por que PRODUTO como supertipo (BOLSA/ACESSORIO):** bolsa e acessório compartilham identificador, nome do modelo, mão de obra, markup e os atributos derivados de custo — mas cada um tem atributos exclusivos (tamanho/cor/alça para bolsa; tipo_peca para acessório). Generalização/especialização evita repetir os atributos comuns em duas entidades soltas e ainda documenta, no próprio diagrama, que um produto é sempre um dos dois (TD).
-- **Por que essas cardinalidades e não outras:** FORNECEDOR–INSUMO é N:N porque, na prática, mais de um fornecedor vende o mesmo tipo de insumo (ex.: couro) e um fornecedor vende vários insumos; PEDIDO–ITEM_PEDIDO é (1,N) do lado do item porque um pedido sem nenhum item não existe operacionalmente.
-- **Alternativas descartadas:** cogitou-se manter BOLSA e ACESSORIO como uma única entidade PRODUTO com campos opcionais (tamanho/cor/alça nulos para acessório) — descartado porque misturaria atributos obrigatórios de um subtipo com atributos irrelevantes do outro, violando a regra "um acessório não pode possuir atributos específicos de bolsa".
+- **Por que 9 entidades e não mais:** o grupo optou por modelar primeiro o núcleo que responde à pergunta "o que é preciso para produzir e vender uma peça" — fornecedor, insumo, ficha técnica e produto — mais o lado comercial mínimo — cliente, pedido, item de pedido. Módulos como ordem de produção e financeiro (Seções 2-4) ficaram fora deste DER por decisão de escopo, não por esquecimento.
+- **Por que FICHA_TÉCNICA e ITEM_PEDIDO como entidades associativas:** ambas carregam atributos próprios (quantidade_necessaria; quantidade/preco_unitario/subtotal) que não pertencem a nenhuma das duas entidades que conectam — a notação exige reificá-los como entidade para acomodar esses atributos.
+- **Por que PRODUTO como supertipo (BOLSA/ACESSORIO):** bolsa e acessório compartilham identificador, nome, descrição, preço base, categoria e estoque — mas cada um tem atributos exclusivos (tamanho/tipo_alça para bolsa; tipo_acessorio/compatibilidade para acessório). Generalização/especialização evita repetir os atributos comuns em duas entidades soltas e ainda documenta, no próprio diagrama, que um produto é sempre um dos dois (TD).
+- **Por que marcar as FKs no diagrama conceitual:** o grupo optou por uma notação híbrida (conceitual + indicação de FK) para deixar mais claro, já nesta entrega, quais atributos migrarão como chave estrangeira no modelo lógico da Entrega 2 — uma antecipação deliberada, não um erro de camada.
+- **Alternativas descartadas:** cogitou-se manter BOLSA e ACESSORIO como uma única entidade PRODUTO com campos opcionais — descartado porque misturaria atributos obrigatórios de um subtipo com atributos irrelevantes do outro.
 
 ---
 
@@ -246,13 +252,13 @@ O diagrama segue a notação de Chen usada pelo BrModeloWeb: entidades como **re
 
 | Item | Registro |
 |---|---|
-| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — usado em cinco momentos: (1) leitura do questionário de requisitos e construção de um primeiro modelo conceitual (21 entidades) e dicionário de dados; (2) geração de um primeiro diagrama ER (notação "pé-de-galinha"); (3) preenchimento deste README a partir do esqueleto oficial da Entrega 1; (4) reconstrução desse primeiro diagrama na notação de Chen (retângulo/losango/elipse) usada pelo BrModeloWeb, a pedido explícito do professor; (5) depois que o grupo (Guilherme) remodelou o DER para um recorte mais enxuto de 9 entidades direto no BrModeloWeb, reorganização do dicionário de dados HTML já produzido pelo grupo para a raiz do repositório e reescrita das Seções 5–8 deste README para descrever esse modelo de 9 entidades, em vez do modelo de 21 que havia ficado desatualizado. |
-| **Motivação** | Acelerar a tradução do levantamento de requisitos para um modelo estruturado e para o formato de entrega exigido pela disciplina; depois, manter o README consistente com o DER e o dicionário que o grupo efetivamente anexou, já que o grupo reduziu o escopo do modelo de forma independente entre uma sessão e outra. |
-| **Prompt(s) utilizados** | "Preciso montar um diagrama e o dicionário desse diagrama, como se fosse no modelo BrModeloWeb..."; "Consegue gerar um arquivo pdf com esse arquivo que montou? Contendo somente o diagrama e o dicionário"; "Ajustar diagrama para o mesmo modelo de BrModeloWeb"; "adicione essas fotos no readme, na parte de evidências"; "De acordo com o dicionário e o diagrama que estão agora, crie o arquivo de dicionário de dados em html". |
-| **Resposta recebida** | Um primeiro modelo (21 entidades) com diagrama e dicionário; este README preenchido; o DER redesenhado em notação de Chen; e, nesta última etapa, a constatação de que o dicionário HTML já existia (feito pelo grupo) e batia com o DER de 9 entidades atual — então ele foi movido para a raiz do repositório como `Dicionario_de_Dados.html` e as Seções 5 a 8 do README foram reescritas para descrever esse mesmo modelo de 9 entidades, mantendo as Seções 1 a 4 como o levantamento de requisitos mais amplo. |
-| **Fontes consultadas e verificadas** | Nenhuma fonte externa. O primeiro modelo veio do questionário de requisitos fornecido pelo grupo; a reescrita das Seções 5–8 veio do dicionário HTML e do diagrama PNG que o próprio grupo já havia anexado ao repositório (não foi inventado nenhum dado novo). |
-| **Trechos rejeitados ou corrigidos** | A primeira versão do diagrama (pé-de-galinha) foi descartada e refeita em Chen a pedido do professor; nessa reconstrução também foram removidos atributos de chave estrangeira das entidades (erro de fidelidade conceitual da primeira versão). Depois, o modelo de 21 entidades inteiro foi substituído pelas Seções 5–8 baseadas no modelo de 9 entidades que o grupo passou a usar — o texto anterior (21 entidades) não foi mantido por estar desatualizado em relação ao DER de fato anexado. |
-| **Justificativa da escolha final** | As Seções 5–8 agora descrevem exatamente o que está anexado (`Diagrama/DER_9_Entidades_com_titulo_legenda (2).png` e `Dicionario_de_Dados.html`), em vez de um modelo mais amplo que não corresponde mais ao diagrama entregue. As Seções 1–4 (requisitos e regras de negócio) não foram reduzidas, pois continuam válidas como levantamento — só o recorte modelado no DER desta entrega ficou menor. |
+| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — usado em seis momentos: (1) leitura do questionário de requisitos e construção de um primeiro modelo conceitual (21 entidades) e dicionário de dados; (2) geração de um primeiro diagrama ER (notação "pé-de-galinha"); (3) preenchimento deste README a partir do esqueleto oficial da Entrega 1; (4) reconstrução desse primeiro diagrama na notação de Chen usada pelo BrModeloWeb, a pedido explícito do professor; (5) depois que o grupo (Guilherme) remodelou o DER para um recorte mais enxuto de 9 entidades direto no BrModeloWeb, reorganização do dicionário HTML já produzido pelo grupo e reescrita das Seções 5–8 para descrever esse modelo; (6) o grupo enviou uma nova versão corrigida do DER de 9 entidades (PDF exportado do BrModeloWeb, com nomes de atributo, PKs/FKs e cardinalidades revisados) — o diagrama do repositório, o dicionário HTML e as Seções 5–8 do README foram atualizados para bater exatamente com essa versão. |
+| **Motivação** | Acelerar a tradução do levantamento de requisitos para um modelo estruturado e para o formato de entrega exigido pela disciplina; depois, manter o README, o diagrama e o dicionário sempre consistentes entre si, já que o grupo seguiu ajustando o modelo de forma independente entre uma sessão e outra. |
+| **Prompt(s) utilizados** | "Preciso montar um diagrama e o dicionário desse diagrama, como se fosse no modelo BrModeloWeb..."; "Consegue gerar um arquivo pdf com esse arquivo que montou? Contendo somente o diagrama e o dicionário"; "Ajustar diagrama para o mesmo modelo de BrModeloWeb"; "adicione essas fotos no readme, na parte de evidências"; "De acordo com o dicionário e o diagrama que estão agora, crie o arquivo de dicionário de dados em html"; "Arrume o diagrama para esse pdf, agora ele está correto. No readme faça todas as correções necessárias, de acordo com esse diagrama novo e finalizado". |
+| **Resposta recebida** | Um primeiro modelo (21 entidades); o DER redesenhado em notação de Chen; a constatação de que o dicionário HTML já existia e batia com o DER de 9 entidades da época — movido para a raiz como `Dicionario_de_Dados.html` e as Seções 5–8 reescritas; e, nesta última etapa, a substituição do `Diagrama/Diagrama.png` pela versão corrigida enviada pelo grupo (renomeando id_fornecedor/nome/categoria_fornecedor, produto com preco_base/categoria/estoque_total, id_bolsa/id_acessorio próprios, item_pedido com subtotal, entre outras mudanças), com o dicionário HTML e as Seções 5–8 reescritos atributo a atributo para bater com essa versão. |
+| **Fontes consultadas e verificadas** | Nenhuma fonte externa. O modelo de 9 entidades corrigido veio do PDF que o próprio grupo exportou do BrModeloWeb e anexou à conversa; todos os nomes de atributo, PKs, FKs e cardinalidades desta versão do README foram conferidos diretamente nessa imagem, célula a célula, antes de escrever o dicionário e o README (nenhum atributo foi inventado). |
+| **Trechos rejeitados ou corrigidos** | A primeira versão do diagrama (pé-de-galinha) foi descartada e refeita em Chen a pedido do professor. Depois, o modelo de 21 entidades foi substituído pelo modelo de 9 entidades que o grupo passou a usar. Nesta etapa, a versão de 9 entidades que estava no repositório (`Diagrama/Diagrama.png`) ainda era a primeira tentativa do grupo (com nome_modelo/markup/custo_materia_prima/preco_tabela em PRODUTO e pecas_composicao/tipo_peca nos subtipos) — foi substituída pela versão que o grupo marcou como corrigida e final, com nomes de atributo, chaves e cardinalidades diferentes em várias entidades (ver Seção 5). O grupo optou por manter, nesta versão, a marcação explícita de FK dentro das entidades (ex.: `produto_id (FK)`) e as cardinalidades exatamente como desenhadas — inclusive "compõe" (INSUMO–FICHA_TÉCNICA) e "detalha" (FICHA_TÉCNICA–PRODUTO) aparecerem com cardinalidades pouco usuais para uma entidade associativa (N:N e 1:1, respectivamente, em vez do 1:N mais comum nesse padrão) — a IA não alterou esses números por não ser sua decisão de modelagem substituir o que o grupo marcou como diagrama final; vale o grupo reconferir esses dois pontos com o professor. |
+| **Justificativa da escolha final** | As Seções 5–8 e o dicionário HTML agora descrevem exatamente o que está anexado em `Diagrama/Diagrama.png`, atributo por atributo, PK/FK e cardinalidade — a fonte de verdade é o diagrama que o grupo marcou como correto e final. As Seções 1–4 (requisitos e regras de negócio) não foram alteradas nesta etapa. |
 | **Reflexão crítica** | O modelo reflete fielmente o texto do questionário, mas não substitui a pesquisa de campo exigida pela atividade — regras de negócio reais da organização escolhida podem divergir do que está aqui (valores de limite de crédito, percentuais de comissão etc. foram tratados como exemplos/referências, não como regras fixas). O grupo deve validar cada regra de negócio da Seção 4 com a organização real antes de assumi-las como definitivas. |
 
 
