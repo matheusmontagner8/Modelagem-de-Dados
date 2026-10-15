@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dicionário de Dados Conceitual — DER de 9 entidades</title>
+<title>Dicionário de Dados Conceitual — DER de 17 entidades</title>
 <style>
   :root{
     --navy:#1a1a2e;
@@ -12,7 +12,8 @@
     --rowalt:#f7f7fb;
     --line:#d8d8e0;
     --text:#2a2a35;
-    --fk:#8a5a1a;
+    --pk:#9c2b1f;
+    --td:#2d5a73;
   }
   *{box-sizing:border-box;}
   body{
@@ -22,7 +23,7 @@
     color:var(--text);
   }
   .page{
-    max-width: 960px;
+    max-width: 1040px;
     margin: 0 auto;
     padding: 40px 28px 80px;
   }
@@ -41,9 +42,14 @@
   h2.section{
     font-size: 20px;
     color: var(--navy);
-    margin: 40px 0 12px;
+    margin: 44px 0 12px;
     border-bottom: 2px solid var(--navy);
     padding-bottom: 6px;
+  }
+  h3.sub{
+    font-size: 15px;
+    color: var(--accent);
+    margin: 26px 0 8px;
   }
   .entity{
     margin-bottom: 26px;
@@ -66,6 +72,27 @@
     font-style: italic;
     color:#555;
   }
+  .leitura{
+    background: #fbfaf5;
+    padding: 9px 16px;
+    font-size: 13px;
+    font-family: "Consolas", "Courier New", monospace;
+    color: var(--navy);
+    border-bottom: 1px solid var(--line);
+  }
+  .leitura .pk{
+    text-decoration: underline;
+    color: var(--pk);
+    font-weight: 700;
+  }
+  .idx-note{
+    background: white;
+    padding: 8px 16px 12px;
+    font-size: 12.5px;
+    color:#444;
+    border-top: 1px dashed var(--line);
+  }
+  .idx-note b{ color: var(--navy); }
   table{
     width: 100%;
     border-collapse: collapse;
@@ -96,22 +123,40 @@
     white-space: nowrap;
     text-align: left;
   }
-  td.attr small{
-    display:block;
-    font-weight: 400;
-    font-style: italic;
-    color:#666;
-    font-size: 11px;
+  td.attr.pk{
+    text-decoration: underline;
+    color: var(--pk);
   }
-  td.attr small.fk{ color: var(--fk); }
-  col.attr-col{ width: 22%; }
-  col.desc-col{ width: 26%; }
-  col.rule-col{ width: 52%; }
+  td.phys{
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 12px;
+    color:#444;
+    white-space: nowrap;
+  }
+  col.attr-col{ width: 19%; }
+  col.phys-col{ width: 21%; }
+  col.rule-col{ width: 60%; }
+  .conv-table td, .conv-table th{ text-align:left; }
+  .conv-table td.k{ font-weight:600; color:var(--navy); white-space:nowrap; width:22%; }
+  .prefix-table td.p{ font-family:"Consolas","Courier New",monospace; font-weight:700; color:var(--navy); white-space:nowrap; }
+  .matrix th, .matrix td{ text-align:center; font-size:12px; }
+  .matrix td.ent{ text-align:left; font-weight:600; color:var(--navy); white-space:nowrap; }
+  .matrix td.lgpd-sens{ background:#fdecea; color:#9c2b1f; font-weight:600; }
+  .matrix td.lgpd-pess{ background:#fff6e0; color:#8a5a1a; font-weight:600; }
+  .matrix td.lgpd-n{ color:#888; }
   .footer-note{
     margin-top: 50px;
     font-size: 12px;
     color:#888;
     text-align:center;
+  }
+  .callout{
+    background:#eef0fb;
+    border-left:4px solid var(--accent);
+    padding:10px 16px;
+    font-size:13px;
+    margin: 14px 0 0;
+    line-height:1.6;
   }
   @media print{
     body{ background:white; }
@@ -122,170 +167,369 @@
 <body>
 <div class="page">
 
-  <h1>Dicionário de Dados Conceitual — DER de 9 entidades</h1>
+  <h1>Dicionário de Dados Conceitual — DER de 17 entidades</h1>
   <p class="subtitle">
-    Formato: Atributo | Descrição | Regra de negócio associada. Corresponde ao DER atual em
-    <code>Diagrama/Diagrama.png</code> — FORNECEDOR, INSUMO, FICHA_TÉCNICA, PRODUTO, BOLSA, ACESSÓRIO,
-    ITEM_PEDIDO, PEDIDO e CLIENTE. Ao contrário de um DER conceitual puro, este diagrama identifica
-    explicitamente as chaves estrangeiras (marcadas "(FK)" nas entidades e "<small class="fk">(FK)</small>"
-    abaixo, na cor do relacionamento) — convenção adotada pelo grupo para deixar a origem de cada atributo
-    de ligação visível já nesta etapa.
+    Versão 2.0 — revisão do dicionário original de 9 entidades (Entrega 1), em resposta à avaliação do professor
+    registrada na <a href="https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1">issue&nbsp;#1</a>
+    (Critério 9 — "não atendido"). Corresponde ao DER atual em <code>Diagrama/Diagrama.png</code>: 17 entidades e
+    16 relacionamentos, todos com cardinalidade mínima e máxima em ambas as pontas e <strong>sem nenhum atributo
+    de chave estrangeira</strong> — diferente da versão anterior, este diagrama segue a notação de Chen conceitual
+    pura, em que FKs são um detalhe de implementação do modelo lógico, não do conceitual.
   </p>
+
+  <!-- CONVENÇÕES -->
+  <h2 class="section">Convenções</h2>
+  <table class="conv-table">
+    <colgroup><col style="width:22%"><col style="width:78%"></colgroup>
+    <tbody>
+      <tr><td class="k">SGBD alvo</td><td>MySQL Community Server 8.4 LTS — mesma versão já instalada e validada na Entrega 2 (<code>Entrega2/script.sql</code>, testado sem erros em 8.4.10).</td></tr>
+      <tr><td class="k">Collation</td><td><code>utf8mb4_0900_ai_ci</code> — charset padrão do MySQL 8.x, com suporte completo a acentuação e caracteres especiais do português (ex.: "ACESSÓRIO", "é_efetuado_por").</td></tr>
+      <tr><td class="k">Notação do DER</td><td>Chen conceitual. Entidade = retângulo; relacionamento = losango; atributo = elipse (chave primária sublinhada, em vermelho); especialização = triângulo "TD" (Total e Disjunta); toda aresta de relacionamento traz o rótulo de cardinalidade <code>mínimo,máximo</code> em cada uma das duas pontas.</td></tr>
+      <tr><td class="k">Expressão formal</td><td>Cada entidade é descrita como <code>ENTIDADE(atributo1, atributo2, …)</code>, com a chave primária <span style="text-decoration:underline;color:var(--pk);font-weight:700">sublinhada</span> — convenção padrão de álgebra relacional, usada na linha "Leitura" de cada entidade abaixo.</td></tr>
+      <tr><td class="k">Versão deste dicionário</td><td>v2.0 — 15/10/2026. A v1.0 (9 entidades, Entrega 1 original) permanece no histórico do Git; não é mais a referência vigente.</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="sub">Prefixos padrão de atributo</h3>
+  <table class="prefix-table">
+    <colgroup><col style="width:12%"><col style="width:28%"><col style="width:60%"></colgroup>
+    <thead><tr><th>Prefixo</th><th>Significado</th><th>Exemplo</th></tr></thead>
+    <tbody>
+      <tr><td class="p">id_</td><td>Identificador (chave primária)</td><td>id_fornecedor, id_pedido</td></tr>
+      <tr><td class="p">nm_</td><td>Nome</td><td>nm_fornecedor, nm_cliente</td></tr>
+      <tr><td class="p">ds_</td><td>Descrição / texto livre</td><td>ds_endereco, ds_observacoes</td></tr>
+      <tr><td class="p">dt_</td><td>Data (ou data/hora)</td><td>dt_cadastro, dt_vencimento</td></tr>
+      <tr><td class="p">vl_</td><td>Valor monetário</td><td>vl_total, vl_preco_unitario</td></tr>
+      <tr><td class="p">qt_</td><td>Quantidade</td><td>qt_estoque_atual, qt_quantidade</td></tr>
+      <tr><td class="p">pc_</td><td>Percentual</td><td>pc_comissao, pc_perda</td></tr>
+      <tr><td class="p">tp_</td><td>Tipo / domínio fechado (lista de valores)</td><td>tp_status, tp_categoria</td></tr>
+      <tr><td class="p">nr_</td><td>Número / código (não é chave primária)</td><td>nr_cnpj, nr_lote</td></tr>
+      <tr><td class="p">un_</td><td>Unidade de medida</td><td>un_medida</td></tr>
+    </tbody>
+  </table>
 
   <!-- FORNECEDOR -->
   <div class="entity">
     <div class="entity-header">FORNECEDOR</div>
+    <div class="leitura">FORNECEDOR(<span class="pk">id_fornecedor</span>, nm_fornecedor, nr_cnpj, nr_telefone, ds_email, ds_endereco, dt_cadastro, tp_categoria)</div>
     <table>
-      <colgroup><col class="attr-col"><col class="desc-col"><col class="rule-col"></colgroup>
-      <thead><tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr></thead>
+      <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
       <tbody>
-        <tr><td class="attr">id_fornecedor</td><td>Identificador</td><td>Chave primária, gerada pelo sistema. É única e não pode ser reutilizada.</td></tr>
-        <tr><td class="attr">nome</td><td>Nome do fornecedor</td><td>Obrigatório. Razão social ou nome fantasia utilizado em compras e no histórico de avaliação.</td></tr>
-        <tr><td class="attr">cnpj</td><td>CNPJ</td><td>Obrigatório e único. Não pode existir mais de um fornecedor com o mesmo CNPJ. Dado protegido pela LGPD.</td></tr>
-        <tr><td class="attr">telefone</td><td>Telefone</td><td>Contato direto com o fornecedor.</td></tr>
-        <tr><td class="attr">email</td><td>E-mail comercial</td><td>Canal de contato comercial com o fornecedor.</td></tr>
-        <tr><td class="attr">endereco</td><td>Endereço</td><td>Endereço comercial do fornecedor, usado para correspondência e logística de coleta/entrega.</td></tr>
-        <tr><td class="attr">data_cadastro</td><td>Data de cadastro</td><td>Preenchida automaticamente na criação do registro.</td></tr>
-        <tr><td class="attr">categoria_fornecedor</td><td>Categoria do fornecedor</td><td>Obrigatório. Classifica o tipo de insumo que o fornecedor costuma vender (ex.: couro, ferragens, zíperes, embalagens).</td></tr>
+        <tr><td class="attr pk">id_fornecedor</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema. É único e não pode ser reutilizado.</td></tr>
+        <tr><td class="attr">nm_fornecedor</td><td class="phys">VARCHAR(120) NOT NULL</td><td>Razão social ou nome fantasia utilizado em compras e no histórico de avaliação.</td></tr>
+        <tr><td class="attr">nr_cnpj</td><td class="phys">VARCHAR(18) NOT NULL UNIQUE</td><td>Formato 00.000.000/0000-00. Único por fornecedor. Dado de identificação de pessoa jurídica — acesso restrito (ver seção LGPD).</td></tr>
+        <tr><td class="attr">nr_telefone</td><td class="phys">VARCHAR(20) NULL</td><td>Contato direto com o fornecedor.</td></tr>
+        <tr><td class="attr">ds_email</td><td class="phys">VARCHAR(160) NULL</td><td>Canal de contato comercial com o fornecedor.</td></tr>
+        <tr><td class="attr">ds_endereco</td><td class="phys">VARCHAR(200) NULL</td><td>Endereço comercial, usado para correspondência e logística de coleta/entrega.</td></tr>
+        <tr><td class="attr">dt_cadastro</td><td class="phys">DATE NOT NULL DEFAULT (CURRENT_DATE)</td><td>Preenchida automaticamente na criação do registro.</td></tr>
+        <tr><td class="attr">tp_categoria</td><td class="phys">VARCHAR(30) NOT NULL</td><td>Domínio fechado: {couro, ferragem, zíper, embalagem, outros}. Classifica o tipo de insumo que o fornecedor costuma vender.</td></tr>
       </tbody>
     </table>
+    <div class="idx-note"><b>Índices sugeridos:</b> PK (id_fornecedor) · UNIQUE idx_fornecedor_cnpj (nr_cnpj) · INDEX idx_fornecedor_categoria (tp_categoria)</div>
   </div>
 
   <!-- INSUMO -->
   <div class="entity">
     <div class="entity-header">INSUMO</div>
+    <div class="leitura">INSUMO(<span class="pk">id_insumo</span>, nm_insumo, tp_insumo, un_medida, qt_estoque_minimo, qt_estoque_atual, vl_preco_referencia)</div>
     <table>
-      <colgroup><col class="attr-col"><col class="desc-col"><col class="rule-col"></colgroup>
-      <thead><tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr></thead>
+      <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
       <tbody>
-        <tr><td class="attr">id_insumo</td><td>Identificador</td><td>Chave primária, gerada pelo sistema.</td></tr>
-        <tr><td class="attr">nome_insumo</td><td>Nome do material</td><td>Obrigatório. Exemplos: couro bovino caramelo, zíper, fivela e forro.</td></tr>
-        <tr><td class="attr">tipo_insumo</td><td>Grupo do material</td><td>Classifica o insumo (ex.: couro, ferragem, zíper, embalagem), permitindo cruzar com a categoria do fornecedor.</td></tr>
-        <tr><td class="attr">unidade_medida</td><td>Unidade de controle</td><td>Obrigatória. Aceita: dm², m², unidade, metro, kg ou litro. Estoque e ficha técnica devem usar a mesma unidade.</td></tr>
-        <tr><td class="attr">estoque_atual</td><td>Saldo em estoque</td><td>Nunca pode ser negativo. Aumenta com compras recebidas e diminui com o consumo na produção.</td></tr>
-        <tr><td class="attr">preco_unitario</td><td>Preço por unidade de medida</td><td>Deve ser maior que zero. É o custo de referência usado para calcular a matéria-prima de cada produto.</td></tr>
+        <tr><td class="attr pk">id_insumo</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema.</td></tr>
+        <tr><td class="attr">nm_insumo</td><td class="phys">VARCHAR(120) NOT NULL</td><td>Ex.: couro bovino caramelo, zíper, fivela, forro.</td></tr>
+        <tr><td class="attr">tp_insumo</td><td class="phys">VARCHAR(30) NOT NULL</td><td>Domínio: {couro, ferragem, zíper, forro, embalagem}. Permite cruzar com a categoria do fornecedor.</td></tr>
+        <tr><td class="attr">un_medida</td><td class="phys">VARCHAR(10) NOT NULL</td><td>Domínio: {dm², m², un, m, kg, l}. Deve coincidir com a unidade usada em FICHA_TÉCNICA.</td></tr>
+        <tr><td class="attr">qt_estoque_minimo</td><td class="phys">DECIMAL(10,3) NOT NULL DEFAULT 0</td><td>Gatilho de alerta de recompra.</td></tr>
+        <tr><td class="attr">qt_estoque_atual</td><td class="phys">DECIMAL(10,3) NOT NULL CHECK (&gt;=0)</td><td>Nunca negativo. Agregado a partir dos lotes recebidos (LOTE_INSUMO) menos o consumo na produção.</td></tr>
+        <tr><td class="attr">vl_preco_referencia</td><td class="phys">DECIMAL(10,2) NOT NULL CHECK (&gt;0)</td><td>Custo médio de referência, usado para estimar o custo de matéria-prima de cada produto. O preço efetivamente pago em cada compra fica registrado no lote (vl_preco_pago).</td></tr>
       </tbody>
     </table>
+    <div class="idx-note"><b>Índices sugeridos:</b> PK (id_insumo) · INDEX idx_insumo_tipo (tp_insumo)</div>
+  </div>
+
+  <!-- LOTE_INSUMO -->
+  <div class="entity">
+    <div class="entity-header">LOTE_INSUMO</div>
+    <div class="entity-note">Entidade essencial adicionada nesta revisão (Critério 10) — registra cada recebimento de insumo por lote e fornecedor, resolvendo a contradição apontada: um mesmo INSUMO pode ser recebido de fornecedores diferentes ao longo do tempo, o que a antiga relação direta FORNECEDOR–INSUMO (1,1) não permitia representar.</div>
+    <div class="leitura">LOTE_INSUMO(<span class="pk">id_lote</span>, nr_lote, dt_recebimento, qt_recebida, vl_preco_pago, ds_cor_tonalidade)</div>
+    <table>
+      <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
+      <tbody>
+        <tr><td class="attr pk">id_lote</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema.</td></tr>
+        <tr><td class="attr">nr_lote</td><td class="phys">VARCHAR(30) NOT NULL</td><td>Código do lote informado pelo fornecedor/NF-e — base da rastreabilidade de origem.</td></tr>
+        <tr><td class="attr">dt_recebimento</td><td class="phys">DATE NOT NULL</td><td>Data em que o lote deu entrada no estoque.</td></tr>
+        <tr><td class="attr">qt_recebida</td><td class="phys">DECIMAL(10,3) NOT NULL CHECK (&gt;0)</td><td>Quantidade recebida nesse lote, na unidade de medida do insumo.</td></tr>
+        <tr><td class="attr">vl_preco_pago</td><td class="phys">DECIMAL(10,2) NOT NULL CHECK (&gt;0)</td><td>Preço efetivamente pago nesse recebimento — pode variar de lote a lote, mesmo para o mesmo insumo. Base para o título gerado em CONTAS_PAGAR.</td></tr>
+        <tr><td class="attr">ds_cor_tonalidade</td><td class="phys">VARCHAR(60) NULL</td><td>Relevante sobretudo para couro, cuja tonalidade varia por lote de curtimento.</td></tr>
+      </tbody>
+    </table>
+    <div class="idx-note"><b>Índices sugeridos:</b> PK (id_lote) · INDEX idx_lote_data (dt_recebimento) · INDEX idx_lote_numero (nr_lote) · <i>nível lógico</i>: INDEX idx_lote_fk_insumo, INDEX idx_lote_fk_fornecedor (colunas de ligação que só existem no modelo lógico — o DER conceitual não as representa como atributo)</div>
   </div>
 
   <!-- FICHA_TECNICA -->
   <div class="entity">
     <div class="entity-header">FICHA_TÉCNICA</div>
-    <div class="entity-note">Entidade associativa — chave composta por PRODUTO + INSUMO.</div>
+    <div class="entity-note">Entidade associativa entre PRODUTO e INSUMO, agora com <strong>chave própria</strong> (id_ficha). Na versão anterior a chave era composta por produto_id(FK)+insumo_id(FK), apontado pelo professor como agravante ("FK como identificador"); essa chave artificial substitui as FKs sem alterar o significado da entidade.</div>
+    <div class="leitura">FICHA_TECNICA(<span class="pk">id_ficha</span>, qt_necessaria, un_medida_item)</div>
     <table>
-      <colgroup><col class="attr-col"><col class="desc-col"><col class="rule-col"></colgroup>
-      <thead><tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr></thead>
+      <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
       <tbody>
-        <tr><td class="attr">produto_id<small class="fk">(PK, FK)</small></td><td>Produto ao qual a linha pertence</td><td>Parte da chave composta. Referencia PRODUTO.id_produto.</td></tr>
-        <tr><td class="attr">insumo_id<small class="fk">(PK, FK)</small></td><td>Insumo utilizado nessa linha</td><td>Parte da chave composta. Referencia INSUMO.id_insumo.</td></tr>
-        <tr><td class="attr">quantidade_necessaria</td><td>Quantidade por peça</td><td>Deve ser maior que zero e seguir a unidade_medida do insumo. Cada par produto/insumo aparece uma única vez.</td></tr>
+        <tr><td class="attr pk">id_ficha</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Chave própria da linha de ficha técnica.</td></tr>
+        <tr><td class="attr">qt_necessaria</td><td class="phys">DECIMAL(10,3) NOT NULL CHECK (&gt;0)</td><td>Quantidade de insumo necessária por peça produzida.</td></tr>
+        <tr><td class="attr">un_medida_item</td><td class="phys">VARCHAR(10) NOT NULL</td><td>Deve coincidir com INSUMO.un_medida.</td></tr>
       </tbody>
     </table>
+    <div class="idx-note"><b>Índices sugeridos:</b> PK (id_ficha) · <i>nível lógico</i>: UNIQUE idx_ficha_produto_insumo (par produto+insumo) — garante que cada combinação apareça uma única vez, sem usar as FKs como chave primária</div>
   </div>
 
   <!-- PRODUTO -->
   <div class="entity">
     <div class="entity-header">PRODUTO</div>
-    <div class="entity-note">Supertipo — especializado em BOLSA e ACESSÓRIO (TD).</div>
+    <div class="entity-note">Supertipo — especializado em BOLSA e ACESSÓRIO (TD: Total e Disjunta).</div>
+    <div class="leitura">PRODUTO(<span class="pk">id_produto</span>, nm_produto, ds_descricao, vl_preco_base, tp_categoria, qt_estoque_total)</div>
     <table>
-      <colgroup><col class="attr-col"><col class="desc-col"><col class="rule-col"></colgroup>
-      <thead><tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr></thead>
+      <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
       <tbody>
-        <tr><td class="attr">id_produto</td><td>Identificador</td><td>Chave primária, gerada pelo sistema. É a mesma chave usada por BOLSA e ACESSÓRIO.</td></tr>
-        <tr><td class="attr">nome</td><td>Nome do produto</td><td>Obrigatório. Exemplo: Bolsa Tote.</td></tr>
-        <tr><td class="attr">descricao</td><td>Descrição do produto</td><td>Texto livre com detalhes do modelo, uso pretendido ou observações de venda.</td></tr>
-        <tr><td class="attr">preco_base</td><td>Preço base de venda</td><td>Valor de referência para a venda do produto, antes de eventuais descontos por item de pedido.</td></tr>
-        <tr><td class="attr">categoria</td><td>Categoria do produto</td><td>Classificação comercial do produto (ex.: linha, coleção ou departamento).</td></tr>
-        <tr><td class="attr">estoque_total</td><td>Saldo de produtos prontos</td><td>Quantidade de unidades desse produto disponíveis para venda.</td></tr>
+        <tr><td class="attr pk">id_produto</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Mesma chave usada por BOLSA e ACESSÓRIO na especialização.</td></tr>
+        <tr><td class="attr">nm_produto</td><td class="phys">VARCHAR(120) NOT NULL</td><td>Ex.: Bolsa Tote.</td></tr>
+        <tr><td class="attr">ds_descricao</td><td class="phys">VARCHAR(255) NULL</td><td>Texto livre com detalhes do modelo, uso pretendido ou observações de venda.</td></tr>
+        <tr><td class="attr">vl_preco_base</td><td class="phys">DECIMAL(10,2) NOT NULL CHECK (&gt;0)</td><td>Valor de referência para venda, antes de eventuais descontos por item de pedido.</td></tr>
+        <tr><td class="attr">tp_categoria</td><td class="phys">VARCHAR(30) NOT NULL</td><td>Classificação comercial (linha/coleção/departamento) — independente da especialização BOLSA/ACESSÓRIO.</td></tr>
+        <tr><td class="attr">qt_estoque_total</td><td class="phys">INT UNSIGNED NOT NULL DEFAULT 0</td><td>Unidades desse produto disponíveis para venda.</td></tr>
       </tbody>
     </table>
+    <div class="idx-note"><b>Índices sugeridos:</b> PK (id_produto) · INDEX idx_produto_categoria (tp_categoria)</div>
   </div>
 
   <!-- BOLSA -->
   <div class="entity">
     <div class="entity-header">BOLSA</div>
-    <div class="entity-note">Subtipo de PRODUTO (herda id_produto/nome/descrição/preco_base/categoria/estoque_total).</div>
+    <div class="entity-note">Subtipo de PRODUTO — herda id_produto/nm_produto/ds_descricao/vl_preco_base/tp_categoria/qt_estoque_total.</div>
+    <div class="leitura">BOLSA(<span class="pk">id_produto</span>, ds_material, ds_cor, tp_tamanho, tp_alca)</div>
     <table>
-      <colgroup><col class="attr-col"><col class="desc-col"><col class="rule-col"></colgroup>
-      <thead><tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr></thead>
+      <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
       <tbody>
-        <tr><td class="attr">id_bolsa</td><td>Identificador</td><td>Mesmo valor de id_produto do PRODUTO correspondente — identifica a linha na especialização.</td></tr>
-        <tr><td class="attr">material</td><td>Material principal</td><td>Obrigatório para bolsa. Ex.: couro legítimo, sintético.</td></tr>
-        <tr><td class="attr">cor</td><td>Cor da bolsa</td><td>Obrigatória para bolsa.</td></tr>
-        <tr><td class="attr">tamanho</td><td>Dimensão da bolsa</td><td>Obrigatório para produtos classificados como bolsa.</td></tr>
-        <tr><td class="attr">tipo_alca</td><td>Tipo de alça</td><td>Obrigatório para bolsa. Ex.: alça de mão, tiracolo, transversal.</td></tr>
+        <tr><td class="attr pk">id_produto</td><td class="phys">INT UNSIGNED (PK)</td><td>Mesmo valor de id_produto do PRODUTO correspondente — identifica a linha na especialização.</td></tr>
+        <tr><td class="attr">ds_material</td><td class="phys">VARCHAR(60) NOT NULL</td><td>Ex.: couro legítimo, sintético.</td></tr>
+        <tr><td class="attr">ds_cor</td><td class="phys">VARCHAR(40) NOT NULL</td><td>Cor da bolsa.</td></tr>
+        <tr><td class="attr">tp_tamanho</td><td class="phys">VARCHAR(10) NOT NULL</td><td>Domínio: {PP, P, M, G, GG}.</td></tr>
+        <tr><td class="attr">tp_alca</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Domínio: {mão, tiracolo, transversal}.</td></tr>
       </tbody>
     </table>
+    <div class="idx-note"><b>Índices sugeridos:</b> PK (id_produto)</div>
   </div>
 
   <!-- ACESSORIO -->
   <div class="entity">
     <div class="entity-header">ACESSÓRIO</div>
-    <div class="entity-note">Subtipo de PRODUTO (herda id_produto/nome/descrição/preco_base/categoria/estoque_total).</div>
+    <div class="entity-note">Subtipo de PRODUTO — herda id_produto/nm_produto/ds_descricao/vl_preco_base/tp_categoria/qt_estoque_total.</div>
+    <div class="leitura">ACESSORIO(<span class="pk">id_produto</span>, ds_material, ds_cor, tp_acessorio, ds_compatibilidade)</div>
     <table>
-      <colgroup><col class="attr-col"><col class="desc-col"><col class="rule-col"></colgroup>
-      <thead><tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr></thead>
+      <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
       <tbody>
-        <tr><td class="attr">id_acessorio</td><td>Identificador</td><td>Mesmo valor de id_produto do PRODUTO correspondente — identifica a linha na especialização.</td></tr>
-        <tr><td class="attr">material</td><td>Material principal</td><td>Obrigatório para acessório. Ex.: couro legítimo, metal, sintético.</td></tr>
-        <tr><td class="attr">cor</td><td>Cor do acessório</td><td>Obrigatória para acessório.</td></tr>
-        <tr><td class="attr">tipo_acessorio</td><td>Tipo do acessório</td><td>Obrigatório. Exemplos: cinto e porta-cartões. Um acessório não pode possuir atributos específicos de bolsa.</td></tr>
-        <tr><td class="attr">compatibilidade</td><td>Compatibilidade com outros produtos</td><td>Opcional. Indica, por exemplo, com quais bolsas ou linhas o acessório combina.</td></tr>
+        <tr><td class="attr pk">id_produto</td><td class="phys">INT UNSIGNED (PK)</td><td>Mesmo valor de id_produto do PRODUTO correspondente.</td></tr>
+        <tr><td class="attr">ds_material</td><td class="phys">VARCHAR(60) NOT NULL</td><td>Ex.: couro legítimo, metal, sintético.</td></tr>
+        <tr><td class="attr">ds_cor</td><td class="phys">VARCHAR(40) NOT NULL</td><td>Cor do acessório.</td></tr>
+        <tr><td class="attr">tp_acessorio</td><td class="phys">VARCHAR(30) NOT NULL</td><td>Domínio: {cinto, porta-cartões, carteira, chaveiro}. Um acessório não possui atributos específicos de bolsa.</td></tr>
+        <tr><td class="attr">ds_compatibilidade</td><td class="phys">VARCHAR(120) NULL</td><td>Opcional. Indica com quais bolsas ou linhas o acessório combina.</td></tr>
       </tbody>
     </table>
+    <div class="idx-note"><b>Índices sugeridos:</b> PK (id_produto)</div>
   </div>
 
-  <!-- ITEM_PEDIDO -->
+  <!-- ORDEM_PRODUCAO -->
   <div class="entity">
-    <div class="entity-header">ITEM_PEDIDO</div>
-    <div class="entity-note">Entidade associativa — relaciona PEDIDO e PRODUTO, com chave própria.</div>
+    <div class="entity-header">ORDEM_PRODUÇÃO</div>
+    <div class="entity-note">Entidade essencial, apontada como ausente pelo professor (Critério 10). Liga o que se produz (PRODUTO) a como se produz, etapa a etapa (EXECUCAO_ETAPA).</div>
+    <div class="leitura">ORDEM_PRODUCAO(<span class="pk">id_op</span>, nr_op, dt_abertura, qt_produzir, tp_status_kanban)</div>
     <table>
-      <colgroup><col class="attr-col"><col class="desc-col"><col class="rule-col"></colgroup>
-      <thead><tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr></thead>
+      <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
       <tbody>
-        <tr><td class="attr">id_item_pedido</td><td>Identificador</td><td>Chave primária, gerada pelo sistema.</td></tr>
-        <tr><td class="attr">produto_id<small class="fk">(FK)</small></td><td>Produto vendido</td><td>Referencia PRODUTO.id_produto.</td></tr>
-        <tr><td class="attr">pedido_id<small class="fk">(FK)</small></td><td>Pedido ao qual o item pertence</td><td>Referencia PEDIDO.id_pedido.</td></tr>
-        <tr><td class="attr">quantidade</td><td>Unidades vendidas</td><td>Número inteiro maior que zero.</td></tr>
-        <tr><td class="attr">preco_unitario</td><td>Preço aplicado na venda</td><td>Fica congelado no momento da venda. Alterações posteriores no preco_base de PRODUTO não modificam pedidos antigos.</td></tr>
-        <tr><td class="attr">subtotal</td><td>Total do item</td><td>Corresponde a quantidade × preco_unitario.</td></tr>
+        <tr><td class="attr pk">id_op</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema.</td></tr>
+        <tr><td class="attr">nr_op</td><td class="phys">VARCHAR(20) NOT NULL UNIQUE</td><td>Código visível no chão de fábrica/kanban.</td></tr>
+        <tr><td class="attr">dt_abertura</td><td class="phys">DATE NOT NULL</td><td>Data de abertura da ordem.</td></tr>
+        <tr><td class="attr">qt_produzir</td><td class="phys">INT UNSIGNED NOT NULL CHECK (&gt;0)</td><td>Quantidade de unidades do produto planejadas para essa ordem.</td></tr>
+        <tr><td class="attr">tp_status_kanban</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Domínio: {aberta, em produção, concluída, cancelada}.</td></tr>
       </tbody>
     </table>
+    <div class="idx-note"><b>Índices sugeridos:</b> PK (id_op) · UNIQUE idx_op_numero (nr_op) · INDEX idx_op_status (tp_status_kanban)</div>
   </div>
 
-  <!-- PEDIDO -->
+  <!-- ETAPA_PRODUCAO -->
   <div class="entity">
-    <div class="entity-header">PEDIDO</div>
+    <div class="entity-header">ETAPA_PRODUÇÃO</div>
+    <div class="entity-note">Entidade desejável, sugerida pelo professor — tabela de domínio com as etapas padrão do processo produtivo (corte, costura, acabamento, embalagem).</div>
+    <div class="leitura">ETAPA_PRODUCAO(<span class="pk">id_etapa</span>, nm_etapa, nr_ordem_sequencial)</div>
     <table>
-      <colgroup><col class="attr-col"><col class="desc-col"><col class="rule-col"></colgroup>
-      <thead><tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr></thead>
+      <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
       <tbody>
-        <tr><td class="attr">id_pedido</td><td>Identificador</td><td>Chave primária, gerada pelo sistema.</td></tr>
-        <tr><td class="attr">data_pedido</td><td>Data do pedido</td><td>Obrigatória. Preenchida no registro do pedido.</td></tr>
-        <tr><td class="attr">status</td><td>Situação do pedido</td><td>Obrigatório. Evolui no processo comercial, por exemplo: aberto, faturado ou expedido.</td></tr>
-        <tr><td class="attr">valor_total</td><td>Total do pedido</td><td>Soma de subtotal de todos os itens do pedido.</td></tr>
-        <tr><td class="attr">forma_pagamento</td><td>Forma de pagamento</td><td>Aceita: PIX, Cartão ou Boleto.</td></tr>
-        <tr><td class="attr">observacoes</td><td>Observações do pedido</td><td>Opcional. Campo livre para instruções específicas do cliente ou da venda.</td></tr>
+        <tr><td class="attr pk">id_etapa</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema.</td></tr>
+        <tr><td class="attr">nm_etapa</td><td class="phys">VARCHAR(60) NOT NULL</td><td>Ex.: corte, costura, acabamento, embalagem.</td></tr>
+        <tr><td class="attr">nr_ordem_sequencial</td><td class="phys">SMALLINT UNSIGNED NOT NULL UNIQUE</td><td>Define a sequência padrão do processo produtivo.</td></tr>
       </tbody>
     </table>
+    <div class="idx-note"><b>Índices sugeridos:</b> PK (id_etapa) · UNIQUE idx_etapa_ordem (nr_ordem_sequencial)</div>
+  </div>
+
+  <!-- ARTESAO_FACCAO -->
+  <div class="entity">
+    <div class="entity-header">ARTESÃO_FACÇÃO</div>
+    <div class="entity-note">Entidade desejável, sugerida pelo professor — suporta a regra de "pagamento de facção pela etapa registrada".</div>
+    <div class="leitura">ARTESAO_FACCAO(<span class="pk">id_artesao</span>, nm_artesao, tp_vinculo, nr_telefone)</div>
+    <table>
+      <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
+      <tbody>
+        <tr><td class="attr pk">id_artesao</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema.</td></tr>
+        <tr><td class="attr">nm_artesao</td><td class="phys">VARCHAR(120) NOT NULL</td><td>Dado pessoal do prestador de serviço (interno ou facção terceirizada).</td></tr>
+        <tr><td class="attr">tp_vinculo</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Domínio: {interno, facção terceirizada}.</td></tr>
+        <tr><td class="attr">nr_telefone</td><td class="phys">VARCHAR(20) NULL</td><td>Contato direto.</td></tr>
+      </tbody>
+    </table>
+    <div class="idx-note"><b>Índices sugeridos:</b> PK (id_artesao) · INDEX idx_artesao_vinculo (tp_vinculo)</div>
+  </div>
+
+  <!-- EXECUCAO_ETAPA -->
+  <div class="entity">
+    <div class="entity-header">EXECUÇÃO_ETAPA</div>
+    <div class="entity-note">Entidade associativa de três vias: liga uma ORDEM_PRODUÇÃO a uma ETAPA_PRODUÇÃO executada por um ARTESÃO_FACÇÃO. Base de cálculo do pagamento por etapa concluída.</div>
+    <div class="leitura">EXECUCAO_ETAPA(<span class="pk">id_execucao</span>, dt_inicio, dt_fim, pc_aproveitamento, pc_perda)</div>
+    <table>
+      <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
+      <tbody>
+        <tr><td class="attr pk">id_execucao</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema.</td></tr>
+        <tr><td class="attr">dt_inicio</td><td class="phys">DATETIME NOT NULL</td><td>Início da execução da etapa.</td></tr>
+        <tr><td class="attr">dt_fim</td><td class="phys">DATETIME NULL</td><td>Nulo enquanto a etapa está em andamento.</td></tr>
+        <tr><td class="attr">pc_aproveitamento</td><td class="phys">DECIMAL(5,2) NULL CHECK (0–100)</td><td>Base para o pagamento do artesão/facção por etapa concluída.</td></tr>
+        <tr><td class="attr">pc_perda</td><td class="phys">DECIMAL(5,2) NULL CHECK (0–100)</td><td>Percentual de material perdido/retrabalhado na etapa.</td></tr>
+      </tbody>
+    </table>
+    <div class="idx-note"><b>Índices sugeridos:</b> PK (id_execucao) · INDEX idx_execucao_datas (dt_inicio, dt_fim) · <i>nível lógico</i>: INDEX idx_execucao_fk_op, INDEX idx_execucao_fk_etapa, INDEX idx_execucao_fk_artesao</div>
   </div>
 
   <!-- CLIENTE -->
   <div class="entity">
     <div class="entity-header">CLIENTE</div>
+    <div class="leitura">CLIENTE(<span class="pk">id_cliente</span>, nm_cliente, nr_cpf, nr_telefone, ds_email, ds_endereco, dt_cadastro)</div>
     <table>
-      <colgroup><col class="attr-col"><col class="desc-col"><col class="rule-col"></colgroup>
-      <thead><tr><th>Atributo</th><th>Descrição</th><th>Regra de negócio associada</th></tr></thead>
+      <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
       <tbody>
-        <tr><td class="attr">id_cliente</td><td>Identificador</td><td>Chave primária, gerada pelo sistema.</td></tr>
-        <tr><td class="attr">nome</td><td>Nome do cliente</td><td>Obrigatório.</td></tr>
-        <tr><td class="attr">cpf</td><td>CPF</td><td>Obrigatório e único. Usado na identificação do cliente. Dado protegido pela LGPD.</td></tr>
-        <tr><td class="attr">telefone</td><td>Telefone ou WhatsApp</td><td>Canal principal de contato.</td></tr>
-        <tr><td class="attr">email</td><td>E-mail</td><td>Usado para comunicação e envio de comprovantes ao cliente.</td></tr>
-        <tr><td class="attr">endereco</td><td>Endereço</td><td>Endereço de entrega e/ou cobrança do cliente.</td></tr>
-        <tr><td class="attr">data_cadastro</td><td>Data de cadastro</td><td>Preenchida automaticamente na criação do registro.</td></tr>
+        <tr><td class="attr pk">id_cliente</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema.</td></tr>
+        <tr><td class="attr">nm_cliente</td><td class="phys">VARCHAR(120) NOT NULL</td><td>Obrigatório.</td></tr>
+        <tr><td class="attr">nr_cpf</td><td class="phys">VARCHAR(14) NOT NULL UNIQUE</td><td>Identificador único de pessoa natural. Dado pessoal sensível — ver seção LGPD.</td></tr>
+        <tr><td class="attr">nr_telefone</td><td class="phys">VARCHAR(20) NULL</td><td>Canal principal de contato (telefone ou WhatsApp).</td></tr>
+        <tr><td class="attr">ds_email</td><td class="phys">VARCHAR(160) NULL</td><td>Usado para comunicação e envio de comprovantes.</td></tr>
+        <tr><td class="attr">ds_endereco</td><td class="phys">VARCHAR(200) NULL</td><td>Endereço de entrega e/ou cobrança.</td></tr>
+        <tr><td class="attr">dt_cadastro</td><td class="phys">DATE NOT NULL DEFAULT (CURRENT_DATE)</td><td>Preenchida automaticamente na criação do registro.</td></tr>
       </tbody>
     </table>
+    <div class="idx-note"><b>Índices sugeridos:</b> PK (id_cliente) · UNIQUE idx_cliente_cpf (nr_cpf)</div>
+  </div>
+
+  <!-- VENDEDOR -->
+  <div class="entity">
+    <div class="entity-header">VENDEDOR</div>
+    <div class="entity-note">Entidade desejável, sugerida pelo professor — a regra de "comissão por canal" depende de quem atendeu o pedido.</div>
+    <div class="leitura">VENDEDOR(<span class="pk">id_vendedor</span>, nm_vendedor, tp_vinculo, pc_comissao)</div>
+    <table>
+      <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
+      <tbody>
+        <tr><td class="attr pk">id_vendedor</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema.</td></tr>
+        <tr><td class="attr">nm_vendedor</td><td class="phys">VARCHAR(120) NOT NULL</td><td>Dado pessoal do colaborador/representante.</td></tr>
+        <tr><td class="attr">tp_vinculo</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Domínio: {interno, representante externo}.</td></tr>
+        <tr><td class="attr">pc_comissao</td><td class="phys">DECIMAL(5,2) NOT NULL</td><td>Percentual de comissão, variável por vendedor/canal.</td></tr>
+      </tbody>
+    </table>
+    <div class="idx-note"><b>Índices sugeridos:</b> PK (id_vendedor) · INDEX idx_vendedor_vinculo (tp_vinculo)</div>
+  </div>
+
+  <!-- PEDIDO -->
+  <div class="entity">
+    <div class="entity-header">PEDIDO</div>
+    <div class="leitura">PEDIDO(<span class="pk">id_pedido</span>, dt_pedido, tp_status, vl_total, tp_pagamento, tp_canal, ds_observacoes)</div>
+    <table>
+      <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
+      <tbody>
+        <tr><td class="attr pk">id_pedido</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema.</td></tr>
+        <tr><td class="attr">dt_pedido</td><td class="phys">DATE NOT NULL</td><td>Preenchida no registro do pedido.</td></tr>
+        <tr><td class="attr">tp_status</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Domínio: {aberto, faturado, expedido, entregue, cancelado}.</td></tr>
+        <tr><td class="attr">vl_total</td><td class="phys">DECIMAL(10,2) NOT NULL</td><td>Soma de vl_subtotal de todos os itens do pedido — denormalização deliberada, documentada e já validada em <code>Entrega2/script.sql</code>.</td></tr>
+        <tr><td class="attr">tp_pagamento</td><td class="phys">VARCHAR(10) NOT NULL</td><td>Domínio: {PIX, Cartão, Boleto}.</td></tr>
+        <tr><td class="attr">tp_canal</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Domínio: {loja física, e-commerce, atacado}. Base do cálculo de comissão do vendedor.</td></tr>
+        <tr><td class="attr">ds_observacoes</td><td class="phys">VARCHAR(255) NULL</td><td>Campo livre para instruções específicas do cliente ou da venda.</td></tr>
+      </tbody>
+    </table>
+    <div class="idx-note"><b>Índices sugeridos:</b> PK (id_pedido) · INDEX idx_pedido_data (dt_pedido) · INDEX idx_pedido_status (tp_status)</div>
+  </div>
+
+  <!-- ITEM_PEDIDO -->
+  <div class="entity">
+    <div class="entity-header">ITEM_PEDIDO</div>
+    <div class="entity-note">Entidade associativa entre PEDIDO e PRODUTO, com chave própria e atributos próprios (quantidade, preço praticado, desconto).</div>
+    <div class="leitura">ITEM_PEDIDO(<span class="pk">id_item_pedido</span>, qt_quantidade, vl_preco_unitario, vl_desconto, vl_subtotal)</div>
+    <table>
+      <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
+      <tbody>
+        <tr><td class="attr pk">id_item_pedido</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema.</td></tr>
+        <tr><td class="attr">qt_quantidade</td><td class="phys">INT UNSIGNED NOT NULL CHECK (&gt;0)</td><td>Unidades vendidas desse produto neste item.</td></tr>
+        <tr><td class="attr">vl_preco_unitario</td><td class="phys">DECIMAL(10,2) NOT NULL</td><td>Preço congelado no momento da venda. Alterações posteriores em PRODUTO.vl_preco_base não afetam pedidos antigos.</td></tr>
+        <tr><td class="attr">vl_desconto</td><td class="phys">DECIMAL(10,2) NOT NULL DEFAULT 0</td><td>Desconto aplicado ao item.</td></tr>
+        <tr><td class="attr">vl_subtotal</td><td class="phys">DECIMAL(10,2) NOT NULL</td><td>qt_quantidade × vl_preco_unitario − vl_desconto.</td></tr>
+      </tbody>
+    </table>
+    <div class="idx-note"><b>Índices sugeridos:</b> PK (id_item_pedido) · <i>nível lógico</i>: INDEX idx_item_fk_pedido, INDEX idx_item_fk_produto</div>
+  </div>
+
+  <!-- CONTAS_RECEBER -->
+  <div class="entity">
+    <div class="entity-header">CONTAS_RECEBER</div>
+    <div class="entity-note">Entidade desejável, sugerida pelo professor — título financeiro gerado a partir do PEDIDO.</div>
+    <div class="leitura">CONTAS_RECEBER(<span class="pk">id_titulo_receber</span>, vl_valor, dt_vencimento, dt_recebimento, tp_status)</div>
+    <table>
+      <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
+      <tbody>
+        <tr><td class="attr pk">id_titulo_receber</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema.</td></tr>
+        <tr><td class="attr">vl_valor</td><td class="phys">DECIMAL(10,2) NOT NULL CHECK (&gt;0)</td><td>Valor do título.</td></tr>
+        <tr><td class="attr">dt_vencimento</td><td class="phys">DATE NOT NULL</td><td>Data limite para recebimento.</td></tr>
+        <tr><td class="attr">dt_recebimento</td><td class="phys">DATE NULL</td><td>Nula até a efetiva quitação.</td></tr>
+        <tr><td class="attr">tp_status</td><td class="phys">VARCHAR(15) NOT NULL</td><td>Domínio: {em aberto, pago, atrasado, cancelado}.</td></tr>
+      </tbody>
+    </table>
+    <div class="idx-note"><b>Índices sugeridos:</b> PK (id_titulo_receber) · INDEX idx_receber_vencimento (dt_vencimento) · INDEX idx_receber_status (tp_status)</div>
+  </div>
+
+  <!-- CONTAS_PAGAR -->
+  <div class="entity">
+    <div class="entity-header">CONTAS_PAGAR</div>
+    <div class="entity-note">Entidade desejável, sugerida pelo professor — título financeiro gerado a partir do LOTE_INSUMO (pagamento ao fornecedor, respeitando o lead time acordado).</div>
+    <div class="leitura">CONTAS_PAGAR(<span class="pk">id_titulo_pagar</span>, vl_valor, dt_vencimento, dt_pagamento, tp_status)</div>
+    <table>
+      <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
+      <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
+      <tbody>
+        <tr><td class="attr pk">id_titulo_pagar</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema.</td></tr>
+        <tr><td class="attr">vl_valor</td><td class="phys">DECIMAL(10,2) NOT NULL CHECK (&gt;0)</td><td>Valor do título, normalmente igual a LOTE_INSUMO.vl_preco_pago × qt_recebida.</td></tr>
+        <tr><td class="attr">dt_vencimento</td><td class="phys">DATE NOT NULL</td><td>Data limite para pagamento, conforme lead time acordado com o fornecedor.</td></tr>
+        <tr><td class="attr">dt_pagamento</td><td class="phys">DATE NULL</td><td>Nula até a efetiva quitação.</td></tr>
+        <tr><td class="attr">tp_status</td><td class="phys">VARCHAR(15) NOT NULL</td><td>Domínio: {em aberto, pago, atrasado, cancelado}.</td></tr>
+      </tbody>
+    </table>
+    <div class="idx-note"><b>Índices sugeridos:</b> PK (id_titulo_pagar) · INDEX idx_pagar_vencimento (dt_vencimento) · INDEX idx_pagar_status (tp_status)</div>
   </div>
 
   <!-- ESPECIALIZAÇÃO -->
@@ -294,43 +538,108 @@
     <colgroup><col style="width:16%"><col style="width:22%"><col style="width:62%"></colgroup>
     <thead><tr><th>Item</th><th>Descrição</th><th>Regra de negócio associada</th></tr></thead>
     <tbody>
-      <tr><td class="attr">Supertipo</td><td>PRODUTO</td><td>Guarda atributos comuns: id_produto, nome, descrição, preco_base, categoria e estoque_total.</td></tr>
-      <tr><td class="attr">Subtipos</td><td>BOLSA e ACESSÓRIO</td><td>Herdam todos os atributos de PRODUTO e adicionam os próprios atributos (material e cor são comuns aos dois subtipos, mas cada um também tem atributos exclusivos).</td></tr>
-      <tr><td class="attr">Tipo TD</td><td>Total e Disjunta</td><td>Total: todo produto é obrigatoriamente bolsa ou acessório. Disjunta: um produto não pode ser os dois ao mesmo tempo.</td></tr>
+      <tr><td class="attr">Supertipo</td><td>PRODUTO</td><td>Guarda atributos comuns: id_produto, nm_produto, ds_descricao, vl_preco_base, tp_categoria e qt_estoque_total.</td></tr>
+      <tr><td class="attr">Subtipos</td><td>BOLSA e ACESSÓRIO</td><td>Herdam todos os atributos de PRODUTO e adicionam atributos próprios (ds_material e ds_cor são comuns aos dois subtipos; cada um também tem atributos exclusivos).</td></tr>
+      <tr><td class="attr">Tipo TD</td><td>Total e Disjunta</td><td>Total: todo produto é obrigatoriamente bolsa ou acessório. Disjunta: um produto não pode ser os dois ao mesmo tempo. Representado no DER pelo triângulo "TD".</td></tr>
     </tbody>
   </table>
 
   <!-- RELACIONAMENTOS -->
   <h2 class="section">Dicionário de relacionamentos</h2>
   <table>
-    <colgroup><col style="width:17%"><col style="width:25%"><col style="width:58%"></colgroup>
-    <thead><tr><th>Relacionamento</th><th>Entidades (cardinalidade)</th><th>Descrição e regra de negócio</th></tr></thead>
+    <colgroup><col style="width:16%"><col style="width:30%"><col style="width:54%"></colgroup>
+    <thead><tr><th>Relacionamento</th><th>Entidades (cardinalidade mín.,máx.)</th><th>Descrição e regra de negócio</th></tr></thead>
     <tbody>
-      <tr><td class="attr">fornece</td><td>FORNECEDOR (1,1) — INSUMO (0,N)</td><td>Um fornecedor fornece vários insumos; cada insumo está associado a exatamente um fornecedor neste modelo.</td></tr>
-      <tr><td class="attr">compõe</td><td>INSUMO (1,1) — FICHA_TÉCNICA (0,N)</td><td>Cada linha da ficha técnica usa exatamente um insumo; um insumo pode compor várias linhas de ficha técnica (usado em vários produtos).</td></tr>
-      <tr><td class="attr">detalha</td><td>FICHA_TÉCNICA (0,N) — PRODUTO (1,1)</td><td>A ficha técnica de um produto tem uma linha por insumo utilizado; cada linha detalha exatamente um produto.</td></tr>
+      <tr><td class="attr">fornece</td><td>FORNECEDOR (1,1) — LOTE_INSUMO (0,N)</td><td>Um fornecedor fornece zero ou vários lotes de insumo; cada lote é fornecido por exatamente um fornecedor.</td></tr>
+      <tr><td class="attr">é_recebido_como</td><td>INSUMO (1,1) — LOTE_INSUMO (0,N)</td><td>Um insumo pode ter vários lotes recebidos ao longo do tempo (de fornecedores diferentes); cada lote corresponde a exatamente um insumo.</td></tr>
+      <tr><td class="attr">gera</td><td>LOTE_INSUMO (1,1) — CONTAS_PAGAR (0,N)</td><td>Cada lote recebido pode gerar um ou mais títulos a pagar (ex.: parcelamento); um título a pagar refere-se a exatamente um lote.</td></tr>
+      <tr><td class="attr">é_detalhado_em</td><td>PRODUTO (1,1) — FICHA_TÉCNICA (0,N)</td><td>Cada linha da ficha técnica detalha exatamente um produto; um produto tem zero ou várias linhas de ficha técnica.</td></tr>
+      <tr><td class="attr">compõe</td><td>INSUMO (1,1) — FICHA_TÉCNICA (0,N)</td><td>Cada linha da ficha técnica usa exatamente um insumo; um insumo pode compor várias linhas (usado em vários produtos).</td></tr>
+      <tr><td class="attr">é_produzido_em</td><td>PRODUTO (1,1) — ORDEM_PRODUÇÃO (0,N)</td><td>Uma ordem de produção refere-se a exatamente um produto; um produto pode ter várias ordens de produção ao longo do tempo.</td></tr>
+      <tr><td class="attr">se_desdobra_em</td><td>ORDEM_PRODUÇÃO (1,1) — EXECUÇÃO_ETAPA (0,N)</td><td>Uma ordem de produção se desdobra em zero ou várias execuções de etapa; cada execução pertence a exatamente uma ordem.</td></tr>
+      <tr><td class="attr">classifica</td><td>ETAPA_PRODUÇÃO (1,1) — EXECUÇÃO_ETAPA (0,N)</td><td>Cada execução é classificada em exatamente uma etapa padrão; uma etapa padrão classifica várias execuções.</td></tr>
+      <tr><td class="attr">realiza</td><td>ARTESÃO_FACÇÃO (1,1) — EXECUÇÃO_ETAPA (0,N)</td><td>Cada execução é realizada por exatamente um artesão/facção; um artesão/facção realiza várias execuções — base do pagamento por etapa.</td></tr>
       <tr><td class="attr">Especialização TD</td><td>PRODUTO (1,1) — BOLSA (1,1) / ACESSÓRIO (1,1)</td><td>Todo produto é obrigatoriamente bolsa ou acessório, nunca ambos (Total e Disjunta).</td></tr>
-      <tr><td class="attr">integra</td><td>PRODUTO (1,1) — ITEM_PEDIDO (0,N)</td><td>Cada item de pedido refere-se a um produto; um produto pode integrar vários itens.</td></tr>
-      <tr><td class="attr">pertence_a</td><td>ITEM_PEDIDO (0,N) — PEDIDO (1,1)</td><td>Cada item pertence a exatamente um pedido; um pedido pode ter vários itens.</td></tr>
-      <tr><td class="attr">é_efetuado_por</td><td>PEDIDO (0,N) — CLIENTE (1,1)</td><td>Cada pedido é efetuado por exatamente um cliente; um cliente pode efetuar vários pedidos.</td></tr>
+      <tr><td class="attr">realiza (venda)</td><td>CLIENTE (1,1) — PEDIDO (0,N)</td><td>Cada pedido é realizado por exatamente um cliente; um cliente pode realizar vários pedidos.</td></tr>
+      <tr><td class="attr">atende</td><td>VENDEDOR (1,1) — PEDIDO (0,N)</td><td>Cada pedido é atendido por exatamente um vendedor; um vendedor atende vários pedidos — base do cálculo de comissão.</td></tr>
+      <tr><td class="attr">contém</td><td>PEDIDO (1,1) — ITEM_PEDIDO (1,N)</td><td>Todo pedido contém pelo menos um item; cada item pertence a exatamente um pedido.</td></tr>
+      <tr><td class="attr">é_vendido_em</td><td>PRODUTO (1,1) — ITEM_PEDIDO (0,N)</td><td>Cada item de pedido refere-se a exatamente um produto; um produto pode ser vendido em vários itens.</td></tr>
+      <tr><td class="attr">gera (cobrança)</td><td>PEDIDO (1,1) — CONTAS_RECEBER (0,N)</td><td>Cada pedido pode gerar um ou mais títulos a receber (ex.: parcelamento); um título a receber refere-se a exatamente um pedido.</td></tr>
     </tbody>
   </table>
+
+  <!-- LOG DE ACESSO -->
+  <h2 class="section">Log de acesso e auditoria</h2>
+  <p class="subtitle" style="margin-bottom:10px">
+    Mecanismo transversal (nível lógico/físico — não representado como entidade no DER conceitual, para não poluir
+    o diagrama com uma estrutura de infraestrutura que se aplica a várias entidades ao mesmo tempo).
+  </p>
+  <table class="conv-table">
+    <colgroup><col style="width:24%"><col style="width:76%"></colgroup>
+    <tbody>
+      <tr><td class="k">Entidades auditadas</td><td>FORNECEDOR (nr_cnpj), CLIENTE (nr_cpf, ds_email, ds_endereco), VENDEDOR, ARTESÃO_FACÇÃO (dados pessoais), CONTAS_PAGAR e CONTAS_RECEBER (dados financeiros) — qualquer entidade com dado pessoal ou financeiro sensível.</td></tr>
+      <tr><td class="k">Estrutura proposta</td><td><code>LOG_ACESSO(id_log PK, nm_usuario, dt_hora, nm_entidade, nm_operacao, ds_chave_registro, ds_valor_anterior, ds_valor_novo)</code> — tabela de log no nível lógico, fora do DER conceitual.</td></tr>
+      <tr><td class="k">Captura de INSERT/UPDATE/DELETE</td><td>Triggers <code>AFTER INSERT/UPDATE/DELETE</code> nas tabelas sensíveis (CLIENTE, FORNECEDOR, VENDEDOR, ARTESÃO_FACÇÃO, CONTAS_PAGAR, CONTAS_RECEBER), gravando usuário da sessão, data/hora e os valores antigo/novo dos campos alterados.</td></tr>
+      <tr><td class="k">Captura de SELECT</td><td>MySQL não audita leitura nativamente sem plugin de auditoria; a leitura de dados pessoais (CPF, CNPJ) é registrada em nível de aplicação (middleware/API), não no banco.</td></tr>
+      <tr><td class="k">Retenção</td><td>5 anos — alinhado a prazos usuais de obrigações fiscais e civis no Brasil, compatível com o art. 16 da LGPD (eliminação dos dados após atingida a finalidade, ressalvadas obrigações legais/regulatórias).</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ACESSO POR OPERAÇÃO E LGPD -->
+  <h2 class="section">Acesso por operação e classificação LGPD</h2>
+  <p class="subtitle" style="margin-bottom:10px">
+    Perfis considerados: <b>Vendas</b>, <b>Compras</b>, <b>Produção</b>, <b>Financeiro</b>, <b>Admin</b> (administração/TI, acesso irrestrito).
+    Classificação: <span class="idx-note" style="display:inline;padding:1px 6px;background:#fdecea;color:#9c2b1f;border:none">dado pessoal sensível</span>
+    (identificador único de pessoa natural/jurídica) ·
+    <span style="display:inline;padding:1px 6px;background:#fff6e0;color:#8a5a1a">dado pessoal</span>
+    (nome/contato de pessoa física) ·
+    <span style="display:inline;padding:1px 6px;color:#888">não pessoal</span>.
+  </p>
+  <table class="matrix">
+    <colgroup><col style="width:17%"><col style="width:14%"><col style="width:35%"><col style="width:34%"></colgroup>
+    <thead><tr><th style="text-align:left">Entidade</th><th>Classificação LGPD</th><th>Leitura (R)</th><th>Escrita (C/U/D)</th></tr></thead>
+    <tbody>
+      <tr><td class="ent">FORNECEDOR</td><td class="lgpd-pess">pessoal</td><td>Compras, Financeiro, Admin</td><td>Compras, Admin</td></tr>
+      <tr><td class="ent">INSUMO</td><td class="lgpd-n">não pessoal</td><td>Compras, Produção, Admin</td><td>Compras, Admin</td></tr>
+      <tr><td class="ent">LOTE_INSUMO</td><td class="lgpd-n">não pessoal</td><td>Compras, Produção, Financeiro, Admin</td><td>Compras, Admin</td></tr>
+      <tr><td class="ent">FICHA_TÉCNICA</td><td class="lgpd-n">não pessoal</td><td>Produção, Compras, Admin</td><td>Produção, Admin</td></tr>
+      <tr><td class="ent">PRODUTO / BOLSA / ACESSÓRIO</td><td class="lgpd-n">não pessoal</td><td>Vendas, Produção, Compras, Admin</td><td>Produção, Admin</td></tr>
+      <tr><td class="ent">ORDEM_PRODUÇÃO</td><td class="lgpd-n">não pessoal</td><td>Produção, Admin</td><td>Produção, Admin</td></tr>
+      <tr><td class="ent">ETAPA_PRODUÇÃO</td><td class="lgpd-n">não pessoal</td><td>Produção, Admin</td><td>Produção, Admin</td></tr>
+      <tr><td class="ent">ARTESÃO_FACÇÃO</td><td class="lgpd-pess">pessoal</td><td>Produção, Financeiro, Admin</td><td>Produção, Admin</td></tr>
+      <tr><td class="ent">EXECUÇÃO_ETAPA</td><td class="lgpd-n">não pessoal</td><td>Produção, Financeiro, Admin</td><td>Produção, Admin</td></tr>
+      <tr><td class="ent">CLIENTE</td><td class="lgpd-sens">sensível (CPF)</td><td>Vendas, Financeiro, Admin</td><td>Vendas, Admin</td></tr>
+      <tr><td class="ent">VENDEDOR</td><td class="lgpd-pess">pessoal</td><td>Vendas, Financeiro, Admin</td><td>Admin</td></tr>
+      <tr><td class="ent">PEDIDO</td><td class="lgpd-n">não pessoal direto</td><td>Vendas, Financeiro, Admin</td><td>Vendas, Admin</td></tr>
+      <tr><td class="ent">ITEM_PEDIDO</td><td class="lgpd-n">não pessoal</td><td>Vendas, Financeiro, Admin</td><td>Vendas, Admin</td></tr>
+      <tr><td class="ent">CONTAS_RECEBER</td><td class="lgpd-n">financeiro sensível</td><td>Financeiro, Vendas (consulta), Admin</td><td>Financeiro, Admin</td></tr>
+      <tr><td class="ent">CONTAS_PAGAR</td><td class="lgpd-n">financeiro sensível</td><td>Financeiro, Compras (consulta), Admin</td><td>Financeiro, Admin</td></tr>
+    </tbody>
+  </table>
+  <div class="callout">
+    <b>Dados pessoais sensíveis identificados:</b> CLIENTE.nr_cpf (identificador único de pessoa natural) e, em menor
+    grau, FORNECEDOR.nr_cnpj (identificador de pessoa jurídica, mas que pode corresponder a um MEI/pessoa física).
+    Ambos têm acesso de escrita restrito ao perfil responsável pelo cadastro (Vendas/Compras) e ao Admin, e são
+    auditados conforme a seção "Log de acesso" acima.
+  </div>
 
   <!-- FLUXO -->
   <h2 class="section">Fluxo ponta a ponta</h2>
   <table>
-    <colgroup><col style="width:17%"><col style="width:30%"><col style="width:53%"></colgroup>
+    <colgroup><col style="width:17%"><col style="width:33%"><col style="width:50%"></colgroup>
     <thead><tr><th>Etapa</th><th>Entidades e relacionamentos</th><th>Explicação</th></tr></thead>
     <tbody>
-      <tr><td class="attr">1. Entrada de matéria-prima</td><td>FORNECEDOR — fornece — INSUMO</td><td>O fornecedor vende os materiais. O insumo mantém tipo, unidade, saldo atual e preço unitário de referência.</td></tr>
-      <tr><td class="attr">2. Engenharia de produto</td><td>INSUMO — compõe — FICHA_TÉCNICA — detalha — PRODUTO</td><td>A ficha técnica é a lista de materiais por produto e informa a quantidade necessária de cada insumo.</td></tr>
-      <tr><td class="attr">3. Hierarquia de produto</td><td>PRODUTO — TD — BOLSA / ACESSÓRIO</td><td>Classifica todo produto como bolsa ou acessório, cada um com atributos próprios.</td></tr>
-      <tr><td class="attr">4. Saída comercial</td><td>PRODUTO — ITEM_PEDIDO — PEDIDO — CLIENTE</td><td>Registra os produtos vendidos, preço praticado, subtotal, total do pedido e o cliente que efetuou a compra.</td></tr>
-      <tr><td class="attr">Rastreabilidade</td><td>FORNECEDOR &gt; INSUMO &gt; FICHA_TÉCNICA &gt; PRODUTO &gt; ITEM_PEDIDO &gt; PEDIDO &gt; CLIENTE</td><td>Permite rastrear a origem do insumo, seu uso no produto e a venda ao cliente.</td></tr>
+      <tr><td class="attr">1. Compras</td><td>FORNECEDOR — fornece — LOTE_INSUMO — é_recebido_como — INSUMO — gera — CONTAS_PAGAR</td><td>Cada recebimento de material vira um lote rastreável (fornecedor, data, quantidade, preço pago) e pode gerar um título a pagar.</td></tr>
+      <tr><td class="attr">2. Engenharia de produto</td><td>INSUMO — compõe — FICHA_TÉCNICA — é_detalhado_em — PRODUTO</td><td>A ficha técnica é a lista de materiais por produto e informa a quantidade necessária de cada insumo.</td></tr>
+      <tr><td class="attr">3. Produção</td><td>PRODUTO — é_produzido_em — ORDEM_PRODUÇÃO — se_desdobra_em — EXECUÇÃO_ETAPA — classifica/realiza — ETAPA_PRODUÇÃO / ARTESÃO_FACÇÃO</td><td>Uma ordem de produção percorre as etapas padrão, cada uma executada por um artesão ou facção, com aproveitamento/perda registrados.</td></tr>
+      <tr><td class="attr">4. Hierarquia de produto</td><td>PRODUTO — TD — BOLSA / ACESSÓRIO</td><td>Classifica todo produto como bolsa ou acessório, cada um com atributos próprios.</td></tr>
+      <tr><td class="attr">5. Vendas</td><td>CLIENTE / VENDEDOR — PEDIDO — contém — ITEM_PEDIDO — é_vendido_em — PRODUTO</td><td>Registra os produtos vendidos, preço praticado, subtotal, total do pedido, o cliente que comprou e o vendedor/canal que atendeu (base da comissão).</td></tr>
+      <tr><td class="attr">6. Financeiro</td><td>PEDIDO — gera — CONTAS_RECEBER · LOTE_INSUMO — gera — CONTAS_PAGAR</td><td>Vendas geram títulos a receber; compras geram títulos a pagar — os dois lados do fluxo de caixa da empresa.</td></tr>
+      <tr><td class="attr">Rastreabilidade</td><td>FORNECEDOR &gt; LOTE_INSUMO &gt; INSUMO &gt; FICHA_TÉCNICA &gt; PRODUTO &gt; ORDEM_PRODUÇÃO &gt; PEDIDO &gt; CLIENTE</td><td>Permite rastrear a origem do lote de insumo, seu uso no produto, a ordem que o produziu e a venda final ao cliente.</td></tr>
     </tbody>
   </table>
 
-  <p class="footer-note">Dicionário de Dados Conceitual — DER de 9 entidades</p>
+  <p class="footer-note">Dicionário de Dados Conceitual — DER de 17 entidades — v2.0 (15/10/2026)</p>
 
 </div>
 </body>

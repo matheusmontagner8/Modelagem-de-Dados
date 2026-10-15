@@ -12,11 +12,13 @@
 
 ## 1. Caracterização da Organização
 
+> **Nota desta revisão:** a versão anterior desta seção apresentava porte e problemas operacionais no condicional ("sugerem", "prováveis de estarem"), como se fossem conclusões do levantamento — o professor apontou, na [issue #1](https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1), que isso são inferências do grupo, não observações relatadas pela organização. A redação abaixo separa o que foi **observado diretamente** (fotos, visita, dados informados pelo responsável) do que ainda **não foi confirmado**.
 
-- **Nome e natureza da organização:**  Contrasti Bolsas e Acessórios Ltda - Fabricação de Bolsas. O questionário usado como base trata de uma "Indústria e Comércio de Bolsas de Couro" — uma empresa com fins lucrativos que fabrica e vende bolsas de couro (produção própria + venda direta e por canais diversos).
-- **Contexto e porte:** com fins lucrativos; opera simultaneamente como indústria e comércio (venda em loja física, e-commerce, WhatsApp e representantes externos). O uso de facções terceirizadas e o controle de aproveitamento de couro por corte sugerem uma operação de pequeno a médio porte, com produção sob encomenda/lote (não em larga escala industrial). Volume médio de pedidos por mês entre 50 a 70, aumentando nas datas comemorativas (Dia das Mães e Natal).
-- **Problemas e necessidades identificados:** o levantamento de requisitos aponta processos hoje prováveis de estarem descentralizados/manuais: controle de estoque de insumos (couro, ferragens, zíperes) sem rastreabilidade de lote; ausência de regra formal de crédito para vendas a prazo; cálculo de custo/preço de venda não padronizado (ficha técnica); acompanhamento de produção sem visibilidade de status; e falta de integração entre vendas, estoque e financeiro (títulos a pagar/receber gerados manualmente).
-- **Justificativa da escolha:** Uma empresa que a gente sabia que ia ter acesso fácil e que consideramos de porte médio, não deixando nem tão simples e nem tão complicado o nosso trabalho.
+- **Nome e natureza da organização:** Contrasti Bolsas e Acessórios Ltda — Indústria e Comércio de Bolsas e Acessórios de Couro, com fins lucrativos. Produção própria, com venda direta e por canais diversos (loja física, e-commerce, WhatsApp, representantes externos).
+- **O que foi observado diretamente na visita:** oficina de costura com múltiplas máquinas, bancada de corte/produção, estoque segmentado entre insumos e produtos prontos, e uso de facções terceirizadas para parte da produção (evidências fotográficas abaixo). Volume de pedidos informado pelo responsável: 50 a 70 por mês, com aumento nas datas comemorativas (Dia das Mães e Natal).
+- 🔴 **Pendente de confirmação com a organização:** número exato de pessoas na equipe, e o relato formal de uma crise ou dificuldade operacional específica. O grupo percebeu indícios de processos manuais durante a visita (estoque sem rastreabilidade de lote por fornecedor, ausência de regra formal de crédito, cálculo de custo não padronizado) — mas isso é leitura do grupo sobre o que viu, não uma declaração do responsável, e por isso não está registrado aqui como fato confirmado. Fica como item a verificar em um próximo contato com Osmar Lingiard.
+- **Como o levantamento foi feito:** visita presencial às instalações (fotos tiradas dentro da fábrica e do escritório administrativo, evidências abaixo) e entrevista com o responsável pela empresa, Osmar Lingiard, complementada por um questionário estruturado preenchido durante a conversa.
+- **Justificativa da escolha:** organização de acesso facilitado para o grupo, com processos observáveis em uma única visita — nem tão simples a ponto de não ter o que modelar, nem tão complexa a ponto de inviabilizar o levantamento no prazo da disciplina.
 - **Evidências da organização:** Endereço: Rua Alpiste, 116 - Jd. Eliane - São Paulo - SP. Contato na empresa: Osmar Lingiard, telefone para contato: 11 97334-4846, email: osmar@specia.com.br.
 
 <p align="center">
@@ -30,21 +32,22 @@
   <img src="evidencias/06-fachada.jpg" width="32%" />
 </p>
 
-*Da esquerda para a direita, de cima para baixo: bancada de produção (corte/costura), Jaime no escritório, estoque de bolsas prontas (corredor G), oficina com as máquinas de costura, estoque de insumos/materiais, fachada na Rua Alpiste.
+*Da esquerda para a direita, de cima para baixo: bancada de produção (corte/costura), escritório administrativo (espaço de trabalho do responsável pela empresa), estoque de bolsas prontas (corredor G), oficina com as máquinas de costura, estoque de insumos/materiais, fachada na Rua Alpiste.*
 
 ## 2. Processos de Negócio
 
+> **Nota desta revisão:** o professor apontou, na [issue #1](https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1), que apenas a Ordem de Produção (item 5) tinha fluxo descrito — os demais processos eram listas de funcionalidade de uma linha, sem etapas nem integração entre eles. Cada processo abaixo agora traz a sequência de etapas (fluxo) e para qual outro processo ele entrega o resultado (integração).
 
-**Principais processos mapeados** (extraídos do levantamento de requisitos, um por bloco do questionário):
+**Visão geral do fluxo entre processos:** Compras (2/4) abastece a Produção (3/5), que abastece Vendas (6), que aciona Expedição (7); Compras e Vendas, por sua vez, geram lançamentos no Financeiro (8). Cadastro de clientes (1) é pré-requisito de Vendas (6).
 
-1. **Cadastro e gestão de clientes** — cadastro com múltiplos endereços, perfil de preço (varejo/atacado) e aprovação de crédito.
-2. **Cadastro e gestão de fornecedores** — dados do fornecedor, categoria de insumo e histórico de compras/avaliação.
-3. **Ficha técnica e cadastro de produtos** — modelo → variação (SKU) → lista de materiais (BOM) com cálculo de custo.
-4. **Gestão de estoque e compras** — entrada de insumo (XML de NF-e ou manual), controle por unidade de medida, estoque mínimo e baixa automática.
-5. **Ordem de produção e chão de fábrica** — abertura de OP, execução por etapa (Modelagem → Corte → Preparação/Colagem → Costura → Montagem/Ferragens → Acabamento/Revisão → Embalagem), com Kanban e controle de aproveitamento de couro.
-6. **Vendas, pedidos e faturamento** — pedido multicanal, forma de pagamento, comissão e emissão de NF-e/NFC-e.
-7. **Expedição e pós-venda** — picking & packing, integração logística e garantia (RMA).
-8. **Gestão financeira e relatórios gerenciais** — Contas a Pagar/Receber automáticos e indicadores (Curva ABC, DRE, fluxo de caixa).
+1. **Cadastro e gestão de clientes** — Cadastro (dados, perfil varejo/atacado, múltiplos endereços) → Consulta de restrição de CPF/CNPJ → Aprovação de crédito quando o pagamento é a prazo (boleto) → cliente liberado para pedido. *Integra com:* Vendas (processo 6), que só abre pedido para cliente cadastrado e aprovado.
+2. **Cadastro e gestão de fornecedores** — Cadastro (dados, categoria de insumo, prazo médio de entrega) → registro de cada compra recebida → atualização do histórico de avaliação (preço, variação, pontualidade). *Integra com:* Estoque/Compras (processo 4), que usa o fornecedor cadastrado para registrar cada lote recebido, e Financeiro (processo 8), que gera o título a pagar.
+3. **Ficha técnica e cadastro de produtos** — Cadastro do modelo → definição das variações (SKU: cor × tipo de couro × ferragem) → montagem da lista de materiais (BOM/ficha técnica) → cálculo automático de custo e preço sugerido (ficha técnica + mão de obra + markup). *Integra com:* Estoque (consome o saldo de insumo listado na ficha técnica) e Vendas (fornece o preço base do produto).
+4. **Gestão de estoque e compras** — Entrada de insumo por lote (XML de NF-e ou manual, com fornecedor e cor/tonalidade do lote) → atualização do saldo na unidade de medida correta → monitoramento de estoque mínimo com alerta → baixa automática na abertura de Ordem de Produção. *Integra com:* Fornecedores (processo 2, origem do lote), Produção (processo 5, consumo do insumo) e Financeiro (processo 8, título a pagar por lote).
+5. **Ordem de produção e chão de fábrica** — Abertura de OP vinculada a um SKU → baixa automática do insumo necessário → execução por etapa (Modelagem → Corte → Preparação/Colagem → Costura → Montagem/Ferragens → Acabamento/Revisão → Embalagem), com Kanban e controle de aproveitamento de couro por etapa de corte → produto pronto disponível em estoque. *Integra com:* Ficha técnica (processo 3, o que consumir), Estoque (processo 4, baixa de insumo e alta de produto pronto) e remuneração de artesão/facção pela etapa executada.
+6. **Vendas, pedidos e faturamento** — Abertura do pedido por canal (loja física, e-commerce, WhatsApp, representante) → definição de forma de pagamento e congelamento do preço no item → faturamento e emissão de NF-e/NFC-e → cálculo de comissão do vendedor sobre o pedido faturado. *Integra com:* Cadastro de clientes (processo 1, pré-requisito), Estoque (processo 4, baixa de produto pronto), Expedição (processo 7, próximo passo) e Financeiro (processo 8, título a receber).
+7. **Expedição e pós-venda** — Separação e conferência por código de barras (picking) → embalagem (checklist + dust bag) → envio com integração logística e rastreio → registro de troca/devolução/garantia (RMA) vinculado ao item efetivamente entregue. *Integra com:* Vendas (processo 6, pedido de origem) e Financeiro (processo 8, estorno em caso de devolução).
+8. **Gestão financeira e relatórios gerenciais** — Geração automática de Contas a Pagar (a partir de cada lote de insumo recebido, processo 2/4) e Contas a Receber (a partir de cada pedido faturado, processo 6) → baixa conforme pagamento/recebimento → consolidação em indicadores gerenciais (Curva ABC, margem por produto, DRE, fluxo de caixa previsto × realizado). *Integra com:* todos os processos anteriores — é o ponto de encontro dos dois fluxos de caixa (compras e vendas).
 
 
 ---
@@ -95,6 +98,8 @@
 
 ## 4. Regras de Negócio
 
+> **Nota desta revisão:** o professor observou, na [issue #1](https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1), que a própria Seção 9 já registrava que este conteúdo reflete o texto do levantamento e que valores como limite de crédito e percentual de comissão são exemplos/referências, não confirmados. Isso continua valendo: as regras abaixo vieram da entrevista com Osmar Lingiard e são coerentes com os processos descritos na Seção 2, mas os **valores numéricos específicos** (ex.: percentual de comissão) ainda não foram validados linha a linha com a organização e não devem ser tratados como definitivos fora do contexto desta disciplina.
+
 - **Regras operacionais:**
   - Inscrição Estadual só é obrigatória quando o perfil do cliente é Atacado/Lojista.
   - Toda variação de produto (SKU) pertence a exatamente um modelo; um modelo pode ter uma ou várias variações.
@@ -112,139 +117,83 @@
 
 ---
 
-## 5. Dicionário de Dados Conceitual (Preliminar)
+## 5. Dicionário de Dados Conceitual
 
+> **Nota desta revisão:** o professor marcou esta seção/o dicionário como "não atendido" na [issue #1](https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1) — faltavam convenções (SGBD, collation, notação, prefixos, versão), expressão formal/leitura, tipo físico e índices por entidade, log de acesso, e matriz de acesso por operação/LGPD. Todo esse conteúdo foi adicionado ao dicionário completo, que agora é a referência única e detalhada (evita duplicar ~17 tabelas, com risco de o README e o HTML saírem de sincronia). O resumo abaixo lista as 17 entidades do DER atual; **tipo físico, índices, convenções, log de acesso e a matriz LGPD estão em [`Dicionario_de_Dados.html`](Dicionario_de_Dados.html)**.
 
-> Formato oficial da disciplina: por entidade, `Atributo | Descrição | Regra de negócio associada`. As 9 entidades abaixo correspondem ao DER atual (`Diagrama/Diagrama.png`): fornecedor → insumo → ficha técnica → produto (bolsa/acessório) → item de pedido → pedido → cliente. Diferente de um DER conceitual "puro", este diagrama identifica explicitamente as chaves estrangeiras (marcadas "(FK)"), convenção que o grupo adotou para deixar visível, já nesta etapa, quais atributos vão virar FK no modelo lógico.
-
-### FORNECEDOR
-| Atributo | Descrição | Regra de negócio associada |
+| Entidade | Chave primária | Papel no modelo |
 |---|---|---|
-| id_fornecedor | Identificador | Chave primária, gerada pelo sistema. |
-| nome | Nome do fornecedor | Obrigatório. |
-| cnpj | CNPJ | Obrigatório e único. Dado protegido pela LGPD. |
-| telefone | Telefone | Contato direto com o fornecedor. |
-| email | E-mail comercial | Canal de contato comercial com o fornecedor. |
-| endereco | Endereço | Endereço comercial do fornecedor. |
-| data_cadastro | Data de cadastro | Preenchida automaticamente na criação do registro. |
-| categoria_fornecedor | Categoria do fornecedor | Classifica o tipo de insumo que o fornecedor costuma vender (ex.: couro, ferragens, zíperes, embalagens). |
+| FORNECEDOR | id_fornecedor | Quem fornece os insumos. |
+| INSUMO | id_insumo | Material usado na produção (couro, ferragem, zíper, forro). |
+| LOTE_INSUMO | id_lote | Cada recebimento de insumo, por lote e fornecedor — rastreabilidade. *(nova)* |
+| FICHA_TÉCNICA | id_ficha | Lista de materiais (BOM) de cada produto. Associativa PRODUTO↔INSUMO. |
+| PRODUTO | id_produto | Supertipo comercial — especializado em BOLSA/ACESSÓRIO (TD). |
+| BOLSA | id_produto | Subtipo de PRODUTO. |
+| ACESSÓRIO | id_produto | Subtipo de PRODUTO. |
+| ORDEM_PRODUÇÃO | id_op | Ordem de fabricação de um produto. *(nova, essencial)* |
+| ETAPA_PRODUÇÃO | id_etapa | Etapa padrão do processo produtivo (corte, costura...). *(nova)* |
+| ARTESÃO_FACÇÃO | id_artesao | Quem executa cada etapa (interno ou terceirizado). *(nova)* |
+| EXECUÇÃO_ETAPA | id_execucao | Associativa OP↔ETAPA↔ARTESÃO — base do pagamento por etapa. *(nova)* |
+| CLIENTE | id_cliente | Quem compra. |
+| VENDEDOR | id_vendedor | Quem atende o pedido — base da comissão por canal. *(nova)* |
+| PEDIDO | id_pedido | Venda registrada. |
+| ITEM_PEDIDO | id_item_pedido | Linha de produto dentro de um pedido. Associativa PEDIDO↔PRODUTO. |
+| CONTAS_RECEBER | id_titulo_receber | Título financeiro gerado a partir do pedido. *(nova)* |
+| CONTAS_PAGAR | id_titulo_pagar | Título financeiro gerado a partir do lote de insumo. *(nova)* |
 
-### INSUMO
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| id_insumo | Identificador | Chave primária, gerada pelo sistema. |
-| nome_insumo | Nome do material | Obrigatório. Exemplos: couro bovino caramelo, zíper, fivela, forro. |
-| tipo_insumo | Grupo do material | Classifica o insumo (couro, ferragem, zíper, embalagem). |
-| unidade_medida | Unidade de controle | Obrigatória (dm², m², unidade, metro, kg ou litro). |
-| estoque_atual | Saldo em estoque | Nunca pode ser negativo. |
-| preco_unitario | Preço por unidade de medida | Custo de referência do insumo. |
-
-### FICHA_TÉCNICA *(entidade associativa — chave composta PRODUTO + INSUMO)*
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| produto_id | Produto ao qual a linha pertence | Chave primária composta + chave estrangeira → PRODUTO. |
-| insumo_id | Insumo utilizado nessa linha | Chave primária composta + chave estrangeira → INSUMO. |
-| quantidade_necessaria | Quantidade por peça | Deve ser maior que zero e seguir a unidade_medida do insumo. |
-
-### PRODUTO *(supertipo)*
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| id_produto | Identificador | Chave primária, gerada pelo sistema. Mesma chave usada por BOLSA e ACESSÓRIO. |
-| nome | Nome do produto | Obrigatório. Exemplo: Bolsa Tote. |
-| descricao | Descrição do produto | Texto livre com detalhes do modelo. |
-| preco_base | Preço base de venda | Valor de referência para a venda do produto. |
-| categoria | Categoria do produto | Classificação comercial (linha, coleção ou departamento). |
-| estoque_total | Saldo de produtos prontos | Quantidade disponível para venda. |
-
-### BOLSA *(subtipo de PRODUTO)*
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| id_bolsa | Identificador | Mesmo valor de id_produto do PRODUTO correspondente. |
-| material | Material principal | Obrigatório para bolsa. |
-| cor | Cor da bolsa | Obrigatória para bolsa. |
-| tamanho | Dimensão da bolsa | Obrigatório para bolsa. |
-| tipo_alca | Tipo de alça | Obrigatório para bolsa. |
-
-### ACESSÓRIO *(subtipo de PRODUTO)*
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| id_acessorio | Identificador | Mesmo valor de id_produto do PRODUTO correspondente. |
-| material | Material principal | Obrigatório para acessório. |
-| cor | Cor do acessório | Obrigatória para acessório. |
-| tipo_acessorio | Tipo do acessório | Obrigatório. Exemplos: cinto, porta-cartões. |
-| compatibilidade | Compatibilidade com outros produtos | Opcional. |
-
-### ITEM_PEDIDO *(entidade associativa — identificador próprio)*
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| id_item_pedido | Identificador | Chave primária, gerada pelo sistema. |
-| produto_id | Produto vendido | Chave estrangeira → PRODUTO. |
-| pedido_id | Pedido ao qual o item pertence | Chave estrangeira → PEDIDO. |
-| quantidade | Unidades vendidas | Número inteiro maior que zero. |
-| preco_unitario | Preço aplicado na venda | Fica congelado no momento da venda. |
-| subtotal | Total do item | quantidade × preco_unitario. |
-
-### PEDIDO
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| id_pedido | Identificador | Chave primária, gerada pelo sistema. |
-| data_pedido | Data do pedido | Obrigatória. |
-| status | Situação do pedido | Obrigatório (ex.: aberto, faturado, expedido). |
-| valor_total | Total do pedido | Soma do subtotal de todos os itens. |
-| forma_pagamento | Forma de pagamento | Aceita: PIX, Cartão ou Boleto. |
-| observacoes | Observações do pedido | Opcional. |
-
-### CLIENTE
-| Atributo | Descrição | Regra de negócio associada |
-|---|---|---|
-| id_cliente | Identificador | Chave primária, gerada pelo sistema. |
-| nome | Nome do cliente | Obrigatório. |
-| cpf | CPF | Obrigatório e único. Dado protegido pela LGPD. |
-| telefone | Telefone ou WhatsApp | Canal principal de contato. |
-| email | E-mail | Comunicação e envio de comprovantes. |
-| endereco | Endereço | Endereço de entrega e/ou cobrança. |
-| data_cadastro | Data de cadastro | Preenchida automaticamente na criação do registro. |
+As 8 entidades marcadas *(nova)* foram adicionadas nesta revisão: ORDEM_PRODUÇÃO e LOTE_INSUMO porque o professor as apontou como **essenciais e ausentes** (sem ORDEM_PRODUÇÃO não havia como registrar o processo de fabricação já descrito na Seção 2; sem LOTE_INSUMO, a relação direta FORNECEDOR–INSUMO (1,1) contradizia a própria regra de negócio de rastreabilidade por lote, já que um insumo pode ser recebido de fornecedores diferentes ao longo do tempo); ETAPA_PRODUÇÃO, ARTESÃO_FACÇÃO, EXECUÇÃO_ETAPA, VENDEDOR, CONTAS_RECEBER e CONTAS_PAGAR porque o professor as sugeriu como **desejáveis**, e o grupo já tinha as regras de negócio correspondentes documentadas (pagamento de facção por etapa, comissão por canal, contas a pagar/receber) sem entidade no DER para sustentá-las.
 
 ---
 
 ## 6. Modelagem Conceitual (Entidades, Atributos, Relacionamentos)
 
+> **Nota desta revisão:** modelo reconstruído em resposta ao Critério 10 da [issue #1](https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1) — de 9 para 17 entidades, de 6 para 16 relacionamentos, todos agora com cardinalidade mínima **e** máxima nas duas pontas (a versão anterior só mostrava `1`/`N`, apesar de a tabela desta seção já declarar `(1,1)`/`(0,N)` — inconsistência entre o texto e a imagem que o professor apontou).
 
-- **Entidades reconhecidas (9 no total):** FORNECEDOR, INSUMO, FICHA_TÉCNICA, PRODUTO, BOLSA, ACESSÓRIO, ITEM_PEDIDO, PEDIDO e CLIENTE. Duas são **entidades associativas** (FICHA_TÉCNICA, ITEM_PEDIDO), e PRODUTO é um **supertipo** especializado em BOLSA e ACESSÓRIO.
-- **Atributos e classificações:** detalhados por entidade na Seção 5. O diagrama marca explicitamente as chaves estrangeiras (`produto_id (FK)`, `insumo_id (FK)`, `pedido_id (FK)`) — uma antecipação deliberada do modelo lógico, diferente da notação conceitual estritamente pura.
+- **Entidades reconhecidas (17 no total):** FORNECEDOR, INSUMO, LOTE_INSUMO, FICHA_TÉCNICA, PRODUTO, BOLSA, ACESSÓRIO, ORDEM_PRODUÇÃO, ETAPA_PRODUÇÃO, ARTESÃO_FACÇÃO, EXECUÇÃO_ETAPA, CLIENTE, VENDEDOR, PEDIDO, ITEM_PEDIDO, CONTAS_RECEBER e CONTAS_PAGAR. Quatro são **entidades associativas** (LOTE_INSUMO, FICHA_TÉCNICA, EXECUÇÃO_ETAPA, ITEM_PEDIDO), e PRODUTO é um **supertipo** especializado em BOLSA e ACESSÓRIO. Detalhamento completo (atributos, tipo físico, índices) na Seção 5 e em [`Dicionario_de_Dados.html`](Dicionario_de_Dados.html).
+- **Atributos e classificações:** o diagrama **não** marca chaves estrangeiras dentro das entidades — na versão anterior, FICHA_TÉCNICA usava `produto_id (PK, FK)` + `insumo_id (PK, FK)` como chave composta, o que o professor apontou como agravante ("FK como identificador"). Agora toda entidade associativa tem **chave própria** (ex.: `id_ficha`), e FKs ficam reservadas para o modelo lógico (Entrega 2), nunca aparecendo no conceitual.
 - **Especialização PRODUTO → BOLSA / ACESSÓRIO:** total e disjunta (símbolo "TD" no diagrama) — todo produto é obrigatoriamente bolsa OU acessório, nunca os dois. BOLSA e ACESSÓRIO herdam todos os atributos de PRODUTO.
-- **Relacionamentos pertinentes (6 no total, mais a especialização):**
+- **Relacionamentos pertinentes (16 no total, mais a especialização):**
 
 | # | Entidade A | Card. A | Verbo | Card. B | Entidade B | Observação |
 |---|---|---|---|---|---|---|
-| 01 | FORNECEDOR | (1,1) | fornece | (0,N) | INSUMO | um fornecedor fornece vários insumos; cada insumo tem um único fornecedor |
-| 02 | INSUMO | (1,1) | compõe | (0,N) | FICHA_TÉCNICA | cada linha da ficha técnica usa exatamente um insumo |
-| 03 | FICHA_TÉCNICA | (0,N) | detalha | (1,1) | PRODUTO | cada linha detalha exatamente um produto; um produto tem uma linha por insumo |
-| 04 | PRODUTO | (1,1) | integra | (0,N) | ITEM_PEDIDO | um produto pode integrar vários itens de pedido |
-| 05 | ITEM_PEDIDO | (0,N) | pertence_a | (1,1) | PEDIDO | cada item pertence a exatamente um pedido |
-| 06 | PEDIDO | (0,N) | é_efetuado_por | (1,1) | CLIENTE | cada pedido é efetuado por exatamente um cliente |
+| 01 | FORNECEDOR | (1,1) | fornece | (0,N) | LOTE_INSUMO | um fornecedor fornece vários lotes; cada lote tem um único fornecedor |
+| 02 | INSUMO | (1,1) | é_recebido_como | (0,N) | LOTE_INSUMO | um insumo pode ter lotes de fornecedores diferentes ao longo do tempo |
+| 03 | LOTE_INSUMO | (1,1) | gera | (0,N) | CONTAS_PAGAR | um lote recebido pode gerar um ou mais títulos a pagar |
+| 04 | PRODUTO | (1,1) | é_detalhado_em | (0,N) | FICHA_TÉCNICA | um produto tem uma linha de ficha técnica por insumo usado |
+| 05 | INSUMO | (1,1) | compõe | (0,N) | FICHA_TÉCNICA | cada linha da ficha técnica usa exatamente um insumo |
+| 06 | PRODUTO | (1,1) | é_produzido_em | (0,N) | ORDEM_PRODUÇÃO | um produto pode ter várias ordens de produção |
+| 07 | ORDEM_PRODUÇÃO | (1,1) | se_desdobra_em | (0,N) | EXECUÇÃO_ETAPA | uma OP se desdobra em várias execuções de etapa |
+| 08 | ETAPA_PRODUÇÃO | (1,1) | classifica | (0,N) | EXECUÇÃO_ETAPA | cada execução é classificada em exatamente uma etapa padrão |
+| 09 | ARTESÃO_FACÇÃO | (1,1) | realiza | (0,N) | EXECUÇÃO_ETAPA | cada execução é realizada por exatamente um artesão/facção |
+| TD | PRODUTO | (1,1) | especializa-se em | (1,1) | BOLSA / ACESSÓRIO | total e disjunta — todo produto é bolsa OU acessório |
+| 10 | CLIENTE | (1,1) | realiza | (0,N) | PEDIDO | um cliente pode realizar vários pedidos |
+| 11 | VENDEDOR | (1,1) | atende | (0,N) | PEDIDO | um vendedor atende vários pedidos — base de comissão |
+| 12 | PEDIDO | (1,1) | contém | (1,N) | ITEM_PEDIDO | todo pedido contém pelo menos um item |
+| 13 | PRODUTO | (1,1) | é_vendido_em | (0,N) | ITEM_PEDIDO | um produto pode ser vendido em vários itens |
+| 14 | PEDIDO | (1,1) | gera | (0,N) | CONTAS_RECEBER | um pedido pode gerar um ou mais títulos a receber |
 
-- **Restrições e políticas organizacionais aplicadas ao modelo:** a categoria do fornecedor orienta que tipo de insumo ele fornece; o preço de venda do item de pedido (`preco_unitario`) fica congelado no momento da venda, independente de mudanças futuras no `preco_base` do produto; todo produto precisa se especializar em bolsa ou acessório, nunca os dois.
+- **Restrições e políticas organizacionais aplicadas ao modelo:** a categoria do fornecedor orienta que tipo de insumo ele fornece; o preço de venda do item de pedido (`vl_preco_unitario`) fica congelado no momento da venda, independente de mudanças futuras no `vl_preco_base` do produto; todo produto precisa se especializar em bolsa ou acessório, nunca os dois; todo insumo é rastreado por lote e fornecedor de origem (LOTE_INSUMO), permitindo que o mesmo insumo venha de fornecedores diferentes sem perder a rastreabilidade de cor/tonalidade exigida para peças da mesma coleção.
 
 ---
 
 ## 7. Diagrama Entidade-Relacionamento (DER)
 
-**Arquivos anexados:** `Diagrama/Diagrama.png` (imagem) e `Dicionario_de_Dados.html` (dicionário completo, mesmo conteúdo da Seção 5).
+**Arquivos anexados:** `Diagrama/Diagrama.png` (imagem, 17 entidades) e `Dicionario_de_Dados.html` (dicionário completo).
 
-O diagrama segue a notação de Chen: entidades como **retângulos**, relacionamentos como **losangos** rotulados com o verbo, atributos como **elipses**, com a **chave primária em elipse de contorno destacado (azul)**. Diferente de um DER conceitual estritamente puro, este diagrama marca explicitamente as **chaves estrangeiras** dentro da entidade (ex.: `produto_id (FK)` em ITEM_PEDIDO) — convenção documentada na própria legenda do diagrama. A especialização PRODUTO → BOLSA/ACESSÓRIO usa o triângulo "TD" (Total e Disjunta). As cardinalidades (mín,máx) ficam junto de cada ponta da linha, exatamente como na tabela da Seção 6.
+O diagrama segue a notação de Chen conceitual pura: entidades como **retângulos**, relacionamentos como **losangos** rotulados com o verbo, atributos como **elipses** (chave primária sublinhada, em vermelho). A especialização PRODUTO → BOLSA/ACESSÓRIO usa o triângulo "TD" (Total e Disjunta). **Toda aresta de relacionamento traz o rótulo `mínimo,máximo` nas duas pontas** — a versão anterior só mostrava `1`/`N` na imagem (apesar de a tabela da Seção 6 já declarar `(1,1)`/`(0,N)`), inconsistência apontada pelo professor como a maior deficiência da entrega (Critério 10, -0,40). **Nenhum atributo de chave estrangeira aparece no diagrama** — diferente da versão anterior, que marcava FKs explicitamente dentro das entidades (inclusive como parte da chave primária composta de FICHA_TÉCNICA, apontado como agravante); FK é um detalhe do modelo lógico, não do conceitual, e por isso foi removido.
 
-Este recorte de 9 entidades prioriza o núcleo de custo e venda (o que é preciso para cadastrar, produzir e vender uma peça) e deixou de fora, nesta etapa, os módulos de produção detalhada (ordem de produção, etapas, artesãos), logística/pós-venda e financeiro descritos nas Seções 2 a 4 — que seguem documentados como requisito levantado, para uma modelagem futura.
+Este recorte de 17 entidades cobre, agora, os módulos que a versão de 9 entidades deixava de fora: produção detalhada (ORDEM_PRODUÇÃO, ETAPA_PRODUÇÃO, ARTESÃO_FACÇÃO, EXECUÇÃO_ETAPA — Seção 2, processo 5), recebimento rastreável de insumo (LOTE_INSUMO — Seção 2, processo 4) e financeiro básico (CONTAS_PAGAR, CONTAS_RECEBER — Seção 2, processo 8), além de VENDEDOR para sustentar a regra de comissão por canal (Seção 4). O recorte de logística detalhada (expedição, RMA — Seção 2, processo 7) segue fora desta versão, como requisito levantado para uma modelagem futura, por não ter sido apontado como lacuna essencial pelo professor.
 
 ---
 
 ## 8. Justificativa Técnica
 
-- **Por que 9 entidades e não mais:** o grupo optou por modelar primeiro o núcleo que responde à pergunta "o que é preciso para produzir e vender uma peça" — fornecedor, insumo, ficha técnica e produto, mais o lado comercial mínimo.
-- **Por que FICHA_TÉCNICA e ITEM_PEDIDO como entidades associativas:** ambas carregam atributos próprios (quantidade_necessaria; quantidade/preco_unitario/subtotal) que não pertencem a nenhuma das duas entidades que conectam — a notação exige reificá-los como entidade para acomodar esses atributos.
-- **Por que PRODUTO como supertipo (BOLSA/ACESSORIO):** bolsa e acessório compartilham identificador, nome, descrição, preço base, categoria e estoque — mas cada um tem atributos exclusivos (tamanho/tipo_alça para bolsa; tipo_acessorio/compatibilidade para acessório). Generalização/especialização evita repetir os atributos comuns em duas entidades soltas e ainda documenta, no próprio diagrama, que um produto é sempre um dos dois (TD).
-- **Por que marcar as FKs no diagrama conceitual:** o grupo optou por uma notação híbrida (conceitual + indicação de FK) para deixar mais claro, já nesta entrega, quais atributos migrarão como chave estrangeira no modelo lógico da Entrega 2 — uma antecipação deliberada, não um erro de camada.
-- **Alternativas descartadas:** cogitou-se manter BOLSA e ACESSORIO como uma única entidade PRODUTO com campos opcionais — descartado porque misturaria atributos obrigatórios de um subtipo com atributos irrelevantes do outro.
+- **Por que 17 entidades agora, e não as 9 anteriores:** a versão de 9 entidades modelava apenas o núcleo de custo e venda, mas o professor apontou que ORDEM_PRODUÇÃO e um mecanismo de lote de insumo eram **ausências essenciais** — sem eles, os processos de produção e de rastreabilidade de compra já descritos na Seção 2 não tinham onde ser registrados no modelo. As 6 entidades desejáveis (ETAPA_PRODUÇÃO, ARTESÃO_FACÇÃO, EXECUÇÃO_ETAPA, VENDEDOR, CONTAS_RECEBER, CONTAS_PAGAR) foram incorporadas porque o grupo já tinha a regra de negócio correspondente documentada (Seção 4) sem entidade que a sustentasse.
+- **Por que LOTE_INSUMO substitui a relação direta FORNECEDOR–INSUMO:** a versão anterior modelava FORNECEDOR–INSUMO como (1,1), ou seja, cada insumo vinha de um único fornecedor fixo — o professor apontou que isso contradiz a própria regra de rastreabilidade por lote (Seção 4), já que, na prática, um mesmo insumo (ex.: couro caramelo) pode ser recebido de fornecedores diferentes em momentos diferentes, cada lote com sua cor/tonalidade. LOTE_INSUMO resolve isso: liga-se a exatamente um INSUMO e a exatamente um FORNECEDOR por recebimento, permitindo múltiplos lotes (e múltiplos fornecedores) para o mesmo insumo ao longo do tempo.
+- **Por que FICHA_TÉCNICA, LOTE_INSUMO, EXECUÇÃO_ETAPA e ITEM_PEDIDO como entidades associativas com chave própria:** todas carregam atributos próprios que não pertencem a nenhuma das entidades que conectam (qt_necessaria; nr_lote/qt_recebida/vl_preco_pago; pc_aproveitamento/pc_perda; qt_quantidade/vl_preco_unitario/vl_subtotal) — a notação exige reificá-las como entidade. Nesta revisão, cada uma recebeu uma chave primária própria (ex.: `id_ficha`) em vez da chave composta por FKs que a versão anterior usava em FICHA_TÉCNICA (`produto_id (PK, FK)` + `insumo_id (PK, FK)`) — apontado pelo professor como agravante, por misturar um detalhe de implementação (FK) com a identidade conceitual da entidade.
+- **Por que PRODUTO como supertipo (BOLSA/ACESSÓRIO):** bolsa e acessório compartilham identificador, nome, descrição, preço base, categoria e estoque — mas cada um tem atributos exclusivos (tamanho/tipo_alça para bolsa; tipo_acessorio/compatibilidade para acessório). Generalização/especialização evita repetir os atributos comuns em duas entidades soltas e ainda documenta, no próprio diagrama, que um produto é sempre um dos dois (TD).
+- **Por que nenhuma FK aparece mais no diagrama conceitual:** a versão anterior marcava FKs explicitamente dentro das entidades, como antecipação deliberada do modelo lógico. O professor foi claro que isso não é adequado a um DER conceitual, mesmo quando deliberado — FK é resultado da conversão para o modelo lógico (como já documentado em `Entrega2/modelo_logico.md`), não um atributo do conceitual. O diagrama atual não tem nenhuma FK; a correspondência entre entidades associativas e suas referências continua explícita pelos próprios relacionamentos (losangos) do DER.
+- **Alternativas descartadas:** cogitou-se manter BOLSA e ACESSÓRIO como uma única entidade PRODUTO com campos opcionais — descartado porque misturaria atributos obrigatórios de um subtipo com atributos irrelevantes do outro. Para LOTE_INSUMO, cogitou-se apenas adicionar um atributo multivalorado de "fornecedores" a INSUMO — descartado porque um atributo multivalorado não teria onde guardar data, quantidade e preço de cada recebimento individual; só uma entidade própria resolve isso.
 
 ---
 
@@ -252,14 +201,14 @@ Este recorte de 9 entidades prioriza o núcleo de custo e venda (o que é precis
 
 | Item | Registro |
 |---|---|
-| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — usado em sete momentos: (1) leitura do questionário de requisitos e construção de um primeiro modelo conceitual (21 entidades) e dicionário de dados; (2) geração de um primeiro diagrama ER (notação "pé-de-galinha"); (3) preenchimento deste README a partir do esqueleto oficial da Entrega 1; (4) reconstrução desse primeiro diagrama na notação de Chen usada pelo BrModeloWeb, a pedido explícito do professor; (5) depois que o grupo (Guilherme) remodelou o DER para um recorte mais enxuto de 9 entidades direto no BrModeloWeb, reorganização do dicionário HTML já produzido pelo grupo e reescrita das Seções 5–8 para descrever esse modelo; (6) substituição do diagrama do repositório pela versão corrigida que o grupo enviou (PDF exportado do BrModeloWeb, com nomes de atributo, PKs/FKs e cardinalidades revisados), com o dicionário HTML e as Seções 5–8 atualizados para bater com essa versão; (7) a pedido do grupo, correção pontual de duas cardinalidades da própria imagem do diagrama ("compõe" e "detalha", ao redor de FICHA_TÉCNICA) para o padrão 1:N esperado de uma entidade associativa, e atualização do dicionário HTML e do README para refletir a correção. |
-| **Motivação** | Acelerar a tradução do levantamento de requisitos para um modelo estruturado e para o formato de entrega exigido pela disciplina; depois, manter o README, o diagrama e o dicionário sempre consistentes entre si; por fim, corrigir duas cardinalidades que a própria IA havia sinalizado como pouco usuais, agora com autorização explícita do grupo. |
-| **Prompt(s) utilizados** | "Preciso montar um diagrama e o dicionário desse diagrama, como se fosse no modelo BrModeloWeb..."; "Consegue gerar um arquivo pdf com esse arquivo que montou? Contendo somente o diagrama e o dicionário"; "Ajustar diagrama para o mesmo modelo de BrModeloWeb"; "adicione essas fotos no readme, na parte de evidências"; "De acordo com o dicionário e o diagrama que estão agora, crie o arquivo de dicionário de dados em html"; "Arrume o diagrama para esse pdf, agora ele está correto. No readme faça todas as correções necessárias, de acordo com esse diagrama novo e finalizado"; "Pode ajustar" (autorizando a correção das cardinalidades sinalizadas). |
-| **Resposta recebida** | Um primeiro modelo (21 entidades); o DER redesenhado em notação de Chen; a troca do diagrama de 9 entidades pela versão corrigida enviada pelo grupo, com dicionário e README reescritos atributo a atributo; e, nesta última etapa, a edição direta dos pixels do PNG anexado — os dois números de cardinalidade trocados de lugar (o "N" ao lado de INSUMO virou "1"; o "1" ao lado de FICHA_TÉCNICA virou "N"), copiando o estilo exato de outros números já existentes no próprio diagrama (mesma fonte/cor/tamanho, sem redesenhar o diagrama do zero) — mais a atualização das duas linhas correspondentes no dicionário HTML e no README. |
-| **Fontes consultadas e verificadas** | Nenhuma fonte externa. O modelo de 9 entidades corrigido veio do PDF que o próprio grupo exportou do BrModeloWeb e anexou à conversa; todos os nomes de atributo, PKs, FKs e cardinalidades desta versão do README foram conferidos diretamente nessa imagem, célula a célula. A correção de cardinalidade partiu de uma constatação técnica (padrão 1:N esperado para entidade associativa com chave composta), não de uma fonte externa. |
-| **Trechos rejeitados ou corrigidos** | A primeira versão do diagrama (pé-de-galinha) foi descartada e refeita em Chen a pedido do professor. Depois, o modelo de 21 entidades foi substituído pelo modelo de 9 entidades que o grupo passou a usar, e a primeira tentativa desse modelo (com nome_modelo/markup/custo_materia_prima/preco_tabela em PRODUTO) foi substituída pela versão corrigida enviada pelo grupo. Nessa versão corrigida, os relacionamentos "compõe" (INSUMO–FICHA_TÉCNICA) e "detalha" (FICHA_TÉCNICA–PRODUTO) tinham sido desenhados como N:N e 1:1 — cardinalidades pouco usuais para uma entidade associativa com chave composta (produto_id + insumo_id), onde o padrão esperado é 1:N dos dois lados. A IA havia sinalizado isso sem alterar, por não ser uma decisão dela; com a autorização do grupo ("Pode ajustar"), a IA corrigiu para INSUMO (1,1)–FICHA_TÉCNICA (0,N) e FICHA_TÉCNICA (0,N)–PRODUTO (1,1), tanto na imagem do diagrama quanto no dicionário e no README. |
-| **Justificativa da escolha final** | As Seções 5–8 e o dicionário HTML agora descrevem exatamente o que está anexado em `Diagrama/Diagrama.png`, atributo por atributo, PK/FK e cardinalidade — incluindo a correção de "compõe"/"detalha" para o padrão 1:N, que é o que o grupo pediu para ajustar. As Seções 1–4 (requisitos e regras de negócio) não foram alteradas nesta etapa. |
-| **Reflexão crítica** | O modelo reflete fielmente o texto do questionário, mas não substitui a pesquisa de campo exigida pela atividade — regras de negócio reais da organização escolhida podem divergir do que está aqui (valores de limite de crédito, percentuais de comissão etc. foram tratados como exemplos/referências, não como regras fixas). O grupo deve validar cada regra de negócio da Seção 4 com a organização real antes de assumi-las como definitivas. |
+| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — usado em oito momentos: (1) leitura do questionário de requisitos e construção de um primeiro modelo conceitual (21 entidades) e dicionário de dados; (2) geração de um primeiro diagrama ER (notação "pé-de-galinha"); (3) preenchimento deste README a partir do esqueleto oficial da Entrega 1; (4) reconstrução desse primeiro diagrama na notação de Chen usada pelo BrModeloWeb, a pedido explícito do professor; (5) depois que o grupo (Guilherme) remodelou o DER para um recorte mais enxuto de 9 entidades direto no BrModeloWeb, reorganização do dicionário HTML já produzido pelo grupo e reescrita das Seções 5–8 para descrever esse modelo; (6) substituição do diagrama do repositório pela versão corrigida que o grupo enviou (PDF exportado do BrModeloWeb, com nomes de atributo, PKs/FKs e cardinalidades revisados), com o dicionário HTML e as Seções 5–8 atualizados para bater com essa versão; (7) a pedido do grupo, correção pontual de duas cardinalidades da própria imagem do diagrama ("compõe" e "detalha", ao redor de FICHA_TÉCNICA) para o padrão 1:N esperado de uma entidade associativa, e atualização do dicionário HTML e do README para refletir a correção; (8) **em resposta à avaliação formal do professor na [issue #1](https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1)**, reconstrução completa do DER (de 9 para 17 entidades, cardinalidade mínima e máxima em todas as 16 relações, remoção de toda marcação de FK do diagrama, troca da chave composta de FICHA_TÉCNICA por chave própria, inclusão de ORDEM_PRODUÇÃO e LOTE_INSUMO), reescrita completa do dicionário de dados em HTML (convenções, SGBD/collation/prefixos, expressão formal, tipo físico, índices sugeridos, log de acesso e matriz de acesso por operação/LGPD) e revisão das Seções 1, 2, 4, 5, 6, 7 e 8 deste README para refletir o modelo corrigido. |
+| **Motivação** | Acelerar a tradução do levantamento de requisitos para um modelo estruturado e para o formato de entrega exigido pela disciplina; depois, manter o README, o diagrama e o dicionário sempre consistentes entre si; corrigir duas cardinalidades que a própria IA havia sinalizado como pouco usuais, com autorização explícita do grupo; por fim, responder item a item à avaliação formal do professor, corrigindo exatamente o que foi apontado como ausente ou inconsistente, sem contestar os pontos levantados. |
+| **Prompt(s) utilizados** | "Preciso montar um diagrama e o dicionário desse diagrama, como se fosse no modelo BrModeloWeb..."; "Consegue gerar um arquivo pdf com esse arquivo que montou? Contendo somente o diagrama e o dicionário"; "Ajustar diagrama para o mesmo modelo de BrModeloWeb"; "adicione essas fotos no readme, na parte de evidências"; "De acordo com o dicionário e o diagrama que estão agora, crie o arquivo de dicionário de dados em html"; "Arrume o diagrama para esse pdf, agora ele está correto. No readme faça todas as correções necessárias, de acordo com esse diagrama novo e finalizado"; "Pode ajustar" (autorizando a correção das cardinalidades sinalizadas); "https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1 — O professor passou essas observações, corrija o que for necessário". |
+| **Resposta recebida** | Um primeiro modelo (21 entidades); o DER redesenhado em notação de Chen; a troca do diagrama de 9 entidades pela versão corrigida enviada pelo grupo, com dicionário e README reescritos atributo a atributo; a edição direta dos pixels do PNG para duas cardinalidades pontuais; e, nesta última etapa, um DER inteiramente regerado por script (não mais edição de pixel) — 17 entidades, 16 relacionamentos com `mínimo,máximo` nas duas pontas, sem nenhuma FK — mais o dicionário HTML reescrito do zero (convenções, tipo físico, índices, log de acesso, matriz LGPD) e as Seções 1, 2, 4–8 deste README revisadas. |
+| **Fontes consultadas e verificadas** | Nenhuma fonte externa em nenhuma das oito etapas. Nesta última, a única fonte foi o corpo da issue #1 do próprio repositório (avaliação literal do professor, obtida via `gh api repos/.../issues/1`), usada como lista de verificação exaustiva do que corrigir. |
+| **Trechos rejeitados ou corrigidos** | Histórico completo nas etapas 1–7 acima. Nesta etapa (8): a relação direta FORNECEDOR–INSUMO (1,1) foi substituída por FORNECEDOR–LOTE_INSUMO–INSUMO, porque contradizia a regra de rastreabilidade por lote; a chave composta de FICHA_TÉCNICA (`produto_id (PK,FK)` + `insumo_id (PK,FK)`) foi substituída por `id_ficha` próprio; toda marcação `(FK)` foi removida das entidades; os rótulos de cardinalidade, que só mostravam `1`/`N`, passaram a mostrar sempre `mínimo,máximo`; a linguagem condicional da Seção 1 ("sugerem", "prováveis de estarem") foi substituída por uma separação explícita entre o que foi observado e o que ainda está pendente de confirmação; a legenda "Jaime no escritório" (ambígua frente ao nome do arquivo "responsável") foi trocada por uma descrição neutra do ambiente fotografado. |
+| **Justificativa da escolha final** | O DER e o dicionário agora atacam diretamente os dois critérios de maior peso reprovados na avaliação (DER, -0,40; Dicionário, -0,20), que juntos respondiam por mais de um terço da nota máxima possível. A Seção 1 e a Seção 2 foram ajustadas para os critérios parciais que o grupo podia corrigir sem nova coleta de dados (linguagem de inferência; fluxo/integração dos processos). O número de pessoas na equipe e o relato formal de uma crise operacional (também citados como lacuna no Critério 4) **não foram preenchidos**, porque isso exigiria uma nova conversa com a organização — preferiu-se marcar como pendência explícita a inventar um dado que o grupo não coletou. |
+| **Reflexão crítica** | O professor observou, nas Observações da issue #1, que a IA produziu praticamente todo o trabalho (modelo, README, dicionário) nesta entrega, incluindo a edição direta dos pixels do PNG do DER em uma etapa anterior. Essa observação é factualmente correta e continua valendo nesta rodada de correção: a reconstrução do DER, a reescrita do dicionário e a revisão do README foram majoritariamente executadas pela IA, com o grupo autorizando e direcionando cada etapa (abertura desta correção, confirmação de que o diagrama regenerado estava satisfatório), mas sem reescrever o conteúdo manualmente. O grupo deve se apropriar ativamente deste material antes de uma eventual reapresentação — relendo cada entidade nova (ORDEM_PRODUÇÃO, LOTE_INSUMO, EXECUÇÃO_ETAPA etc.), cada regra de negócio e cada cardinalidade — para conseguir defendê-los oralmente, e não apenas repetir o que a ferramenta produziu. Além disso, o modelo como um todo (desde a etapa 1) continua refletindo o texto do levantamento original, não uma validação revisitada com a organização: os itens pendentes da Seção 1 (porte, crise operacional) e os valores numéricos da Seção 4 (comissão, limite de crédito) seguem precisando de confirmação real com Osmar Lingiard antes de serem tratados como definitivos. |
 
 
 ---

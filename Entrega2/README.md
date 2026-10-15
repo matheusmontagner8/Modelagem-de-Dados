@@ -1,6 +1,8 @@
 # Entrega 2 — Modelo Lógico, Implementação SQL e Apresentação Final
 
-Artefatos desta etapa (continuação da Entrega 1, na raiz do repositório — DER e Dicionário de Dados de 9 entidades):
+> ⚠️ **Pendência aberta (15/10/2026):** em resposta à avaliação do professor na [issue #1](https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1), o conceitual da Entrega 1 (`../Diagrama/Diagrama.png` e `../Dicionario_de_Dados.html`) foi reconstruído de 9 para **17 entidades** (acréscimo de LOTE_INSUMO, ORDEM_PRODUÇÃO, ETAPA_PRODUÇÃO, ARTESÃO_FACÇÃO, EXECUÇÃO_ETAPA, VENDEDOR, CONTAS_RECEBER, CONTAS_PAGAR). Os artefatos **desta pasta** (`modelo_logico.md`, `script.sql`, `apresentacao.pptx`) **ainda refletem o modelo antigo de 9 entidades** e não foram atualizados nesta rodada — a correção priorizou os dois critérios de maior peso reprovados (DER e Dicionário, ambos na Entrega 1). Fica como item pendente converter e testar o modelo lógico/SQL das 8 entidades novas antes de reapresentar a Entrega 2.
+
+Artefatos desta etapa (continuação da Entrega 1, na raiz do repositório — DER e Dicionário de Dados, agora de 17 entidades):
 
 | Arquivo | Conteúdo | Seção do esqueleto oficial |
 |---|---|---|
