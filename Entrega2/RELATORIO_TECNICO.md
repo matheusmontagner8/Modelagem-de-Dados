@@ -1,17 +1,19 @@
 # Relatório Técnico Final — Entrega 2
 ### Contrasti Bolsas e Acessórios Ltda — Modelo Lógico, Implementação SQL
 
-> Continuação da Entrega 1 (mesma organização real, mesmo DER de 9 entidades). Ver `README.md` na raiz do repositório para a caracterização completa da organização, evidências de visita, processos de negócio, requisitos e o Dicionário de Dados Conceitual.
+> Continuação da Entrega 1. Ver `README.md` na raiz do repositório para a caracterização completa da organização, evidências de visita, processos de negócio, requisitos e o Dicionário de Dados Conceitual.
 
-> ✅ **`script.sql` validado em MySQL 8.4.10 LTS real** (instalado localmente, ver "Como rodar localmente" em `Entrega2/README.md`): as 9 tabelas, todas as constraints, a carga de dados e as 16 consultas (SELECT/JOIN, UPDATE, DELETE, gerenciais e de auditoria) rodaram do início ao fim sem nenhum erro ou warning. As 4 auditorias estruturais (9.1, 9.2, 9.3, 9.4) confirmaram 0 inconsistências na massa de dados.
+> ✅ **`script.sql` validado em MySQL 8.4.10 LTS real** (instalado localmente, ver "Como rodar localmente" em `Entrega2/README.md`): as 17 tabelas, todas as constraints, a carga de dados e as 20 consultas (SELECT/JOIN, UPDATE, DELETE, gerenciais e de auditoria) rodaram do início ao fim sem nenhum erro ou warning. As 4 auditorias estruturais (9.1, 9.2, 9.3, 9.4) confirmaram 0 inconsistências na massa de dados; a 9.5 encontrou a anomalia de preço injetada de propósito; a 9.6 encontrou o fornecedor sem lote registrado, também deliberado.
 
 ---
 
 ## 1.1 Revisão do Modelo Conceitual
 
-O DER da Entrega 1 (`Diagrama/Diagrama.png`) não foi alterado em conteúdo nesta etapa — as 9 entidades (FORNECEDOR, INSUMO, FICHA_TÉCNICA, PRODUTO, BOLSA, ACESSÓRIO, ITEM_PEDIDO, PEDIDO, CLIENTE) e os 6 relacionamentos seguem os mesmos da versão final da Entrega 1, já com a correção de cardinalidade aplicada entre INSUMO–FICHA_TÉCNICA–PRODUTO (padrão 1:N dos dois lados, coerente com uma entidade associativa de chave composta).
+O DER da Entrega 1 (`Diagrama/Diagrama.png`) **foi reconstruído** nesta etapa, em resposta à avaliação do professor na [issue #1](https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1): de 9 para **17 entidades** e de 6 para **16 relacionamentos**, todos agora com cardinalidade mínima e máxima em ambas as pontas, sem nenhuma marcação de FK no diagrama. O detalhamento completo dessa correção está no `README.md` da raiz (Seções 5–9) e no `Dicionario_de_Dados.html`; este relatório parte diretamente do modelo já corrigido.
 
-As evidências da organização (fotos, endereço, contato) seguem as mesmas da Entrega 1 — não houve nova visita de campo nesta etapa; o grupo usou o modelo conceitual já validado como base direta para a conversão lógica abaixo.
+Oito entidades novas entraram no recorte: duas essenciais (`ORDEM_PRODUCAO`, `LOTE_INSUMO`) e seis desejáveis (`ETAPA_PRODUCAO`, `ARTESAO_FACCAO`, `EXECUCAO_ETAPA`, `VENDEDOR`, `CONTAS_RECEBER`, `CONTAS_PAGAR`). A conversão lógica abaixo cobre as 17.
+
+As evidências da organização (fotos, endereço, contato) seguem as mesmas da Entrega 1 — não houve nova visita de campo nesta etapa.
 
 ---
 
@@ -19,47 +21,64 @@ As evidências da organização (fotos, endereço, contato) seguem as mesmas da 
 
 ### Entidades → Tabelas
 
-Cada uma das 9 entidades do DER virou uma tabela. A especialização PRODUTO → BOLSA/ACESSÓRIO foi convertida pela estratégia **"tabela por subtipo"**: PRODUTO guarda os atributos comuns, e BOLSA/ACESSÓRIO guardam só os atributos exclusivos de cada subtipo, com a própria chave primária de PRODUTO reaproveitada como chave primária e estrangeira (`id_produto`). Essa é a estratégia mais fiel à especialização Total e Disjunta (TD) do DER: ela evita colunas que ficariam sempre nulas para um dos dois subtipos (o que aconteceria se tudo fosse uma tabela só) e não perde a identidade comum de PRODUTO (o que aconteceria se BOLSA e ACESSÓRIO virassem tabelas totalmente independentes).
+Cada uma das 17 entidades do DER virou uma tabela. A especialização PRODUTO → BOLSA/ACESSÓRIO segue a estratégia **"tabela por subtipo"**: PRODUTO guarda os atributos comuns, e BOLSA/ACESSÓRIO guardam só os atributos exclusivos de cada subtipo, com a própria chave primária de PRODUTO reaproveitada como chave primária e estrangeira (`id_produto`). Essa é a estratégia mais fiel à especialização Total e Disjunta (TD) do DER: ela evita colunas que ficariam sempre nulas para um dos dois subtipos e não perde a identidade comum de PRODUTO.
 
 | Entidade conceitual | Tabela(s) lógica(s) |
 |---|---|
 | FORNECEDOR | `fornecedor` |
 | INSUMO | `insumo` |
+| LOTE_INSUMO | `lote_insumo` |
 | FICHA_TÉCNICA | `ficha_tecnica` |
 | PRODUTO | `produto` |
 | BOLSA | `bolsa` |
 | ACESSÓRIO | `acessorio` |
-| ITEM_PEDIDO | `item_pedido` |
-| PEDIDO | `pedido` |
+| ORDEM_PRODUÇÃO | `ordem_producao` |
+| ETAPA_PRODUÇÃO | `etapa_producao` |
+| ARTESÃO_FACÇÃO | `artesao_faccao` |
+| EXECUÇÃO_ETAPA | `execucao_etapa` |
 | CLIENTE | `cliente` |
+| VENDEDOR | `vendedor` |
+| PEDIDO | `pedido` |
+| ITEM_PEDIDO | `item_pedido` |
+| CONTAS_RECEBER | `contas_receber` |
+| CONTAS_PAGAR | `contas_pagar` |
 
 ### Atributos → Colunas
 
-Os atributos do dicionário de dados da Entrega 1 viraram colunas com tipo de dado explícito (ver a tabela completa na Seção 2 — Modelo Lógico Relacional). Três decisões de tipagem valem registro:
+Os atributos do dicionário de dados da Entrega 1 viraram colunas com tipo de dado explícito e nome prefixado (`id_`/`nm_`/`ds_`/`dt_`/`vl_`/`qt_`/`pc_`/`tp_`/`nr_`/`un_` — mesma convenção do `Dicionario_de_Dados.html`). Decisões de tipagem que valem registro:
 
-- `preco_unitario`, `preco_base`, `estoque_atual`, `valor_total`, `subtotal` → `DECIMAL(10,2)` (nunca `FLOAT`/`DOUBLE`, para não acumular erro de arredondamento em valor monetário).
-- `quantidade_necessaria` (ficha técnica) → `DECIMAL(10,3)`, com uma casa decimal a mais que os valores monetários, porque quantidades de insumo (ex.: metros de linha, m² de couro) usam frações mais finas que centavos.
-- Atributos de domínio fechado do dicionário (`categoria_fornecedor`, `unidade_medida`, `tipo_produto`, `status`, `forma_pagamento`) viraram `VARCHAR` com `CHECK ... IN (...)` em vez de tabelas de domínio separadas —o grupo considerou esses domínios pequenos e estáveis o bastante (4 a 6 valores fixos) para não justificar uma tabela extra.
+- `vl_*` (preços, valores de título) → `DECIMAL(10,2)` (nunca `FLOAT`/`DOUBLE`, para não acumular erro de arredondamento em valor monetário).
+- `qt_necessaria`, `qt_recebida` (lote/ficha técnica) → `DECIMAL(10,3)`, uma casa decimal a mais que valores monetários, porque quantidades de insumo (metros de linha, m² de couro) usam frações mais finas que centavos.
+- `pc_aproveitamento`, `pc_perda`, `pc_comissao` → `DECIMAL(5,2)`, suficiente para um percentual com duas casas.
+- Atributos de domínio fechado (`tp_categoria`, `un_medida`, `tp_produto`, `tp_status`, `tp_pagamento`, `tp_canal`, `tp_status_kanban`, `tp_vinculo`) viraram `VARCHAR` com `CHECK ... IN (...)` em vez de tabelas de domínio separadas — domínios pequenos e estáveis (3 a 6 valores fixos), exceto `ETAPA_PRODUCAO`, que **é** uma tabela de domínio própria porque também carrega a ordem sequencial do processo produtivo (`nr_ordem_sequencial`), um dado que não cabe num `CHECK`.
 
 ### Relacionamentos → Chaves
 
 | Relacionamento conceitual | Tradução no modelo lógico |
 |---|---|
-| FORNECEDOR (1,1) — fornece — (0,N) INSUMO | `insumo.fornecedor_id` → FK para `fornecedor.id_fornecedor` |
-| INSUMO (1,1) — compõe — (0,N) FICHA_TÉCNICA | `ficha_tecnica.insumo_id` → FK para `insumo.id_insumo` (parte da PK composta) |
-| FICHA_TÉCNICA (0,N) — detalha — (1,1) PRODUTO | `ficha_tecnica.produto_id` → FK para `produto.id_produto` (parte da PK composta) |
+| FORNECEDOR (1,1) — fornece — (0,N) LOTE_INSUMO | `lote_insumo.fornecedor_id` → FK para `fornecedor.id_fornecedor` |
+| INSUMO (1,1) — é_recebido_como — (0,N) LOTE_INSUMO | `lote_insumo.insumo_id` → FK para `insumo.id_insumo` |
+| LOTE_INSUMO (1,1) — gera — (0,N) CONTAS_PAGAR | `contas_pagar.lote_id` → FK para `lote_insumo.id_lote` |
+| PRODUTO (1,1) — é_detalhado_em — (0,N) FICHA_TÉCNICA | `ficha_tecnica.produto_id` → FK para `produto.id_produto` |
+| INSUMO (1,1) — compõe — (0,N) FICHA_TÉCNICA | `ficha_tecnica.insumo_id` → FK para `insumo.id_insumo` |
+| PRODUTO (1,1) — é_produzido_em — (0,N) ORDEM_PRODUÇÃO | `ordem_producao.produto_id` → FK para `produto.id_produto` |
+| ORDEM_PRODUÇÃO (1,1) — se_desdobra_em — (0,N) EXECUÇÃO_ETAPA | `execucao_etapa.op_id` → FK para `ordem_producao.id_op` |
+| ETAPA_PRODUÇÃO (1,1) — classifica — (0,N) EXECUÇÃO_ETAPA | `execucao_etapa.etapa_id` → FK para `etapa_producao.id_etapa` |
+| ARTESÃO_FACÇÃO (1,1) — realiza — (0,N) EXECUÇÃO_ETAPA | `execucao_etapa.artesao_id` → FK para `artesao_faccao.id_artesao` |
 | PRODUTO — TD — BOLSA / ACESSÓRIO | `bolsa.id_produto` e `acessorio.id_produto` → FK para `produto.id_produto`, e também PK de cada subtipo |
-| PRODUTO (1,1) — integra — (0,N) ITEM_PEDIDO | `item_pedido.produto_id` → FK para `produto.id_produto` |
-| ITEM_PEDIDO (0,N) — pertence_a — (1,1) PEDIDO | `item_pedido.pedido_id` → FK para `pedido.id_pedido` |
-| PEDIDO (0,N) — é_efetuado_por — (1,1) CLIENTE | `pedido.cliente_id` → FK para `cliente.id_cliente` |
+| CLIENTE (1,1) — realiza — (0,N) PEDIDO | `pedido.cliente_id` → FK para `cliente.id_cliente` |
+| VENDEDOR (1,1) — atende — (0,N) PEDIDO | `pedido.vendedor_id` → FK para `vendedor.id_vendedor` |
+| PEDIDO (1,1) — contém — (1,N) ITEM_PEDIDO | `item_pedido.pedido_id` → FK para `pedido.id_pedido` |
+| PRODUTO (1,1) — é_vendido_em — (0,N) ITEM_PEDIDO | `item_pedido.produto_id` → FK para `produto.id_produto` |
+| PEDIDO (1,1) — gera — (0,N) CONTAS_RECEBER | `contas_receber.pedido_id` → FK para `pedido.id_pedido` |
 
-Regra geral aplicada: em todo relacionamento 1:N, a chave estrangeira migra para a tabela do lado "N" — exatamente como o DER já antecipava, marcando essas chaves como `(FK)` diretamente nas entidades.
+Regra geral aplicada: em todo relacionamento 1:N, a chave estrangeira migra para a tabela do lado "N". Diferente da Entrega 1 original, **nenhuma dessas FKs aparece no DER conceitual** — elas só existem a partir desta conversão lógica, exatamente como a avaliação do professor cobrou.
 
 ### Cardinalidades
 
-- **1:N** (a maioria dos relacionamentos do modelo) → FK simples na tabela do lado N, `NOT NULL` quando a cardinalidade mínima do lado 1 é (1,1) (ex.: `insumo.fornecedor_id`, `pedido.cliente_id`, `item_pedido.pedido_id`, `item_pedido.produto_id`).
-- **N:N** — não existe nenhum relacionamento N:N puro neste modelo; INSUMO×PRODUTO já era resolvido via FICHA_TÉCNICA desde o conceitual (duas relações 1:N em cadeia), então não foi necessário criar nenhuma tabela associativa nova nesta etapa — `ficha_tecnica` e `item_pedido` já nasceram como tabelas na conversão direta das entidades associativas do DER.
-- **1:1** (especialização TD) → chave primária compartilhada entre `produto` e `bolsa`/`acessorio`, com `ON DELETE CASCADE` (se o produto for excluído, a linha do subtipo correspondente também é).
+- **1:N** (a maioria dos relacionamentos do modelo) → FK simples na tabela do lado N, `NOT NULL` em todos os casos, porque toda cardinalidade mínima do lado 1 no DER corrigido é (1,1).
+- **N:N** — não existe nenhum relacionamento N:N puro neste modelo; todas as associações com atributo próprio (`lote_insumo`, `ficha_tecnica`, `execucao_etapa`, `item_pedido`) já nasceram como entidades associativas desde o conceitual.
+- **1:1** (especialização TD) → chave primária compartilhada entre `produto` e `bolsa`/`acessorio`, com `ON DELETE CASCADE`.
 
 ---
 
@@ -68,16 +87,24 @@ Regra geral aplicada: em todo relacionamento 1:N, a chave estrangeira migra para
 | Tabela | Chave Primária (PK) | Chaves Estrangeiras (FK) |
 |---|---|---|
 | `fornecedor` | `id_fornecedor` | — |
-| `insumo` | `id_insumo` | `fornecedor_id` → `fornecedor.id_fornecedor` |
+| `insumo` | `id_insumo` | — |
+| `lote_insumo` | `id_lote` | `insumo_id` → `insumo.id_insumo`; `fornecedor_id` → `fornecedor.id_fornecedor` |
 | `produto` | `id_produto` | — |
 | `bolsa` | `id_produto` | `id_produto` → `produto.id_produto` |
 | `acessorio` | `id_produto` | `id_produto` → `produto.id_produto` |
-| `ficha_tecnica` | `(produto_id, insumo_id)` *(composta)* | `produto_id` → `produto.id_produto`; `insumo_id` → `insumo.id_insumo` |
+| `ficha_tecnica` | `id_ficha` | `produto_id` → `produto.id_produto`; `insumo_id` → `insumo.id_insumo` |
+| `ordem_producao` | `id_op` | `produto_id` → `produto.id_produto` |
+| `etapa_producao` | `id_etapa` | — |
+| `artesao_faccao` | `id_artesao` | — |
+| `execucao_etapa` | `id_execucao` | `op_id` → `ordem_producao.id_op`; `etapa_id` → `etapa_producao.id_etapa`; `artesao_id` → `artesao_faccao.id_artesao` |
 | `cliente` | `id_cliente` | — |
-| `pedido` | `id_pedido` | `cliente_id` → `cliente.id_cliente` |
+| `vendedor` | `id_vendedor` | — |
+| `pedido` | `id_pedido` | `cliente_id` → `cliente.id_cliente`; `vendedor_id` → `vendedor.id_vendedor` |
 | `item_pedido` | `id_item_pedido` | `pedido_id` → `pedido.id_pedido`; `produto_id` → `produto.id_produto` |
+| `contas_receber` | `id_titulo_receber` | `pedido_id` → `pedido.id_pedido` |
+| `contas_pagar` | `id_titulo_pagar` | `lote_id` → `lote_insumo.id_lote` |
 
-Todas as PKs de entidade "forte" são substitutas (`INT AUTO_INCREMENT`), exceto `ficha_tecnica`, que usa chave composta natural (`produto_id` + `insumo_id`) — ela já identifica a linha sem precisar de um `id` artificial, e a composição reforça a regra de negócio "cada par produto/insumo aparece uma única vez na ficha técnica" diretamente no banco (não dá para inserir o mesmo par duas vezes, a PK barra).
+Todas as PKs são substitutas (`INT UNSIGNED AUTO_INCREMENT`) — inclusive `ficha_tecnica`, que na Entrega 1 original usava chave composta natural (`produto_id` + `insumo_id`). A troca para `id_ficha` próprio elimina o uso de FK como identificador (apontado como agravante pelo professor no Critério 10), sem perder a regra de negócio: um `UNIQUE (produto_id, insumo_id)` garante que cada par apareça uma única vez, exatamente como a PK composta garantia antes.
 
 ---
 
@@ -85,32 +112,32 @@ Todas as PKs de entidade "forte" são substitutas (`INT AUTO_INCREMENT`), exceto
 
 ### 1FN — eliminação de grupos repetitivos/atributos multivalorados
 
-Nenhuma tabela tem coluna multivalorada ou grupo repetitivo. O único atributo que poderia ser questionado é `endereco` (em `fornecedor` e `cliente`), guardado como uma única string em vez de decomposto em logradouro/número/bairro/cidade/UF/CEP. Decisão consciente do grupo: nenhum requisito levantado (Seção 3 do README) pede filtrar ou agrupar por cidade/UF separadamente — o endereço é usado só como dado de contato/entrega, exibido inteiro. Decompor essa string exigiria 5-6 colunas novas sem nenhum ganho funcional nesta etapa, então o atributo foi mantido atômico "para o uso que o sistema dá a ele", critério de atomicidade relativa.
+Nenhuma tabela tem coluna multivalorada ou grupo repetitivo. O único atributo que poderia ser questionado é `ds_endereco` (em `fornecedor` e `cliente`), guardado como uma única string em vez de decomposto em logradouro/número/bairro/cidade/UF/CEP. Decisão consciente do grupo: nenhum requisito levantado (Seção 3 do README) pede filtrar ou agrupar por cidade/UF separadamente — o endereço é usado só como dado de contato/entrega, exibido inteiro.
 
 ### 2FN — eliminação de dependências parciais
 
-2FN só é uma preocupação real em tabelas com **chave composta** — no modelo, apenas `ficha_tecnica` (PK = `produto_id` + `insumo_id`). O único atributo não-chave dessa tabela, `quantidade_necessaria`, depende dos **dois** componentes da chave ao mesmo tempo (a quantidade de couro necessária só faz sentido para o par "este produto, este insumo" — não dá pra dizer que `quantidade_necessaria` depende só de `produto_id` ou só de `insumo_id`). Logo, não há dependência parcial e a tabela está em 2FN. As demais tabelas têm PK simples (uma coluna), então 2FN é satisfeita trivialmente.
+2FN só é uma preocupação real em tabelas com **chave composta** — e, nesta versão, nenhuma tabela tem PK composta (a antiga `ficha_tecnica` foi a exceção na v1; ver Seção 1.3). Todas as tabelas têm PK simples (uma coluna gerada), então 2FN é satisfeita trivialmente em todo o modelo.
 
 ### 3FN — eliminação de dependências transitivas
 
-Todas as colunas não-chave de cada tabela dependem diretamente da PK, com uma exceção **deliberada**: `pedido.valor_total`. Formalmente, esse valor é calculável a partir de outra tabela (`SUM(item_pedido.subtotal)` para aquele pedido) — ou seja, não depende só de `pedido.id_pedido`, e sim (indiretamente) dos itens. Isso seria uma violação de 3FN se fosse mantido sem controle.
+Todas as colunas não-chave de cada tabela dependem diretamente da PK, com duas exceções **deliberadas**:
 
-O grupo optou por manter `valor_total` como coluna própria (denormalização controlada), por dois motivos:
-1. **Já estava no Dicionário de Dados da Entrega 1** (`pedido.valor_total`), então removê-lo quebraria a continuidade entre as duas entregas.
-2. **Uso real do valor**: consultas gerenciais de faturamento (Seção 8 do script SQL) são executadas com muito mais frequência do que pedidos são alterados — manter o total pronto evita recalcular a soma a cada relatório.
+1. **`pedido.vl_total`** — formalmente calculável a partir de outra tabela (`SUM(item_pedido.vl_subtotal)` para aquele pedido). O grupo optou por mantê-lo como coluna própria (denormalização controlada), por dois motivos: (a) já estava no Dicionário de Dados desde a Entrega 1, e (b) consultas gerenciais de faturamento são executadas com muito mais frequência do que pedidos são alterados. Para não deixar a denormalização "solta": a Seção 6 (UPDATE) do script recalcula `vl_total` a partir da soma real dos itens sempre que necessário, e a Seção 9 (auditoria, 9.1) detecta qualquer pedido fora de sincronia.
+2. **`insumo.qt_estoque_atual`** — na prática, um agregado do que entrou via `lote_insumo` menos o que foi consumido pela produção. Mantido como coluna própria pelo mesmo motivo do item anterior (consulta de estoque é operação frequente e não pode depender de somar todo o histórico de lotes a cada leitura); a atualização fica a cargo da aplicação/rotina de baixa (RF13), fora do escopo deste script de demonstração.
 
-Para não deixar essa denormalização "solta", o script SQL documenta explicitamente como mantê-la consistente: toda vez que `item_pedido` muda, a Seção 6 (UPDATE) do script recalcula `pedido.valor_total` a partir da soma real dos itens, e a Seção 9 (auditoria) traz uma consulta (9.1) que detecta qualquer pedido fora de sincronia. `item_pedido.subtotal`, por outro lado, **não** tem esse problema: é `GENERATED ALWAYS AS (quantidade * preco_unitario) STORED`, ou seja, uma coluna calculada pelo próprio SGBD a partir de colunas da mesma linha — nunca pode ficar inconsistente, porque não é possível escrever um valor diferente nela.
+`item_pedido.vl_subtotal`, por outro lado, **não** tem esse problema: é `GENERATED ALWAYS AS (...) STORED`, calculado pelo próprio SGBD a partir de colunas da mesma linha — nunca pode ficar inconsistente.
 
 ---
 
 ## 1.5 Justificativas Técnicas das Decisões
 
-- **Chaves primárias:** surrogate (`AUTO_INCREMENT`) em toda entidade "forte", porque nenhum atributo natural é garantidamente estável e único ao longo do tempo (CNPJ e CPF são únicos, mas o grupo preferiu não usá-los como PK para não propagar um dado sensível — protegido por LGPD — como chave estrangeira em outras tabelas). `ficha_tecnica` é a exceção justificada na Seção 1.3.
-- **Chaves estrangeiras:** todas as FKs do modelo lógico correspondem 1:1 às linhas da tabela de relacionamentos da Seção 6 do README (Entrega 1) — nenhuma FK foi criada "a mais"; cada uma implementa exatamente um relacionamento do DER.
-- **Restrições de obrigatoriedade/unicidade:** `UNIQUE` em `fornecedor.cnpj` e `cliente.cpf` (regra de negócio explícita: "não pode existir mais de um fornecedor/cliente com o mesmo documento", Seção 5 do dicionário). `NOT NULL` em toda coluna que o dicionário descreve como "Obrigatório".
-- **Valores permitidos (`CHECK`):** todo atributo de domínio fechado do dicionário (`categoria_fornecedor`, `unidade_medida`, `tipo_produto`, `status`, `forma_pagamento`) virou `CHECK ... IN (...)`, em vez de confiar só na aplicação para validar — o banco recusa a linha mesmo se alguém inserir direto via SQL.
-- **`ON DELETE CASCADE` em `bolsa`/`acessorio`/`ficha_tecnica`/`item_pedido`:** se um produto for excluído, não faz sentido manter órfã a linha do subtipo nem as linhas de ficha técnica que o detalham; o mesmo vale para os itens de um pedido excluído. Já `insumo`, `cliente` e `fornecedor` **não** têm cascade a partir deles — excluir um fornecedor não deveria apagar silenciosamente os insumos que ele fornece (é um erro operacional que o banco deve barrar, não propagar).
-- **Decisões arquiteturais gerais:** o modelo ficou com 9 tabelas, o mesmo número de entidades do conceitual — nenhuma tabela associativa nova foi necessária porque `ficha_tecnica` e `item_pedido` já nasceram como entidades associativas desde a Entrega 1, e a especialização TD foi resolvida com tabela-por-subtipo (Seção 1.2) em vez de tabela única.
+- **Chaves primárias:** surrogate (`AUTO_INCREMENT`) em toda tabela, inclusive `ficha_tecnica` (ver Seção 1.3) — nenhum atributo natural é garantidamente estável e único ao longo do tempo, e CNPJ/CPF não foram usados como PK para não propagar um dado sensível (protegido por LGPD) como chave estrangeira em outras tabelas.
+- **Chaves estrangeiras:** todas as FKs do modelo lógico correspondem 1:1 às linhas da tabela de relacionamentos da Seção 6 do README (Entrega 1) — nenhuma FK foi criada "a mais"; cada uma implementa exatamente um relacionamento do DER corrigido.
+- **Restrições de obrigatoriedade/unicidade:** `UNIQUE` em `fornecedor.nr_cnpj`, `cliente.nr_cpf`, `ordem_producao.nr_op` e `etapa_producao.nr_ordem_sequencial`. `NOT NULL` em toda coluna que o dicionário descreve como obrigatória.
+- **Valores permitidos (`CHECK`):** todo atributo de domínio fechado do dicionário virou `CHECK ... IN (...)` — o banco recusa a linha mesmo se alguém inserir direto via SQL.
+- **`ON DELETE CASCADE`:** em `bolsa`, `acessorio`, `ficha_tecnica`, `item_pedido` e `execucao_etapa` — se o "todo" (produto, pedido, ordem de produção) for excluído, não faz sentido manter órfãs as linhas que o detalham. Já `insumo`, `cliente`, `fornecedor`, `lote_insumo`, `etapa_producao`, `artesao_faccao`, `pedido` e `vendedor` **não** têm cascade a partir deles — excluir, por exemplo, um fornecedor não deveria apagar silenciosamente o histórico de lotes recebidos dele (é um erro operacional que o banco deve barrar, não propagar). Essa é exatamente a razão pela qual a Seção 7.2 do script escolhe um insumo **sem nenhuma dependência** para demonstrar o DELETE, em vez de forçar uma exclusão em cascata através do histórico de compras.
+- **`LOTE_INSUMO` em vez de FK direta `insumo.fornecedor_id`:** a versão anterior prendia cada insumo a um único fornecedor fixo, contradizendo a própria regra de rastreabilidade por lote (um mesmo insumo pode ser recebido de fornecedores diferentes). A consulta 5.4 do script demonstra isso: "Bolsa Tote Caramelo" usa couro recebido de **dois** fornecedores diferentes (Curtume Vaqueta Ouro e Curtume Linhares Couros).
+- **Decisões arquiteturais gerais:** o modelo ficou com 17 tabelas, o mesmo número de entidades do conceitual corrigido — nenhuma tabela associativa nova foi necessária além das já previstas no DER, e a especialização TD seguiu com tabela-por-subtipo (Seção 1.2).
 
 ---
 
@@ -118,44 +145,50 @@ Para não deixar essa denormalização "solta", o script SQL documenta explicita
 
 ### Informações estratégicas extraíveis dos dados
 
-- Faturamento por período, por canal implícito de pagamento e por categoria de produto.
-- Composição de custo de cada peça (matéria-prima via `ficha_tecnica` × `insumo.preco_unitario`) versus preço praticado — margem real por produto.
-- Consumo de insumos projetado a partir das vendas, para antecipar reposição de estoque junto aos fornecedores certos (via `insumo.fornecedor_id`).
-- Concentração de receita por cliente (ranking de maiores compradores — ver consulta 8.4 do script).
+- Faturamento por período, canal (loja física/e-commerce/atacado) e categoria de produto.
+- Composição de custo de cada peça (matéria-prima via `ficha_tecnica` × `insumo.vl_preco_referencia`) versus preço praticado — margem real por produto.
+- Consumo de insumos projetado a partir das vendas, para antecipar reposição junto aos fornecedores certos (via `lote_insumo`, agora com histórico multi-fornecedor).
+- Concentração de receita por cliente e comissão devida por vendedor/canal (consulta 5.7 do script).
+- Produtividade e qualidade por etapa de produção: aproveitamento/perda de couro por artesão/facção na etapa de Corte (consulta 8.6).
+- Saúde financeira: aging de títulos a pagar/receber em aberto (consultas 8.7 e 9.7).
 
 ### Indicadores e métricas gerenciais propostos (KPIs)
 
 | KPI | Cálculo | Tabelas envolvidas |
 |---|---|---|
-| Faturamento mensal | `SUM(valor_total)` de pedidos faturados/expedidos, por mês | `pedido` |
-| Ticket médio | `AVG(valor_total)` por pedido | `pedido` |
-| Margem média por categoria | `AVG(preco_base - custo_materia_prima)` agrupado por `categoria` | `produto`, `ficha_tecnica`, `insumo` |
-| Giro de estoque por produto | unidades vendidas no período ÷ `estoque_total` | `item_pedido`, `produto` |
-| Dependência por fornecedor | % do custo de matéria-prima concentrado em cada `fornecedor_id` | `insumo`, `ficha_tecnica`, `fornecedor` |
-| Taxa de cancelamento | pedidos com `status = 'Cancelado'` ÷ total de pedidos | `pedido` |
+| Faturamento mensal | `SUM(vl_total)` de pedidos faturados/expedidos, por mês | `pedido` |
+| Ticket médio | `AVG(vl_total)` por pedido | `pedido` |
+| Margem média por categoria | `AVG(vl_preco_base - custo_materia_prima)` agrupado por `tp_categoria` | `produto`, `ficha_tecnica`, `insumo` |
+| Giro de estoque por produto | unidades vendidas no período ÷ `qt_estoque_total` | `item_pedido`, `produto` |
+| Dependência por fornecedor | % do custo de matéria-prima concentrado em cada `fornecedor_id` | `insumo`, `ficha_tecnica`, `lote_insumo`, `fornecedor` |
+| Taxa de cancelamento | pedidos com `tp_status = 'Cancelado'` ÷ total de pedidos | `pedido` |
+| Comissão por vendedor/canal | `SUM(vl_total) * pc_comissao / 100`, agrupado por vendedor e canal | `pedido`, `vendedor` |
+| Aproveitamento médio de corte | `AVG(pc_aproveitamento)` na etapa "Corte", por artesão/facção | `execucao_etapa`, `etapa_producao`, `artesao_faccao` |
+| Aging de contas a receber/pagar | dias entre `dt_vencimento` e a data de referência, para títulos "em aberto" | `contas_receber`, `contas_pagar` |
 
 ### Potencial dos dados para BI
 
-A estrutura normalizada (fatos em `pedido`/`item_pedido`, dimensões em `cliente`/`produto`/`insumo`/`fornecedor`) já se parece com um esquema estrela simplificado — `item_pedido` funciona como tabela de fatos (uma linha por venda de um produto), e as demais como dimensões. Isso facilita alimentar diretamente uma ferramenta de BI (Power BI, Metabase, Looker Studio) sem grande transformação: as consultas gerenciais da Seção 8 do script já são, na prática, protótipos de dashboards (faturamento por mês, curva ABC, margem por produto, ranking de clientes).
+A estrutura normalizada (fatos em `pedido`/`item_pedido`/`execucao_etapa`, dimensões em `cliente`/`vendedor`/`produto`/`insumo`/`fornecedor`/`artesao_faccao`) já se parece com um esquema estrela simplificado, agora com dois processos de negócio representados (vendas e produção), não só um. As consultas gerenciais da Seção 8 do script já são, na prática, protótipos de dashboards.
 
 ### Aplicações analíticas e de IA
 
-- **Previsão de demanda:** série histórica de `item_pedido.quantidade` por produto/mês alimentando um modelo simples de previsão (ex.: média móvel ou regressão), para antecipar compra de insumos sazonais (Dia das Mães, Natal — mencionado na Seção 1 do README como pico de pedidos).
-- **Recomendação:** padrão de coocorrência de produtos no mesmo pedido (ex.: clientes que compram "Bolsa Tote" também compram "Porta-Cartões") para sugestão de combos.
-- **Detecção de anomalia de preço:** a própria consulta de auditoria 9.5 do script (itens vendidos com preço muito distante do `preco_base` atual) é, na prática, uma regra de detecção de anomalia simples — poderia evoluir para um modelo estatístico (desvio padrão por categoria) em vez de um limiar fixo de 10%.
-- **Classificação de risco de crédito:** se o atributo de perfil/crédito do cliente (presente no levantamento de requisitos original, Seção 3, mas fora do recorte de 9 entidades modelado) for incorporado em uma iteração futura, os dados de `pedido`/`item_pedido` já dão histórico suficiente para treinar um modelo simples de propensão a atraso.
+- **Previsão de demanda:** série histórica de `item_pedido.qt_quantidade` por produto/mês, para antecipar compra de insumos sazonais (Dia das Mães, Natal).
+- **Recomendação:** padrão de coocorrência de produtos no mesmo pedido, para sugestão de combos.
+- **Detecção de anomalia de preço:** a consulta de auditoria 9.5 (limiar fixo de 10%) poderia evoluir para um modelo estatístico (desvio padrão por categoria).
+- **Previsão de aproveitamento de corte:** a série de `execucao_etapa.pc_aproveitamento` por artesão/facção (consulta 8.6) já dá histórico suficiente para um modelo simples de produtividade esperada por profissional, útil tanto para planejamento de produção quanto para conferência do pagamento por etapa.
+- **Classificação de risco de crédito:** se o atributo de perfil/crédito do cliente (presente no levantamento de requisitos original, mas fora do recorte modelado) for incorporado em uma iteração futura, os dados de `pedido`/`contas_receber` já dão histórico suficiente (incluindo atraso de pagamento) para treinar um modelo simples de propensão a atraso.
 
 ---
 
-## 6. Uso de Inteligência Artificial
+## 2. Uso de Inteligência Artificial
 
 | Item | Registro |
 |---|---|
-| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — usado em três momentos: (1) conversão do modelo conceitual (Entrega 1, já existente) para o modelo lógico completo desta Entrega 2 — tabelas/colunas/tipos, normalização (1FN/2FN/3FN), script SQL (DDL + massa de dados + consultas) e este relatório técnico; (2) a pedido do grupo ("Faça todos os ajustes que faltam e que você conseguir"), ampliação da massa de dados de 15 para 77 pedidos para aproximar o volume mensal real (50-70/mês, Seção 1 do README) e montagem do rascunho de slides (`.pptx`); (3) a pedido do grupo ("Por favor, me ajude a instalar o MySQL na minha máquina"), instalação de um MySQL Community Server 8.4.10 LTS local (`C:\Users\Matheus\mysql\mysql-8.4.10-winx64`, ZIP sem instalador) e execução completa de `script.sql` nele. |
-| **Motivação** | Acelerar a conversão sistemática de 9 entidades conceituais em tabelas relacionais consistentes com o DER e o dicionário já produzidos na Entrega 1; depois, fechar as lacunas que a própria IA havia sinalizado na primeira rodada (volume de dados pouco realista, apresentação ainda sem arquivo). |
-| **Prompt(s) utilizados** | "Me ajude com o esqueleto da entrega 2" (a partir do arquivo `00-d_Esqueleto_Entrega_2.md` anexado); depois, "Faça todos os ajustes que faltam e que você conseguir". |
-| **Resposta recebida** | O script SQL completo (`script.sql`), este relatório técnico (`RELATORIO_TECNICO.md`) e o documento de modelo lógico (`modelo_logico.md`), cobrindo as 9 seções pedidas no esqueleto oficial; na segunda rodada, 62 pedidos adicionais (setembro/2025, gerados por script Python com seed fixa para reprodutibilidade) e o arquivo `apresentacao.pptx`. |
-| **Fontes consultadas e verificadas** | Nenhuma fonte externa. A conversão partiu exclusivamente do Dicionário de Dados e do DER já validados na Entrega 1 (`README.md`, `Dicionario_de_Dados.html`, `Diagrama/Diagrama.png`). O script SQL foi testado antes da entrega — ver nota de validação abaixo. |
-| **Trechos rejeitados ou corrigidos** | Nenhum trecho do SQL em si foi rejeitado — o grupo ainda precisa revisar este material (ver "Reflexão crítica"). Durante a geração, a IA primeiro testou o script (com pequenas adaptações de dialeto) em um banco SQLite local, para confirmar que a massa de dados era internamente consistente. Um falso alarme apareceu nesse teste: a consulta de auditoria 9.5 (anomalia de preço) voltou vazia mesmo com uma linha de teste propositalmente fora do padrão — investigação mostrou que era um comportamento específico do SQLite (coluna `DECIMAL` sem casas decimais é guardada como `INTEGER`, e `105/504` em inteiro trunca para `0`), não um erro da consulta. Isso foi confirmado depois: assim que um MySQL de verdade ficou disponível (ver linha "Ferramenta e etapa", item 3), o `script.sql` original — sem nenhuma alteração — rodou do início ao fim **sem nenhum erro ou warning**, e a consulta 9.5 encontrou corretamente a linha de teste (-20,8% de variação), como esperado desde o início. |
-| **Justificativa da escolha final** | O grupo manteve a conversão 1 tabela por entidade (sem tabelas associativas extras) porque `ficha_tecnica` e `item_pedido` já eram entidades associativas desde o conceitual; manteve `pedido.valor_total` como denormalização controlada (em vez de só uma VIEW) para não quebrar a continuidade com o dicionário da Entrega 1 — ver Seção 1.4 para a justificativa completa. |
-| **Reflexão crítica** | Este material **ainda não foi validado com a organização real** (Osmar, Contrasti) nem revisado linha a linha pelo grupo — é um primeiro rascunho completo, não a versão final de entrega. Pontos que precisam de atenção humana antes de entregar: (1) a massa de dados é inteiramente fictícia — o script tem 77 pedidos (15 de abril/maio para demonstrar a estrutura passo a passo, mais 62 concentrados em setembro/2025 para aproximar o volume mensal real de 50-70 pedidos/mês citado na Seção 1 do README), mas os valores, datas e distribuição entre clientes foram gerados por IA e precisam ser comparados com a realidade observada, não só com a ordem de grandeza; (2) os valores de preço, CNPJ e demais dados fictícios não foram conferidos com o Osmar; (3) o grupo deve decidir se quer manter os domínios fechados como `CHECK` (decisão desta IA) ou criar tabelas de domínio separadas, dependendo do que foi ensinado em aula; (4) a proposta de BI/IA (Seção 1.6) é um ponto de partida conceitual, não uma arquitetura testada; (5) `apresentacao.pptx` passou pela validação estrutural do arquivo e pela checagem de texto (conteúdo completo, sem placeholder esquecido), mas esta sessão não tinha como renderizar os slides em imagem para conferência visual — o grupo precisa abrir o arquivo de verdade no PowerPoint e olhar cada slide antes de apresentar. |
+| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — usado em quatro momentos nesta Entrega 2: (1) conversão do modelo conceitual original (9 entidades) para o primeiro modelo lógico — tabelas/colunas/tipos, normalização (1FN/2FN/3FN), script SQL (DDL + massa de dados + consultas) e este relatório técnico; (2) ampliação da massa de dados de 15 para 77 pedidos e montagem do rascunho de slides (`.pptx`); (3) instalação de um MySQL Community Server 8.4.10 LTS local e execução completa do `script.sql` nele; (4) **reescrita completa** de `modelo_logico.md`, `script.sql`, deste relatório, `apresentacao_outline.md` e `apresentacao.pptx` para o modelo de 17 entidades, em resposta à avaliação do professor na [issue #1](https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1) — renomeação de colunas para o padrão de prefixos, substituição da FK direta `insumo.fornecedor_id` por `lote_insumo`, troca da PK composta de `ficha_tecnica` por chave própria, adição de 8 tabelas novas (`lote_insumo`, `ordem_producao`, `etapa_producao`, `artesao_faccao`, `execucao_etapa`, `vendedor`, `contas_receber`, `contas_pagar`) com dados e consultas coerentes, e reconstrução dos slides (12, com um novo slide de "correção aplicada"). |
+| **Motivação** | Acelerar a conversão sistemática de entidades conceituais em tabelas relacionais; depois, fechar lacunas de volume de dados e apresentação; validar o script em um SGBD real; por fim, manter a Entrega 2 sincronizada com o DER/dicionário corrigidos da Entrega 1, em vez de deixá-la descrevendo um modelo já superado. |
+| **Prompt(s) utilizados** | "Me ajude com o esqueleto da entrega 2"; "Faça todos os ajustes que faltam e que você conseguir"; "Por favor, me ajude a instalar o MySQL na minha máquina"; "Faça o ajuste na entrega 2/readme.md de acordo com as mudanças pedidas pelo professor" (resposta: README + os artefatos, conforme opção escolhida). |
+| **Resposta recebida** | O script SQL completo (9 tabelas), este relatório e `modelo_logico.md`; depois, 62 pedidos adicionais e `apresentacao.pptx`; depois, validação real em MySQL 8.4.10 (0 erros); nesta rodada, `modelo_logico.md`, `script.sql` e este relatório reescritos para 17 tabelas, com os dados de produção/financeiro gerados programaticamente (`gen_entrega2_v2.py`, determinístico — sem aleatoriedade, para reprodutibilidade) e **validados novamente em MySQL real**, com 0 erros e todas as auditorias retornando o resultado esperado; e `apresentacao_outline.md`/`apresentacao.pptx` reconstruídos (12 slides) e validados estruturalmente (`validate.py`) e por conteúdo (`markitdown`). |
+| **Fontes consultadas e verificadas** | Nenhuma fonte externa. A reescrita partiu exclusivamente do DER e do dicionário já corrigidos na Entrega 1 (`README.md`, `Dicionario_de_Dados.html`, `Diagrama/Diagrama.png`) e da avaliação literal do professor na issue #1. |
+| **Trechos rejeitados ou corrigidos** | A primeira versão do `script.sql` (9 tabelas, `insumo.fornecedor_id` como FK direta, `ficha_tecnica` com PK composta) foi inteiramente substituída. Durante a geração dos dados novos, o grupo (via IA) decidiu deliberadamente deixar o insumo 10 (Caixa de Papelão Kraft) sem nenhum lote registrado — não porque a situação real exigisse isso, mas para que a demonstração de DELETE/auditoria (Seções 7.2/9.3/9.6) continuasse funcionando sem esbarrar em uma FK de `lote_insumo` apontando para ele (o que aconteceria se o insumo já tivesse sido comprado — nesse caso a exclusão deveria ser bloqueada pelo banco, não forçada). |
+| **Justificativa da escolha final** | O modelo lógico passa a refletir fielmente as 17 entidades do conceitual corrigido, sem nenhuma FK "a mais" nem "a menos" em relação à tabela de relacionamentos do README. A denormalização controlada de `pedido.vl_total` foi mantida pelos mesmos motivos da v1 (ver Seção 1.4); `insumo.qt_estoque_atual` ganhou a mesma trava conceitual, agora explicitada, porque LOTE_INSUMO introduziu uma fonte de verdade alternativa (soma dos lotes) que o grupo decidiu não sincronizar automaticamente nesta entrega, por ser um recálculo trivial de implementar depois (fora do escopo de "ajustar conforme o professor pediu"). |
+| **Reflexão crítica** | Assim como na v1, este material **ainda não foi validado com a organização real** (Osmar, Contrasti) — os números de `lote_insumo`, `execucao_etapa`, `vendedor` e os títulos financeiros são inteiramente fictícios, criados para demonstrar a estrutura corrigida, não para representar a operação real da Contrasti com precisão. Antes de uma eventual reapresentação, o grupo deveria: (1) confirmar com Osmar se a comissão de 3%/7% e o lead time de pagamento de 30 dias usados aqui fazem sentido; (2) decidir se `insumo.qt_estoque_atual` deve passar a ser recalculado automaticamente a partir de `lote_insumo` (trigger ou view) em vez de mantido manualmente; (3) `apresentacao.pptx` **também foi reescrito** nesta rodada (12 slides, novo DER, slide de "correção aplicada", tabelas de PK/FK separadas em núcleo/produção-financeiro) e passou pela validação estrutural e de conteúdo, mas **não foi visto renderizado** (sem LibreOffice disponível nesta sessão) — abrir no PowerPoint antes de apresentar. |
