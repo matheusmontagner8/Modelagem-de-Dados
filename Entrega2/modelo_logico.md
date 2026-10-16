@@ -4,6 +4,12 @@
 
 > **v2 (15/10/2026)** — reescrito para o modelo de 17 entidades corrigido na Entrega 1, em resposta à avaliação do professor ([issue #1](https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1)). Colunas renomeadas para o padrão de prefixos do dicionário (`id_`/`nm_`/`ds_`/`dt_`/`vl_`/`qt_`/`pc_`/`tp_`/`nr_`/`un_`). 17 tabelas, uma por entidade do DER — nenhuma tabela associativa extra foi necessária além das já previstas no conceitual (`lote_insumo`, `ficha_tecnica`, `execucao_etapa`, `item_pedido`).
 
+## Diagrama do modelo lógico
+
+![Diagrama do modelo lógico](modelo_logico.png)
+
+Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com tipo | coluna | `PK`/`FK` por linha; a "pata de galinha" (▷<) marca o lado "muitos" de cada FK e o traço simples (⊢) marca o lado "um" da PK referenciada. `bolsa` e `acessorio` usam traço simples nas duas pontas, porque a relação com `produto` é 1:1 (chave compartilhada, especialização). **Este diagrama é do modelo lógico/físico (Entrega 2)** — diferente do DER conceitual da Entrega 1 (`../Diagrama/Diagrama.png`), que segue notação de Chen e, por exigência da disciplina, não mostra FK nem tipo físico dentro das entidades. Gerado a partir desta mesma especificação de tabelas (script determinístico, sem edição manual).
+
 ---
 
 ## fornecedor
