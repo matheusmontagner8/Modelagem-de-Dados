@@ -8,7 +8,7 @@
 
 ![Diagrama do modelo lógico](modelo_logico.png)
 
-Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com tipo | coluna | `PK`/`FK` por linha; a "pata de galinha" (▷<) marca o lado "muitos" de cada FK e o traço simples (⊢) marca o lado "um" da PK referenciada. `bolsa` e `acessorio` usam traço simples nas duas pontas, porque a relação com `produto` é 1:1 (chave compartilhada, especialização). **Este diagrama é do modelo lógico/físico (Entrega 2)** — diferente do DER conceitual da Entrega 1 (`../Diagrama/Diagrama.png`), que segue notação de Chen e, por exigência da disciplina, não mostra FK nem tipo físico dentro das entidades. Gerado a partir desta mesma especificação de tabelas (script determinístico, sem edição manual).
+Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com tipo | coluna | `PK`/`FK` por linha; a "pata de galinha" (▷<) marca o lado "muitos" de cada FK e o traço simples (⊢) marca o lado "um" da PK referenciada, e cada linha traz também o rótulo do tipo de ligação (`1:N` ou `1:1`). `bolsa` e `acessorio` usam traço simples nas duas pontas e rótulo `1:1`, porque a relação com `produto` é de chave compartilhada (especialização) — todas as demais 14 ligações são `1:N`. **Este diagrama é do modelo lógico/físico (Entrega 2)** — diferente do DER conceitual da Entrega 1 (`../Diagrama/Diagrama.png`), que segue notação de Chen e, por exigência da disciplina, não mostra FK nem tipo físico dentro das entidades. Gerado a partir desta mesma especificação de tabelas (script determinístico, sem edição manual).
 
 ---
 
