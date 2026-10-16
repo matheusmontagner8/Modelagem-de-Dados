@@ -1,8 +1,7 @@
 # Entrega 2 — Modelo Lógico, Implementação SQL e Apresentação Final
 
-> ✅ **Totalmente sincronizado com a Entrega 1 corrigida (15/10/2026).** Em resposta à avaliação do professor na [issue #1](https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1), o conceitual (`../Diagrama/Diagrama.png` e `../Dicionario_de_Dados.html`) foi reconstruído de 9 para **17 entidades**, e **todos** os artefatos desta pasta — `modelo_logico.md`, `script.sql`, `RELATORIO_TECNICO.md`, `apresentacao_outline.md` e `apresentacao.pptx` — foram reescritos para acompanhar o modelo novo (acréscimo de `lote_insumo`, `ordem_producao`, `etapa_producao`, `artesao_faccao`, `execucao_etapa`, `vendedor`, `contas_receber`, `contas_pagar`, e colunas renomeadas para o padrão de prefixos do dicionário). `script.sql` foi testado novamente em MySQL real; `apresentacao.pptx` foi validado estruturalmente (`validate.py`) e por conteúdo (`markitdown`), mas não visto renderizado — ver pendência abaixo.
 
-Artefatos desta etapa (continuação da Entrega 1, na raiz do repositório — DER e Dicionário de Dados, agora de 17 entidades):
+Artefatos desta etapa:
 
 | Arquivo | Conteúdo | Seção do esqueleto oficial |
 |---|---|---|
