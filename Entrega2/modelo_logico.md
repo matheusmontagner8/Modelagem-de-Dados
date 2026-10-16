@@ -1,8 +1,6 @@
 # Modelo Lógico Relacional — Contrasti Bolsas e Acessórios
 
-> Documento separado exigido pela Seção 2 do esqueleto da Entrega 2. Implementado integralmente em `script.sql` (Seção 2 do script = `CREATE TABLE` de todas as tabelas abaixo). Para a justificativa de cada decisão de conversão, ver `RELATORIO_TECNICO.md`, Seções 1.2 a 1.5.
 
-> **v2 (15/10/2026)** — reescrito para o modelo de 17 entidades corrigido na Entrega 1, em resposta à avaliação do professor ([issue #1](https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1)). Colunas renomeadas para o padrão de prefixos do dicionário (`id_`/`nm_`/`ds_`/`dt_`/`vl_`/`qt_`/`pc_`/`tp_`/`nr_`/`un_`). 17 tabelas, uma por entidade do DER — nenhuma tabela associativa extra foi necessária além das já previstas no conceitual (`lote_insumo`, `ficha_tecnica`, `execucao_etapa`, `item_pedido`).
 
 ## Diagrama do modelo lógico
 
@@ -37,9 +35,8 @@ Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com 
 | qt_estoque_atual | `DECIMAL(10,3)` | `NOT NULL`, padrão `0`, `CHECK >= 0` |
 | vl_preco_referencia | `DECIMAL(10,2)` | `NOT NULL`, `CHECK > 0` |
 
-**Sem FK para fornecedor** — diferente da v1, que tinha `fornecedor_id NOT NULL` direto aqui. A origem de cada recebimento agora é responsabilidade de `lote_insumo` (abaixo), porque um mesmo insumo pode vir de fornecedores diferentes ao longo do tempo (ver Critério 10 da avaliação do professor).
 
-## lote_insumo *(nova, associativa)*
+## lote_insumo *(associativa)*
 
 | Coluna | Tipo | Restrições |
 |---|---|---|
@@ -84,7 +81,7 @@ Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com 
 | tp_acessorio | `VARCHAR(30)` | `NOT NULL` |
 | ds_compatibilidade | `VARCHAR(120)` | opcional |
 
-## ficha_tecnica *(associativa, agora com chave própria)*
+## ficha_tecnica *(associativa)*
 
 | Coluna | Tipo | Restrições |
 |---|---|---|
@@ -94,9 +91,8 @@ Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com 
 | qt_necessaria | `DECIMAL(10,3)` | `NOT NULL`, `CHECK > 0` |
 | un_medida_item | `VARCHAR(10)` | `NOT NULL` |
 
-`UNIQUE (produto_id, insumo_id)` substitui a antiga PK composta por FKs — mesma regra de negócio garantida ("cada par produto/insumo aparece uma única vez"), sem usar FK como identificador (apontado como agravante pelo professor no Critério 10).
 
-## ordem_producao *(nova, essencial)*
+## ordem_producao *(essencial)*
 
 | Coluna | Tipo | Restrições |
 |---|---|---|
@@ -107,7 +103,7 @@ Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com 
 | qt_produzir | `INT UNSIGNED` | `NOT NULL`, `CHECK > 0` |
 | tp_status_kanban | `VARCHAR(20)` | `NOT NULL`, `CHECK IN ('aberta','em producao','concluida','cancelada')` |
 
-## etapa_producao *(nova, tabela de domínio)*
+## etapa_producao *(tabela de domínio)*
 
 | Coluna | Tipo | Restrições |
 |---|---|---|
@@ -115,7 +111,7 @@ Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com 
 | nm_etapa | `VARCHAR(60)` | `NOT NULL` |
 | nr_ordem_sequencial | `SMALLINT UNSIGNED` | `NOT NULL`, `UNIQUE` |
 
-## artesao_faccao *(nova)*
+## artesao_faccao 
 
 | Coluna | Tipo | Restrições |
 |---|---|---|
@@ -124,7 +120,7 @@ Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com 
 | tp_vinculo | `VARCHAR(20)` | `NOT NULL`, `CHECK IN ('interno','faccao terceirizada')` |
 | nr_telefone | `VARCHAR(20)` | |
 
-## execucao_etapa *(nova, associativa de três vias)*
+## execucao_etapa *(associativa de três vias)*
 
 | Coluna | Tipo | Restrições |
 |---|---|---|
@@ -149,7 +145,7 @@ Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com 
 | ds_endereco | `VARCHAR(200)` | |
 | dt_cadastro | `DATE` | `NOT NULL`, padrão data atual |
 
-## vendedor *(nova)*
+## vendedor 
 
 | Coluna | Tipo | Restrições |
 |---|---|---|
@@ -184,7 +180,7 @@ Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com 
 | vl_desconto | `DECIMAL(10,2)` | `NOT NULL`, padrão `0`, `CHECK >= 0` |
 | vl_subtotal | `DECIMAL(10,2)` | `GENERATED ALWAYS AS (qt_quantidade * vl_preco_unitario - vl_desconto) STORED` |
 
-## contas_receber *(nova)*
+## contas_receber 
 
 | Coluna | Tipo | Restrições |
 |---|---|---|
@@ -195,7 +191,7 @@ Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com 
 | dt_recebimento | `DATE` | opcional |
 | tp_status | `VARCHAR(15)` | `NOT NULL`, `CHECK IN ('em aberto','pago','atrasado','cancelado')` |
 
-## contas_pagar *(nova)*
+## contas_pagar 
 
 | Coluna | Tipo | Restrições |
 |---|---|---|
@@ -229,7 +225,7 @@ Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com 
 | `contas_receber.pedido_id` | contas_receber | pedido | `NOT NULL` |
 | `contas_pagar.lote_id` | contas_pagar | lote_insumo | `NOT NULL` |
 
-Nenhuma cardinalidade N:N restou no modelo lógico — todas já tinham sido resolvidas por entidades associativas desde o DER conceitual (ver `RELATORIO_TECNICO.md` §1.2).
+
 
 ## Restrições de integridade (resumo)
 
