@@ -12,7 +12,6 @@
 
 ## 1. Caracterização da Organização
 
-> **Nota desta revisão:** a versão anterior desta seção apresentava porte e problemas operacionais no condicional ("sugerem", "prováveis de estarem"), como se fossem conclusões do levantamento — o professor apontou, na [issue #1](https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1), que isso são inferências do grupo, não observações relatadas pela organização. A redação abaixo separa o que foi **observado diretamente** (fotos, visita, dados informados pelo responsável) do que ainda **não foi confirmado**.
 
 - **Nome e natureza da organização:** Contrasti Bolsas e Acessórios Ltda — Indústria e Comércio de Bolsas e Acessórios de Couro, com fins lucrativos. Produção própria, com venda direta e por canais diversos (loja física, e-commerce, WhatsApp, representantes externos).
 - **O que foi observado diretamente na visita:** oficina de costura com múltiplas máquinas, bancada de corte/produção, estoque segmentado entre insumos e produtos prontos, e uso de facções terceirizadas para parte da produção (evidências fotográficas abaixo). Volume de pedidos informado pelo responsável: 50 a 70 por mês, com aumento nas datas comemorativas (Dia das Mães e Natal).
@@ -36,7 +35,6 @@
 
 ## 2. Processos de Negócio
 
-> **Nota desta revisão:** o professor apontou, na [issue #1](https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1), que apenas a Ordem de Produção (item 5) tinha fluxo descrito — os demais processos eram listas de funcionalidade de uma linha, sem etapas nem integração entre eles. Cada processo abaixo agora traz a sequência de etapas (fluxo) e para qual outro processo ele entrega o resultado (integração).
 
 **Visão geral do fluxo entre processos:** Compras (2/4) abastece a Produção (3/5), que abastece Vendas (6), que aciona Expedição (7); Compras e Vendas, por sua vez, geram lançamentos no Financeiro (8). Cadastro de clientes (1) é pré-requisito de Vendas (6).
 
@@ -98,7 +96,6 @@
 
 ## 4. Regras de Negócio
 
-> **Nota desta revisão:** o professor observou, na [issue #1](https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1), que a própria Seção 9 já registrava que este conteúdo reflete o texto do levantamento e que valores como limite de crédito e percentual de comissão são exemplos/referências, não confirmados. Isso continua valendo: as regras abaixo vieram da entrevista com Osmar Lingiard e são coerentes com os processos descritos na Seção 2, mas os **valores numéricos específicos** (ex.: percentual de comissão) ainda não foram validados linha a linha com a organização e não devem ser tratados como definitivos fora do contexto desta disciplina.
 
 - **Regras operacionais:**
   - Inscrição Estadual só é obrigatória quando o perfil do cliente é Atacado/Lojista.
@@ -119,7 +116,6 @@
 
 ## 5. Dicionário de Dados Conceitual
 
-> **Nota desta revisão:** o professor marcou esta seção/o dicionário como "não atendido" na [issue #1](https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1) — faltavam convenções (SGBD, collation, notação, prefixos, versão), expressão formal/leitura, tipo físico e índices por entidade, log de acesso, e matriz de acesso por operação/LGPD. Todo esse conteúdo foi adicionado ao dicionário completo, que agora é a referência única e detalhada (evita duplicar ~17 tabelas, com risco de o README e o HTML saírem de sincronia). O resumo abaixo lista as 17 entidades do DER atual; **tipo físico, índices, convenções, log de acesso e a matriz LGPD estão em [`Dicionario_de_Dados.html`](Dicionario_de_Dados.html)**.
 
 | Entidade | Chave primária | Papel no modelo |
 |---|---|---|
@@ -147,11 +143,9 @@ As 8 entidades marcadas *(nova)* foram adicionadas nesta revisão: ORDEM_PRODUÇ
 
 ## 6. Modelagem Conceitual (Entidades, Atributos, Relacionamentos)
 
-> **Nota desta revisão:** modelo reconstruído em resposta ao Critério 10 da [issue #1](https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1) — de 9 para 17 entidades, de 6 para 16 relacionamentos, todos agora com cardinalidade mínima **e** máxima nas duas pontas (a versão anterior só mostrava `1`/`N`, apesar de a tabela desta seção já declarar `(1,1)`/`(0,N)` — inconsistência entre o texto e a imagem que o professor apontou).
 
-- **Entidades reconhecidas (17 no total):** FORNECEDOR, INSUMO, LOTE_INSUMO, FICHA_TÉCNICA, PRODUTO, BOLSA, ACESSÓRIO, ORDEM_PRODUÇÃO, ETAPA_PRODUÇÃO, ARTESÃO_FACÇÃO, EXECUÇÃO_ETAPA, CLIENTE, VENDEDOR, PEDIDO, ITEM_PEDIDO, CONTAS_RECEBER e CONTAS_PAGAR. Quatro são **entidades associativas** (LOTE_INSUMO, FICHA_TÉCNICA, EXECUÇÃO_ETAPA, ITEM_PEDIDO), e PRODUTO é um **supertipo** especializado em BOLSA e ACESSÓRIO. Detalhamento completo (atributos, tipo físico, índices) na Seção 5 e em [`Dicionario_de_Dados.html`](Dicionario_de_Dados.html).
-- **Atributos e classificações:** o diagrama **não** marca chaves estrangeiras dentro das entidades — na versão anterior, FICHA_TÉCNICA usava `produto_id (PK, FK)` + `insumo_id (PK, FK)` como chave composta, o que o professor apontou como agravante ("FK como identificador"). Agora toda entidade associativa tem **chave própria** (ex.: `id_ficha`), e FKs ficam reservadas para o modelo lógico (Entrega 2), nunca aparecendo no conceitual.
-- **Especialização PRODUTO → BOLSA / ACESSÓRIO:** total e disjunta (símbolo "TD" no diagrama) — todo produto é obrigatoriamente bolsa OU acessório, nunca os dois. BOLSA e ACESSÓRIO herdam todos os atributos de PRODUTO.
+- **Entidades reconhecidas:** FORNECEDOR, INSUMO, LOTE_INSUMO, FICHA_TÉCNICA, PRODUTO, BOLSA, ACESSÓRIO, ORDEM_PRODUÇÃO, ETAPA_PRODUÇÃO, ARTESÃO_FACÇÃO, EXECUÇÃO_ETAPA, CLIENTE, VENDEDOR, PEDIDO, ITEM_PEDIDO, CONTAS_RECEBER e CONTAS_PAGAR. Quatro são **entidades associativas** (LOTE_INSUMO, FICHA_TÉCNICA, EXECUÇÃO_ETAPA, ITEM_PEDIDO), e PRODUTO é um **supertipo** especializado em BOLSA e ACESSÓRIO. Detalhamento completo (atributos, tipo físico, índices) na Seção 5 e em [`Dicionario_de_Dados.html`](Dicionario_de_Dados.html).
+- **Especialização PRODUTO → BOLSA / ACESSÓRIO:** total e disjunta, todo produto é obrigatoriamente bolsa OU acessório, nunca os dois. BOLSA e ACESSÓRIO herdam todos os atributos de PRODUTO.
 - **Relacionamentos pertinentes (16 no total, mais a especialização):**
 
 | # | Entidade A | Card. A | Verbo | Card. B | Entidade B | Observação |
@@ -182,13 +176,13 @@ As 8 entidades marcadas *(nova)* foram adicionadas nesta revisão: ORDEM_PRODUÇ
 
 O diagrama segue a notação de Chen conceitual pura: entidades como **retângulos**, relacionamentos como **losangos** rotulados com o verbo, atributos como **elipses** (chave primária sublinhada, em vermelho). A especialização PRODUTO → BOLSA/ACESSÓRIO usa o triângulo "TD" (Total e Disjunta). **Toda aresta de relacionamento traz o rótulo `mínimo,máximo` nas duas pontas** — a versão anterior só mostrava `1`/`N` na imagem (apesar de a tabela da Seção 6 já declarar `(1,1)`/`(0,N)`), inconsistência apontada pelo professor como a maior deficiência da entrega (Critério 10, -0,40). **Nenhum atributo de chave estrangeira aparece no diagrama** — diferente da versão anterior, que marcava FKs explicitamente dentro das entidades (inclusive como parte da chave primária composta de FICHA_TÉCNICA, apontado como agravante); FK é um detalhe do modelo lógico, não do conceitual, e por isso foi removido.
 
-Este recorte de 17 entidades cobre, agora, os módulos que a versão de 9 entidades deixava de fora: produção detalhada (ORDEM_PRODUÇÃO, ETAPA_PRODUÇÃO, ARTESÃO_FACÇÃO, EXECUÇÃO_ETAPA — Seção 2, processo 5), recebimento rastreável de insumo (LOTE_INSUMO — Seção 2, processo 4) e financeiro básico (CONTAS_PAGAR, CONTAS_RECEBER — Seção 2, processo 8), além de VENDEDOR para sustentar a regra de comissão por canal (Seção 4). O recorte de logística detalhada (expedição, RMA — Seção 2, processo 7) segue fora desta versão, como requisito levantado para uma modelagem futura, por não ter sido apontado como lacuna essencial pelo professor.
+Este recorte de 17 entidades cobre, os módulos: produção detalhada (ORDEM_PRODUÇÃO, ETAPA_PRODUÇÃO, ARTESÃO_FACÇÃO, EXECUÇÃO_ETAPA — Seção 2, processo 5), recebimento rastreável de insumo (LOTE_INSUMO — Seção 2, processo 4) e financeiro básico (CONTAS_PAGAR, CONTAS_RECEBER — Seção 2, processo 8), além de VENDEDOR para sustentar a regra de comissão por canal (Seção 4).
 
 ---
 
 ## 8. Justificativa Técnica
 
-- **Por que 17 entidades agora, e não as 9 anteriores:** a versão de 9 entidades modelava apenas o núcleo de custo e venda, mas o professor apontou que ORDEM_PRODUÇÃO e um mecanismo de lote de insumo eram **ausências essenciais** — sem eles, os processos de produção e de rastreabilidade de compra já descritos na Seção 2 não tinham onde ser registrados no modelo. As 6 entidades desejáveis (ETAPA_PRODUÇÃO, ARTESÃO_FACÇÃO, EXECUÇÃO_ETAPA, VENDEDOR, CONTAS_RECEBER, CONTAS_PAGAR) foram incorporadas porque o grupo já tinha a regra de negócio correspondente documentada (Seção 4) sem entidade que a sustentasse.
+- **Por que 17 entidades:** a versão de 9 entidades modelava apenas o núcleo de custo e venda, mas o professor apontou que ORDEM_PRODUÇÃO e um mecanismo de lote de insumo eram **ausências essenciais** — sem eles, os processos de produção e de rastreabilidade de compra já descritos na Seção 2 não tinham onde ser registrados no modelo. As 6 entidades desejáveis (ETAPA_PRODUÇÃO, ARTESÃO_FACÇÃO, EXECUÇÃO_ETAPA, VENDEDOR, CONTAS_RECEBER, CONTAS_PAGAR) foram incorporadas porque o grupo já tinha a regra de negócio correspondente documentada (Seção 4) sem entidade que a sustentasse.
 - **Por que LOTE_INSUMO substitui a relação direta FORNECEDOR–INSUMO:** a versão anterior modelava FORNECEDOR–INSUMO como (1,1), ou seja, cada insumo vinha de um único fornecedor fixo — o professor apontou que isso contradiz a própria regra de rastreabilidade por lote (Seção 4), já que, na prática, um mesmo insumo (ex.: couro caramelo) pode ser recebido de fornecedores diferentes em momentos diferentes, cada lote com sua cor/tonalidade. LOTE_INSUMO resolve isso: liga-se a exatamente um INSUMO e a exatamente um FORNECEDOR por recebimento, permitindo múltiplos lotes (e múltiplos fornecedores) para o mesmo insumo ao longo do tempo.
 - **Por que FICHA_TÉCNICA, LOTE_INSUMO, EXECUÇÃO_ETAPA e ITEM_PEDIDO como entidades associativas com chave própria:** todas carregam atributos próprios que não pertencem a nenhuma das entidades que conectam (qt_necessaria; nr_lote/qt_recebida/vl_preco_pago; pc_aproveitamento/pc_perda; qt_quantidade/vl_preco_unitario/vl_subtotal) — a notação exige reificá-las como entidade. Nesta revisão, cada uma recebeu uma chave primária própria (ex.: `id_ficha`) em vez da chave composta por FKs que a versão anterior usava em FICHA_TÉCNICA (`produto_id (PK, FK)` + `insumo_id (PK, FK)`) — apontado pelo professor como agravante, por misturar um detalhe de implementação (FK) com a identidade conceitual da entidade.
 - **Por que PRODUTO como supertipo (BOLSA/ACESSÓRIO):** bolsa e acessório compartilham identificador, nome, descrição, preço base, categoria e estoque — mas cada um tem atributos exclusivos (tamanho/tipo_alça para bolsa; tipo_acessorio/compatibilidade para acessório). Generalização/especialização evita repetir os atributos comuns em duas entidades soltas e ainda documenta, no próprio diagrama, que um produto é sempre um dos dois (TD).
