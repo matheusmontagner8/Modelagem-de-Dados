@@ -1,8 +1,5 @@
 # Roteiro — Apresentação Corporativa Final
 
-> Texto-base usado para montar `apresentacao.pptx` (12 slides). **v2 (15/10/2026)** — atualizado para o modelo de 17 entidades, em resposta à avaliação do professor na [issue #1](https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1). O texto abaixo é para a fala de quem apresenta, não para copiar no slide.
-
-Tempo sugerido: ~10-12 min de pitch + perguntas (cresceu ~2 min em relação à v1, por causa dos dois slides novos de produção/financeiro).
 
 ---
 
@@ -52,8 +49,3 @@ Tempo sugerido: ~10-12 min de pitch + perguntas (cresceu ~2 min em relação à 
 
 ---
 
-### Perguntas que o professor provavelmente vai fazer (preparar resposta curta)
-- "Por que a FK direta FORNECEDOR–INSUMO foi removida?" → contradizia a rastreabilidade por lote; `LOTE_INSUMO` resolve, com evidência concreta nos dados (ver slide 4).
-- "Por que `ficha_tecnica` não usa mais a chave composta?" → FK como identificador era um agravante apontado na avaliação; `id_ficha` + `UNIQUE(produto_id, insumo_id)` mantém a mesma regra de negócio sem esse problema.
-- "Essa massa de dados é real?" → não, é fictícia por exigência da própria atividade (privacidade); está documentado na Seção 2 do Relatório Técnico (Uso de IA).
-- "O `apresentacao.pptx` já reflete tudo isso?" → sim, nesta rodada de correção; `script.sql` e `modelo_logico.md` foram testados em MySQL real antes dos slides serem atualizados.
