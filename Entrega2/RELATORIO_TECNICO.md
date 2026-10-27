@@ -3,17 +3,15 @@
 
 > Continuação da Entrega 1. Ver `README.md` na raiz do repositório para a caracterização completa da organização, evidências de visita, processos de negócio, requisitos e o Dicionário de Dados Conceitual.
 
-> ✅ **`script.sql` validado em MySQL 8.4.10 LTS real** (instalado localmente, ver "Como rodar localmente" em `Entrega2/README.md`): as 17 tabelas, todas as constraints, a carga de dados e as 20 consultas (SELECT/JOIN, UPDATE, DELETE, gerenciais e de auditoria) rodaram do início ao fim sem nenhum erro ou warning. As 4 auditorias estruturais (9.1, 9.2, 9.3, 9.4) confirmaram 0 inconsistências na massa de dados; a 9.5 encontrou a anomalia de preço injetada de propósito; a 9.6 encontrou o fornecedor sem lote registrado, também deliberado.
-
 ---
 
 ## 1.1 Revisão do Modelo Conceitual
 
-O DER da Entrega 1 (`Diagrama/Diagrama.png`) **foi reconstruído** nesta etapa, em resposta à avaliação do professor na [issue #1](https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1): de 9 para **17 entidades** e de 6 para **16 relacionamentos**, todos agora com cardinalidade mínima e máxima em ambas as pontas, sem nenhuma marcação de FK no diagrama. O detalhamento completo dessa correção está no `README.md` da raiz (Seções 5–9) e no `Dicionario_de_Dados.html`; este relatório parte diretamente do modelo já corrigido.
+O DER da Entrega 1 (`Diagrama/Diagrama.png`) **foi reconstruído** nesta etapa, em resposta à avaliação do professor: de 9 para 17 entidades e de 6 para 16 relacionamentos, todos agora com cardinalidade mínima e máxima em ambas as pontas, sem nenhuma marcação de FK no diagrama. O detalhamento completo dessa correção está no `README.md` da raiz (Seções 5–9) e no `Dicionario_de_Dados.html`; este relatório parte diretamente do modelo já corrigido.
 
 Oito entidades novas entraram no recorte: duas essenciais (`ORDEM_PRODUCAO`, `LOTE_INSUMO`) e seis desejáveis (`ETAPA_PRODUCAO`, `ARTESAO_FACCAO`, `EXECUCAO_ETAPA`, `VENDEDOR`, `CONTAS_RECEBER`, `CONTAS_PAGAR`). A conversão lógica abaixo cobre as 17.
 
-As evidências da organização (fotos, endereço, contato) seguem as mesmas da Entrega 1 — não houve nova visita de campo nesta etapa.
+As evidências da organização (fotos, endereço, contato) seguem as mesmas da Entrega 1, pois não houve nova visita de campo nesta etapa.
 
 ---
 
@@ -21,7 +19,7 @@ As evidências da organização (fotos, endereço, contato) seguem as mesmas da 
 
 ### Entidades → Tabelas
 
-Cada uma das 17 entidades do DER virou uma tabela. A especialização PRODUTO → BOLSA/ACESSÓRIO segue a estratégia **"tabela por subtipo"**: PRODUTO guarda os atributos comuns, e BOLSA/ACESSÓRIO guardam só os atributos exclusivos de cada subtipo, com a própria chave primária de PRODUTO reaproveitada como chave primária e estrangeira (`id_produto`). Essa é a estratégia mais fiel à especialização Total e Disjunta (TD) do DER: ela evita colunas que ficariam sempre nulas para um dos dois subtipos e não perde a identidade comum de PRODUTO.
+Cada uma das 17 entidades do DER virou uma tabela. A especialização PRODUTO → BOLSA/ACESSÓRIO segue a estratégia tabela por subtipo: PRODUTO guarda os atributos comuns, e BOLSA/ACESSÓRIO guardam só os atributos exclusivos de cada subtipo, com a própria chave primária de PRODUTO reaproveitada como chave primária e estrangeira (`id_produto`). Essa é a estratégia mais fiel à especialização Total e Disjunta (TD) do DER: ela evita colunas que ficariam sempre nulas para um dos dois subtipos e não perde a identidade comum de PRODUTO.
 
 | Entidade conceitual | Tabela(s) lógica(s) |
 |---|---|
@@ -72,7 +70,7 @@ Os atributos do dicionário de dados da Entrega 1 viraram colunas com tipo de da
 | PRODUTO (1,1) — é_vendido_em — (0,N) ITEM_PEDIDO | `item_pedido.produto_id` → FK para `produto.id_produto` |
 | PEDIDO (1,1) — gera — (0,N) CONTAS_RECEBER | `contas_receber.pedido_id` → FK para `pedido.id_pedido` |
 
-Regra geral aplicada: em todo relacionamento 1:N, a chave estrangeira migra para a tabela do lado "N". Diferente da Entrega 1 original, **nenhuma dessas FKs aparece no DER conceitual** — elas só existem a partir desta conversão lógica, exatamente como a avaliação do professor cobrou.
+Regra geral aplicada: em todo relacionamento 1:N, a chave estrangeira migra para a tabela do lado "N". Diferente da Entrega 1 original, **nenhuma dessas FKs aparece no DER conceitual**, elas só existem a partir desta conversão lógica.
 
 ### Cardinalidades
 
@@ -104,7 +102,6 @@ Regra geral aplicada: em todo relacionamento 1:N, a chave estrangeira migra para
 | `contas_receber` | `id_titulo_receber` | `pedido_id` → `pedido.id_pedido` |
 | `contas_pagar` | `id_titulo_pagar` | `lote_id` → `lote_insumo.id_lote` |
 
-Todas as PKs são substitutas (`INT UNSIGNED AUTO_INCREMENT`) — inclusive `ficha_tecnica`, que na Entrega 1 original usava chave composta natural (`produto_id` + `insumo_id`). A troca para `id_ficha` próprio elimina o uso de FK como identificador (apontado como agravante pelo professor no Critério 10), sem perder a regra de negócio: um `UNIQUE (produto_id, insumo_id)` garante que cada par apareça uma única vez, exatamente como a PK composta garantia antes.
 
 ---
 
