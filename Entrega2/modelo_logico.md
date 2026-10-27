@@ -17,9 +17,9 @@ Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com 
 | **id_fornecedor** | `INT UNSIGNED` | **PK**, `AUTO_INCREMENT` |
 | nm_fornecedor | `VARCHAR(150)` | `NOT NULL` |
 | nr_cnpj | `VARCHAR(18)` | `NOT NULL`, `UNIQUE` |
-| nr_telefone | `VARCHAR(20)` | |
-| ds_email | `VARCHAR(160)` | |
-| ds_endereco | `VARCHAR(200)` | |
+| nr_telefone | `VARCHAR(20)` | `NOT NULL` |
+| ds_email | `VARCHAR(160)` | `NOT NULL` |
+| ds_endereco | `VARCHAR(200)` | `NOT NULL` |
 | dt_cadastro | `DATE` | `NOT NULL`, padrão data atual |
 | tp_categoria | `VARCHAR(30)` | `NOT NULL`, `CHECK IN ('Couro','Ferragem','Ziper','Embalagem')` |
 
@@ -55,7 +55,7 @@ Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com 
 |---|---|---|
 | **id_produto** | `INT UNSIGNED` | **PK**, `AUTO_INCREMENT` |
 | nm_produto | `VARCHAR(120)` | `NOT NULL` |
-| ds_descricao | `VARCHAR(255)` | |
+| ds_descricao | `VARCHAR(255)` | `NOT NULL` |
 | vl_preco_base | `DECIMAL(10,2)` | `NOT NULL`, `CHECK > 0` |
 | tp_categoria | `VARCHAR(50)` | |
 | qt_estoque_total | `INT UNSIGNED` | `NOT NULL`, padrão `0` |
@@ -140,9 +140,9 @@ Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com 
 | **id_cliente** | `INT UNSIGNED` | **PK**, `AUTO_INCREMENT` |
 | nm_cliente | `VARCHAR(150)` | `NOT NULL` |
 | nr_cpf | `VARCHAR(14)` | `NOT NULL`, `UNIQUE` |
-| nr_telefone | `VARCHAR(20)` | |
-| ds_email | `VARCHAR(160)` | |
-| ds_endereco | `VARCHAR(200)` | |
+| nr_telefone | `VARCHAR(20)` | `NOT NULL` |
+| ds_email | `VARCHAR(160)` | `NOT NULL` |
+| ds_endereco | `VARCHAR(200)` | `NOT NULL` |
 | dt_cadastro | `DATE` | `NOT NULL`, padrão data atual |
 
 ## vendedor 
