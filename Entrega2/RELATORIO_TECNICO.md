@@ -32,7 +32,7 @@ Cada uma das 17 entidades do DER virou uma tabela. A especialização PRODUTO �
 | ACESSÓRIO | `acessorio` |
 | ORDEM_PRODUÇÃO | `ordem_producao` |
 | ETAPA_PRODUÇÃO | `etapa_producao` |
-| ARTESÃO_FACÇÃO | `artesao` |
+| ARTESÃO | `artesao` |
 | EXECUÇÃO_ETAPA | `execucao_etapa` |
 | CLIENTE | `cliente` |
 | VENDEDOR | `vendedor` |
@@ -93,7 +93,7 @@ Regra geral aplicada: em todo relacionamento 1:N, a chave estrangeira migra para
 | `ficha_tecnica` | `id_ficha` | `produto_id` → `produto.id_produto`; `insumo_id` → `insumo.id_insumo` |
 | `ordem_producao` | `id_op` | `produto_id` → `produto.id_produto` |
 | `etapa_producao` | `id_etapa` | — |
-| `artesao_` | `id_artesao` | — |
+| `artesao` | `id_artesao` | — |
 | `execucao_etapa` | `id_execucao` | `op_id` → `ordem_producao.id_op`; `etapa_id` → `etapa_producao.id_etapa`; `artesao_id` → `artesao.id_artesao` |
 | `cliente` | `id_cliente` | — |
 | `vendedor` | `id_vendedor` | — |
