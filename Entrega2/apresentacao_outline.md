@@ -20,7 +20,7 @@
 **Fala — pontos para defender se o professor perguntar:**
 - Por que `ficha_tecnica` trocou a PK composta (produto_id+insumo_id, que tinha FK como identificador) por uma chave própria (`id_ficha`).
 - Por que `insumo` não tem mais FK direta para `fornecedor` — a origem de cada recebimento agora vive em `lote_insumo`.
-- Por que `execucao_etapa` é uma associativa de três vias (ordem de produção × etapa × artesão/facção) — é o que sustenta o pagamento por etapa (RF15).
+- Por que `execucao_etapa` é uma associativa de três vias (ordem de produção × etapa × artesão) — é o que sustenta o pagamento por etapa (RF15).
 - Por que `pedido.vl_total` e `insumo.qt_estoque_atual` são denormalizações **controladas** (não um erro) — e como o script garante que fiquem consistentes.
 
 ### 5. Demonstração da implementação (SQL rodando) (slide 7, ao vivo)
