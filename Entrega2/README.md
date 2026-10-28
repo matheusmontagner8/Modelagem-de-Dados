@@ -1,4 +1,4 @@
-# Entrega 2 — Modelo Lógico, Implementação SQL e Apresentação Final
+# Entrega 2 — Modelo Lógico, Modelo Físico e Apresentação Final
 
 
 Artefatos desta etapa:
@@ -8,7 +8,7 @@ Artefatos desta etapa:
 | [`RELATORIO_TECNICO.md`](RELATORIO_TECNICO.md) | Revisão do conceitual, conversão para o lógico, PKs/FKs, normalização (1FN/2FN/3FN), justificativas técnicas, proposta de BI/IA, Uso de IA | Seções 1.1–1.6 e 6 |
 | [`modelo_logico.md`](modelo_logico.md) | 17 tabelas, colunas, tipos, PK/FK, restrições e cardinalidades já convertidas, com diagrama (abaixo) | Seção 2 |
 | [`modelo_logico.png`](modelo_logico.png) | Diagrama do modelo lógico em notação de tabela/crow's foot (tipo, coluna, PK/FK dentro da caixa) — **diferente do DER conceitual da Entrega 1**, que segue notação de Chen por exigência da disciplina | Seção 2 |
-| [`script.sql`](script.sql) | Script completo: `CREATE DATABASE`/17 `CREATE TABLE`/constraints, massa de dados fictícia, 7 `SELECT` com `JOIN`, 6 `UPDATE`, 2 `DELETE`, 7 consultas gerenciais e de auditoria | Seções 3 e 4 |
+| [`script.sql`](script.sql) | **Modelo Físico** — Script completo: `CREATE DATABASE`/17 `CREATE TABLE`/constraints, massa de dados fictícia, 7 `SELECT` com `JOIN`, 6 `UPDATE`, 2 `DELETE`, 7 consultas gerenciais e de auditoria | Seções 3 e 4 |
 | [`apresentacao_outline.md`](apresentacao_outline.md) | Roteiro/conteúdo dos slides, atualizado para o modelo de 17 entidades (12 slides) | Seção 7 |
 | [`apresentacao.pptx`](apresentacao.pptx) | Slides prontos (12), com o DER novo, o slide de "correção aplicada" (apontamento do professor × solução), 2 slides de PK/FK (núcleo + tabelas novas), fotos da visita, 2 gráficos nativos e anotações do apresentador | Seção 7 |
 
