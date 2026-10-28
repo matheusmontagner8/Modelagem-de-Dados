@@ -11,7 +11,7 @@
 -- renomeadas para o padrão de prefixos (id_/nm_/ds_/dt_/vl_/qt_/pc_/tp_/
 -- nr_/un_), FORNECEDOR-INSUMO direto substituído por LOTE_INSUMO,
 -- FICHA_TECNICA com chave própria, e 8 tabelas novas: lote_insumo,
--- ordem_producao, etapa_producao, artesao_faccao, execucao_etapa,
+-- ordem_producao, etapa_producao, artesao, execucao_etapa,
 -- vendedor, contas_receber, contas_pagar.
 --
 -- Organização do arquivo (mesma ordem pedida no esqueleto da Entrega 2):
@@ -171,8 +171,8 @@ CREATE TABLE etapa_producao (
     CONSTRAINT uq_etapa_ordem UNIQUE (nr_ordem_sequencial)
 );
 
--- ARTESAO_FACCAO (nova) ------------------------------------------------------
-CREATE TABLE artesao_faccao (
+-- ARTESAO (nova) ------------------------------------------------------
+CREATE TABLE artesao (
     id_artesao  INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     nm_artesao  VARCHAR(120) NOT NULL,
     tp_vinculo  VARCHAR(20) NOT NULL,
@@ -181,7 +181,7 @@ CREATE TABLE artesao_faccao (
 );
 
 -- EXECUCAO_ETAPA (nova, associativa de três vias) ----------------------------
--- Liga ORDEM_PRODUCAO a ETAPA_PRODUCAO executada por um ARTESAO_FACCAO.
+-- Liga ORDEM_PRODUCAO a ETAPA_PRODUCAO executada por um ARTESAO.
 -- pc_aproveitamento/pc_perda sustentam a regra de pagamento por etapa (RF15).
 CREATE TABLE execucao_etapa (
     id_execucao        INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -194,7 +194,7 @@ CREATE TABLE execucao_etapa (
     pc_perda           DECIMAL(5,2),
     CONSTRAINT fk_execucao_op       FOREIGN KEY (op_id)      REFERENCES ordem_producao(id_op) ON DELETE CASCADE,
     CONSTRAINT fk_execucao_etapa    FOREIGN KEY (etapa_id)   REFERENCES etapa_producao(id_etapa),
-    CONSTRAINT fk_execucao_artesao  FOREIGN KEY (artesao_id) REFERENCES artesao_faccao(id_artesao),
+    CONSTRAINT fk_execucao_artesao  FOREIGN KEY (artesao_id) REFERENCES artesao(id_artesao),
     CONSTRAINT ck_execucao_aprov CHECK (pc_aproveitamento IS NULL OR pc_aproveitamento BETWEEN 0 AND 100),
     CONSTRAINT ck_execucao_perda CHECK (pc_perda IS NULL OR pc_perda BETWEEN 0 AND 100)
 );
@@ -391,8 +391,8 @@ INSERT INTO etapa_producao (id_etapa, nm_etapa, nr_ordem_sequencial) VALUES
 (4, 'Costura', 4), (5, 'Montagem/Ferragens', 5),
 (6, 'Acabamento/Revisao', 6), (7, 'Embalagem', 7);
 
--- ARTESAO_FACCAO (4: 2 internos, 2 facções terceirizadas) --------------------
-INSERT INTO artesao_faccao (id_artesao, nm_artesao, tp_vinculo, nr_telefone) VALUES
+-- ARTESAO (4: 2 internos, 2 facções terceirizadas) --------------------
+INSERT INTO artesao (id_artesao, nm_artesao, tp_vinculo, nr_telefone) VALUES
 (1, 'Everton Souza Lima', 'interno', '(11) 98777-1001'),
 (2, 'Rosa Maria Aparecida', 'interno', '(11) 98777-1002'),
 (3, 'Faccao Mao de Obra Franca', 'faccao terceirizada', '(16) 98777-1003'),
@@ -692,7 +692,7 @@ FROM execucao_etapa ee
 JOIN ordem_producao op ON op.id_op = ee.op_id
 JOIN produto        pr ON pr.id_produto = op.produto_id
 JOIN etapa_producao  et ON et.id_etapa = ee.etapa_id
-JOIN artesao_faccao  af ON af.id_artesao = ee.artesao_id
+JOIN artesao  af ON af.id_artesao = ee.artesao_id
 WHERE op.nr_op = 'OP-2025-001'
 ORDER BY et.nr_ordem_sequencial;
 
@@ -836,7 +836,7 @@ SELECT af.nm_artesao, af.tp_vinculo,
        ROUND(AVG(ee.pc_aproveitamento), 1) AS aproveitamento_medio,
        ROUND(AVG(ee.pc_perda), 1) AS perda_media
 FROM execucao_etapa ee
-JOIN artesao_faccao af ON af.id_artesao = ee.artesao_id
+JOIN artesao af ON af.id_artesao = ee.artesao_id
 JOIN etapa_producao  et ON et.id_etapa = ee.etapa_id
 WHERE et.nm_etapa = 'Corte'
 GROUP BY af.id_artesao, af.nm_artesao, af.tp_vinculo
