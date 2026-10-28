@@ -577,9 +577,9 @@
   <table class="conv-table">
     <colgroup><col style="width:24%"><col style="width:76%"></colgroup>
     <tbody>
-      <tr><td class="k">Entidades auditadas</td><td>FORNECEDOR (nr_cnpj), CLIENTE (nr_cpf, ds_email, ds_endereco), VENDEDOR, ARTESÃO_FACÇÃO (dados pessoais), CONTAS_PAGAR e CONTAS_RECEBER (dados financeiros) — qualquer entidade com dado pessoal ou financeiro sensível.</td></tr>
+      <tr><td class="k">Entidades auditadas</td><td>FORNECEDOR (nr_cnpj), CLIENTE (nr_cpf, ds_email, ds_endereco), VENDEDOR, ARTESÃO (dados pessoais), CONTAS_PAGAR e CONTAS_RECEBER (dados financeiros) — qualquer entidade com dado pessoal ou financeiro sensível.</td></tr>
       <tr><td class="k">Estrutura proposta</td><td><code>LOG_ACESSO(id_log PK, nm_usuario, dt_hora, nm_entidade, nm_operacao, ds_chave_registro, ds_valor_anterior, ds_valor_novo)</code> — tabela de log no nível lógico, fora do DER conceitual.</td></tr>
-      <tr><td class="k">Captura de INSERT/UPDATE/DELETE</td><td>Triggers <code>AFTER INSERT/UPDATE/DELETE</code> nas tabelas sensíveis (CLIENTE, FORNECEDOR, VENDEDOR, ARTESÃO_FACÇÃO, CONTAS_PAGAR, CONTAS_RECEBER), gravando usuário da sessão, data/hora e os valores antigo/novo dos campos alterados.</td></tr>
+      <tr><td class="k">Captura de INSERT/UPDATE/DELETE</td><td>Triggers <code>AFTER INSERT/UPDATE/DELETE</code> nas tabelas sensíveis (CLIENTE, FORNECEDOR, VENDEDOR, ARTESÃO, CONTAS_PAGAR, CONTAS_RECEBER), gravando usuário da sessão, data/hora e os valores antigo/novo dos campos alterados.</td></tr>
       <tr><td class="k">Captura de SELECT</td><td>MySQL não audita leitura nativamente sem plugin de auditoria; a leitura de dados pessoais (CPF, CNPJ) é registrada em nível de aplicação (middleware/API), não no banco.</td></tr>
       <tr><td class="k">Retenção</td><td>5 anos — alinhado a prazos usuais de obrigações fiscais e civis no Brasil, compatível com o art. 16 da LGPD (eliminação dos dados após atingida a finalidade, ressalvadas obrigações legais/regulatórias).</td></tr>
     </tbody>
@@ -606,7 +606,7 @@
       <tr><td class="ent">PRODUTO / BOLSA / ACESSÓRIO</td><td class="lgpd-n">não pessoal</td><td>Vendas, Produção, Compras, Admin</td><td>Produção, Admin</td></tr>
       <tr><td class="ent">ORDEM_PRODUÇÃO</td><td class="lgpd-n">não pessoal</td><td>Produção, Admin</td><td>Produção, Admin</td></tr>
       <tr><td class="ent">ETAPA_PRODUÇÃO</td><td class="lgpd-n">não pessoal</td><td>Produção, Admin</td><td>Produção, Admin</td></tr>
-      <tr><td class="ent">ARTESÃO_FACÇÃO</td><td class="lgpd-pess">pessoal</td><td>Produção, Financeiro, Admin</td><td>Produção, Admin</td></tr>
+      <tr><td class="ent">ARTESÃO</td><td class="lgpd-pess">pessoal</td><td>Produção, Financeiro, Admin</td><td>Produção, Admin</td></tr>
       <tr><td class="ent">EXECUÇÃO_ETAPA</td><td class="lgpd-n">não pessoal</td><td>Produção, Financeiro, Admin</td><td>Produção, Admin</td></tr>
       <tr><td class="ent">CLIENTE</td><td class="lgpd-sens">sensível (CPF)</td><td>Vendas, Financeiro, Admin</td><td>Vendas, Admin</td></tr>
       <tr><td class="ent">VENDEDOR</td><td class="lgpd-pess">pessoal</td><td>Vendas, Financeiro, Admin</td><td>Admin</td></tr>
@@ -631,7 +631,7 @@
     <tbody>
       <tr><td class="attr">1. Compras</td><td>FORNECEDOR — fornece — LOTE_INSUMO — é_recebido_como — INSUMO — gera — CONTAS_PAGAR</td><td>Cada recebimento de material vira um lote rastreável (fornecedor, data, quantidade, preço pago) e pode gerar um título a pagar.</td></tr>
       <tr><td class="attr">2. Engenharia de produto</td><td>INSUMO — compõe — FICHA_TÉCNICA — é_detalhado_em — PRODUTO</td><td>A ficha técnica é a lista de materiais por produto e informa a quantidade necessária de cada insumo.</td></tr>
-      <tr><td class="attr">3. Produção</td><td>PRODUTO — é_produzido_em — ORDEM_PRODUÇÃO — se_desdobra_em — EXECUÇÃO_ETAPA — classifica/realiza — ETAPA_PRODUÇÃO / ARTESÃO_FACÇÃO</td><td>Uma ordem de produção percorre as etapas padrão, cada uma executada por um artesão ou facção, com aproveitamento/perda registrados.</td></tr>
+      <tr><td class="attr">3. Produção</td><td>PRODUTO — é_produzido_em — ORDEM_PRODUÇÃO — se_desdobra_em — EXECUÇÃO_ETAPA — classifica/realiza — ETAPA_PRODUÇÃO / ARTESÃO</td><td>Uma ordem de produção percorre as etapas padrão, cada uma executada por um artesão ou facção, com aproveitamento/perda registrados.</td></tr>
       <tr><td class="attr">4. Hierarquia de produto</td><td>PRODUTO — TD — BOLSA / ACESSÓRIO</td><td>Classifica todo produto como bolsa ou acessório, cada um com atributos próprios.</td></tr>
       <tr><td class="attr">5. Vendas</td><td>CLIENTE / VENDEDOR — PEDIDO — contém — ITEM_PEDIDO — é_vendido_em — PRODUTO</td><td>Registra os produtos vendidos, preço praticado, subtotal, total do pedido, o cliente que comprou e o vendedor/canal que atendeu (base da comissão).</td></tr>
       <tr><td class="attr">6. Financeiro</td><td>PEDIDO — gera — CONTAS_RECEBER · LOTE_INSUMO — gera — CONTAS_PAGAR</td><td>Vendas geram títulos a receber; compras geram títulos a pagar — os dois lados do fluxo de caixa da empresa.</td></tr>
