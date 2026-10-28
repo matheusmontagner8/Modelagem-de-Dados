@@ -380,11 +380,11 @@
     <div class="idx-note"><b>Índices sugeridos:</b> PK (id_etapa) · UNIQUE idx_etapa_ordem (nr_ordem_sequencial)</div>
   </div>
 
-  <!-- ARTESAO_FACCAO -->
+  <!-- ARTESAO -->
   <div class="entity">
-    <div class="entity-header">ARTESÃO_FACÇÃO</div>
+    <div class="entity-header">ARTESÃO</div>
     <div class="entity-note">Entidade desejável, sugerida pelo professor — suporta a regra de "pagamento de facção pela etapa registrada".</div>
-    <div class="leitura">ARTESAO_FACCAO(<span class="pk">id_artesao</span>, nm_artesao, tp_vinculo, nr_telefone)</div>
+    <div class="leitura">ARTESAO(<span class="pk">id_artesao</span>, nm_artesao, tp_vinculo, nr_telefone)</div>
     <table>
       <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
       <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
@@ -401,7 +401,7 @@
   <!-- EXECUCAO_ETAPA -->
   <div class="entity">
     <div class="entity-header">EXECUÇÃO_ETAPA</div>
-    <div class="entity-note">Entidade associativa de três vias: liga uma ORDEM_PRODUÇÃO a uma ETAPA_PRODUÇÃO executada por um ARTESÃO_FACÇÃO. Base de cálculo do pagamento por etapa concluída.</div>
+    <div class="entity-note">Entidade associativa de três vias: liga uma ORDEM_PRODUÇÃO a uma ETAPA_PRODUÇÃO executada por um ARTESÃO. Base de cálculo do pagamento por etapa concluída.</div>
     <div class="leitura">EXECUCAO_ETAPA(<span class="pk">id_execucao</span>, dt_inicio, dt_fim, pc_aproveitamento, pc_perda)</div>
     <table>
       <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
@@ -558,7 +558,7 @@
       <tr><td class="attr">é_produzido_em</td><td>PRODUTO (1,1) — ORDEM_PRODUÇÃO (0,N)</td><td>Uma ordem de produção refere-se a exatamente um produto; um produto pode ter várias ordens de produção ao longo do tempo.</td></tr>
       <tr><td class="attr">se_desdobra_em</td><td>ORDEM_PRODUÇÃO (1,1) — EXECUÇÃO_ETAPA (0,N)</td><td>Uma ordem de produção se desdobra em zero ou várias execuções de etapa; cada execução pertence a exatamente uma ordem.</td></tr>
       <tr><td class="attr">classifica</td><td>ETAPA_PRODUÇÃO (1,1) — EXECUÇÃO_ETAPA (0,N)</td><td>Cada execução é classificada em exatamente uma etapa padrão; uma etapa padrão classifica várias execuções.</td></tr>
-      <tr><td class="attr">realiza</td><td>ARTESÃO_FACÇÃO (1,1) — EXECUÇÃO_ETAPA (0,N)</td><td>Cada execução é realizada por exatamente um artesão/facção; um artesão/facção realiza várias execuções — base do pagamento por etapa.</td></tr>
+      <tr><td class="attr">realiza</td><td>ARTESÃO (1,1) — EXECUÇÃO_ETAPA (0,N)</td><td>Cada execução é realizada por exatamente um artesão/facção; um artesão/facção realiza várias execuções — base do pagamento por etapa.</td></tr>
       <tr><td class="attr">Especialização TD</td><td>PRODUTO (1,1) — BOLSA (1,1) / ACESSÓRIO (1,1)</td><td>Todo produto é obrigatoriamente bolsa ou acessório, nunca ambos (Total e Disjunta).</td></tr>
       <tr><td class="attr">realiza (venda)</td><td>CLIENTE (1,1) — PEDIDO (0,N)</td><td>Cada pedido é realizado por exatamente um cliente; um cliente pode realizar vários pedidos.</td></tr>
       <tr><td class="attr">atende</td><td>VENDEDOR (1,1) — PEDIDO (0,N)</td><td>Cada pedido é atendido por exatamente um vendedor; um vendedor atende vários pedidos — base do cálculo de comissão.</td></tr>
