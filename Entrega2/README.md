@@ -29,7 +29,7 @@ MySQL 8.4.10 LTS, já instalado como serviço do Windows (`MySQL84`) — inicia 
 ```
 
 cd "C:\Users\Matheus\mysql\mysql-8.4.10-winx64"
-Get-Content "..\..\..\Rhema\Matheus\Modelagem-de-Dados\Entrega2\script.sql" | bin\mysql.exe -u root --port=3306 --protocol=TCP
+Get-Content "C:\Rhema\Matheus\Modelagem-de-Dados\Entrega2\script.sql" | bin\mysql.exe -u root --port=3306 --protocol=TCP
 bin\mysql.exe -u root --port=3306 --protocol=TCP contrasti_bolsas
 
 ```
