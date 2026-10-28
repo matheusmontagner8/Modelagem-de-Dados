@@ -23,12 +23,13 @@ Artefatos desta etapa:
 
 ## Como rodar localmente
 
-MySQL 8.4.10 LTS, já instalado como serviço do Windows (`MySQL84`) — inicia sozinho com o computador. **Não rode `mysqld.exe --standalone` manualmente** (dá erro de conflito com o serviço já em execução). Para conectar e rodar o script:
+MySQL 8.4.10 LTS, já instalado como serviço do Windows (`MySQL84`) — inicia sozinho com o computador. **Não rode `mysqld.exe --standalone` manualmente** (dá erro de conflito com o serviço já em execução). Os comandos abaixo usam sintaxe do **PowerShell** (terminal padrão do Windows) — se usar `cmd.exe` clássico, pode trocar o `Get-Content ... | bin\mysql.exe` pelo redirecionamento `bin\mysql.exe ... < arquivo.sql`, que só funciona no `cmd`, não no PowerShell. Para conectar e rodar o script:
+
 
 ```
 
 cd "C:\Users\Matheus\mysql\mysql-8.4.10-winx64"
-bin\mysql.exe -u root --port=3306 --protocol=TCP < "..\..\..\Rhema\Matheus\Modelagem-de-Dados\Entrega2\script.sql"
+Get-Content "..\..\..\Rhema\Matheus\Modelagem-de-Dados\Entrega2\script.sql" | bin\mysql.exe -u root --port=3306 --protocol=TCP
 bin\mysql.exe -u root --port=3306 --protocol=TCP contrasti_bolsas
 
 ```
