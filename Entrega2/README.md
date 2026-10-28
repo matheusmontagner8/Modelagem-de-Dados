@@ -23,23 +23,24 @@ Artefatos desta etapa:
 
 ## Como rodar localmente
 
-MySQL 8.4.10 LTS, instalado via ZIP "sem instalador" (não é um serviço do Windows — precisa ser iniciado manualmente a cada reinício):
+MySQL 8.4.10 LTS, já instalado como serviço do Windows (`MySQL84`) — inicia sozinho com o computador. **Não rode `mysqld.exe --standalone` manualmente** (dá erro de conflito com o serviço já em execução). Para conectar e rodar o script:
 
 ```
-cd "C:\Users\Matheus\mysql\mysql-8.4.10-winx64"
-bin\mysqld.exe --defaults-file=my.ini --standalone --console
-```
 
-Em outro terminal, para rodar o script ou abrir um cliente:
-```
 cd "C:\Users\Matheus\mysql\mysql-8.4.10-winx64"
 bin\mysql.exe -u root --port=3306 --protocol=TCP < "..\..\..\Rhema\Matheus\Modelagem-de-Dados\Entrega2\script.sql"
 bin\mysql.exe -u root --port=3306 --protocol=TCP contrasti_bolsas
+
 ```
 
-**Usuário `root` sem senha** (`--initialize-insecure`, para simplificar o uso local) — adequado para estudo na própria máquina, mas defina uma senha (`ALTER USER 'root'@'localhost' IDENTIFIED BY '...';`) antes de expor a porta 3306 a qualquer rede. Instalar como serviço do Windows (para iniciar sozinho e não precisar do terminal aberto) exige um PowerShell **como Administrador**:
+**Usuário `root` sem senha** (`--initialize-insecure`, para simplificar o uso local) — adequado para estudo na própria máquina, mas defina uma senha (`ALTER USER 'root'@'localhost' IDENTIFIED BY '...';`) antes de expor a porta 3306 a qualquer rede.
+
+**Se for instalar em outra máquina/notebook para a apresentação** (sem o serviço já configurado), o passo de instalação como serviço do Windows exige um PowerShell **como Administrador**:
+
 ```
+
 cd "C:\Users\Matheus\mysql\mysql-8.4.10-winx64"
 .\bin\mysqld.exe --install MySQL84 --defaults-file="C:\Users\Matheus\mysql\mysql-8.4.10-winx64\my.ini"
 net start MySQL84
+
 ```
