@@ -1,6 +1,8 @@
 -- =====================================================================
 -- Contrasti Bolsas e Acessórios Ltda — Modelagem de Banco de Dados
--- Entrega 2 — Script SQL completo (Modelo Lógico + Massa de Dados)
+-- Entrega 2 — MODELO FISICO: Script SQL completo (DDL executavel em
+-- MySQL 8.4 + massa de dados). Implementacao fisica do modelo logico
+-- descrito em modelo_logico.md.
 --
 -- Dialeto: MySQL 8.0+ / 8.4 LTS (AUTO_INCREMENT, CHECK constraints
 -- aplicados, GENERATED COLUMN em item_pedido.vl_subtotal).
