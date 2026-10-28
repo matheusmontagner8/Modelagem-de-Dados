@@ -111,7 +111,7 @@ Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com 
 | nm_etapa | `VARCHAR(60)` | `NOT NULL` |
 | nr_ordem_sequencial | `SMALLINT UNSIGNED` | `NOT NULL`, `UNIQUE` |
 
-## artesao_faccao 
+## artesao 
 
 | Coluna | Tipo | Restrições |
 |---|---|---|
@@ -127,7 +127,7 @@ Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com 
 | **id_execucao** | `INT UNSIGNED` | **PK**, `AUTO_INCREMENT` |
 | *op_id* | `INT UNSIGNED` | **FK** → `ordem_producao.id_op`, `NOT NULL`, `ON DELETE CASCADE` |
 | *etapa_id* | `INT UNSIGNED` | **FK** → `etapa_producao.id_etapa`, `NOT NULL` |
-| *artesao_id* | `INT UNSIGNED` | **FK** → `artesao_faccao.id_artesao`, `NOT NULL` |
+| *artesao_id* | `INT UNSIGNED` | **FK** → `artesao.id_artesao`, `NOT NULL` |
 | dt_inicio | `DATETIME` | `NOT NULL` |
 | dt_fim | `DATETIME` | opcional (nulo enquanto em andamento) |
 | pc_aproveitamento | `DECIMAL(5,2)` | `CHECK BETWEEN 0 AND 100`, preenchido só na etapa de Corte |
@@ -217,7 +217,7 @@ Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com 
 | `ordem_producao.produto_id` | ordem_producao | produto | `NOT NULL` |
 | `execucao_etapa.op_id` | execucao_etapa | ordem_producao | `NOT NULL` |
 | `execucao_etapa.etapa_id` | execucao_etapa | etapa_producao | `NOT NULL` |
-| `execucao_etapa.artesao_id` | execucao_etapa | artesao_faccao | `NOT NULL` |
+| `execucao_etapa.artesao_id` | execucao_etapa | artesao | `NOT NULL` |
 | `pedido.cliente_id` | pedido | cliente | `NOT NULL` |
 | `pedido.vendedor_id` | pedido | vendedor | `NOT NULL` |
 | `item_pedido.produto_id` | item_pedido | produto | `NOT NULL` |
