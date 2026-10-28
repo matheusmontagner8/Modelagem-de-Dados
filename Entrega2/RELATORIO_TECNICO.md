@@ -1,7 +1,10 @@
 # Relatório Técnico Final — Entrega 2
-### Contrasti Bolsas e Acessórios Ltda — Modelo Lógico, Implementação SQL
+### Contrasti Bolsas e Acessórios Ltda — Modelo Lógico, Modelo Físico e Implementação SQL
 
 > Continuação da Entrega 1. Ver `README.md` na raiz do repositório para a caracterização completa da organização, evidências de visita, processos de negócio, requisitos e o Dicionário de Dados Conceitual.
+
+**As três etapas da modelagem, e onde cada uma está neste repositório:** Conceitual (independente de SGBD, Entrega 1 — `Diagrama/Diagrama.png`) → Lógico (tabelas/colunas/PK-FK/normalização, Seções 1.2–1.4 abaixo e `modelo_logico.md`) → **Físico** (implementação executável num SGBD real, com tipos, índices e constraints exatos do MySQL 8.4 — `script.sql`, testado em servidor real).
+
 
 ---
 
