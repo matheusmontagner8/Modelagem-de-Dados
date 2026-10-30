@@ -47,8 +47,8 @@ CREATE TABLE fornecedor (
     id_fornecedor INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     nm_fornecedor VARCHAR(150) NOT NULL,
     nr_cnpj       VARCHAR(18)  NOT NULL,
-    nr_telefone   VARCHAR(20),
-    ds_email      VARCHAR(160),
+    nr_telefone   VARCHAR(11),
+    ds_email      VARCHAR(140),
     ds_endereco   VARCHAR(200),
     dt_cadastro   DATE NOT NULL DEFAULT (CURRENT_DATE),
     tp_categoria  VARCHAR(30) NOT NULL,
@@ -100,11 +100,11 @@ CREATE TABLE lote_insumo (
 CREATE TABLE produto (
     id_produto        INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     nm_produto        VARCHAR(120)  NOT NULL,
-    ds_descricao      VARCHAR(255),
+    ds_descricao      VARCHAR(255), NOT NULL,
     vl_preco_base     DECIMAL(10,2) NOT NULL,
     tp_categoria      VARCHAR(50),
     qt_estoque_total  INT UNSIGNED NOT NULL DEFAULT 0,
-    tp_produto        VARCHAR(10) NOT NULL,
+    tp_produto        VARCHAR(30) NOT NULL,
     CONSTRAINT ck_produto_preco CHECK (vl_preco_base > 0),
     CONSTRAINT ck_produto_tipo  CHECK (tp_produto IN ('BOLSA','ACESSORIO'))
 );
