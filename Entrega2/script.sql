@@ -239,9 +239,9 @@ CREATE TABLE cliente (
     id_cliente    INT UNSIGNED AUTO_INCREMENT,
     nm_cliente    VARCHAR(150) NOT NULL,
     nr_cpf        VARCHAR(14)  NOT NULL,
-    nr_telefone   VARCHAR(20),
-    ds_email      VARCHAR(160),
-    ds_endereco   VARCHAR(200),
+    nr_telefone   VARCHAR(20) NOT NULL,
+    ds_email      VARCHAR(160) NOT NULL,
+    ds_endereco   VARCHAR(200) NOT NULL,
     dt_cadastro   DATE NOT NULL DEFAULT (CURRENT_DATE),
     CONSTRAINT pk_cliente     PRIMARY KEY (id_cliente),
     CONSTRAINT uq_cliente_cpf UNIQUE (nr_cpf)
