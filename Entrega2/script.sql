@@ -373,6 +373,47 @@ CREATE INDEX idx_pagar_status         ON contas_pagar(tp_status);
 
 
 -- =====================================================================
+-- 3.2) TRIGGERS — reforço da especialização Total e Disjunta (TD) de
+--      PRODUTO → BOLSA/ACESSORIO
+--
+--      A estratégia "uma tabela por subtipo" (BOLSA e ACESSORIO com
+--      id_produto como PK e FK para PRODUTO) não deixa o próprio SGBD
+--      garantir sozinho as duas regras da especialização:
+--        - EXCLUSIVIDADE (nunca os dois): um id_produto não pode
+--          aparecer em BOLSA e em ACESSORIO ao mesmo tempo — isto os
+--          triggers abaixo IMPEDEM em tempo real, bloqueando o INSERT.
+--        - TOTALIDADE (sempre um dos dois): todo produto deve aparecer
+--          em BOLSA ou em ACESSORIO — isto nenhum trigger de BEFORE
+--          INSERT consegue garantir sozinho (o produto é inserido antes
+--          do subtipo, em outro INSERT), por isso continua coberto pela
+--          auditoria 9.4, que verifica o estado final dos dados.
+-- =====================================================================
+DELIMITER $$
+
+CREATE TRIGGER trg_bolsa_exclusividade_ins
+BEFORE INSERT ON bolsa
+FOR EACH ROW
+BEGIN
+    IF EXISTS (SELECT 1 FROM acessorio WHERE id_produto = NEW.id_produto) THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Especializacao TD violada: este id_produto ja esta cadastrado como ACESSORIO, nao pode tambem ser BOLSA.';
+    END IF;
+END$$
+
+CREATE TRIGGER trg_acessorio_exclusividade_ins
+BEFORE INSERT ON acessorio
+FOR EACH ROW
+BEGIN
+    IF EXISTS (SELECT 1 FROM bolsa WHERE id_produto = NEW.id_produto) THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Especializacao TD violada: este id_produto ja esta cadastrado como BOLSA, nao pode tambem ser ACESSORIO.';
+    END IF;
+END$$
+
+DELIMITER ;
+
+
+-- =====================================================================
 -- 4) INSERT INTO — massa de dados (fictícia, coerente com a operação
 --    observada: couro/ferragens/zíperes/forro/embalagens, bolsas e
 --    acessórios, produção por etapa, clientes variados, pedidos em
