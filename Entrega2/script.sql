@@ -49,7 +49,7 @@ CREATE TABLE fornecedor (
     nm_fornecedor VARCHAR(150) NOT NULL,
     nr_cnpj       VARCHAR(18)  NOT NULL,
     nr_telefone   VARCHAR(20),
-    ds_email      VARCHAR(140),
+    ds_email      VARCHAR(160),
     ds_endereco   VARCHAR(200),
     dt_cadastro   DATE NOT NULL DEFAULT (CURRENT_DATE),
     tp_categoria  VARCHAR(30) NOT NULL,
