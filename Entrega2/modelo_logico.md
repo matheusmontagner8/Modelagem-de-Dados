@@ -139,7 +139,8 @@ Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com 
 |---|---|---|
 | **id_cliente** | `INT UNSIGNED` | **PK**, `AUTO_INCREMENT` |
 | nm_cliente | `VARCHAR(150)` | `NOT NULL` |
-| nr_cpf | `VARCHAR(14)` | `NOT NULL`, `UNIQUE` |
+| nr_cpf | `VARCHAR(14)` | `UNIQUE`, obrigatório se pessoa física (exclusivo com nr_cnpj) |
+| nr_cnpj | `VARCHAR(18)` | `UNIQUE`, obrigatório se pessoa jurídica (exclusivo com nr_cpf) |
 | nr_telefone | `VARCHAR(20)` | `NOT NULL` |
 | ds_email | `VARCHAR(160)` | `NOT NULL` |
 | ds_endereco | `VARCHAR(200)` | `NOT NULL` |
@@ -229,7 +230,7 @@ Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com 
 
 ## Restrições de integridade (resumo)
 
-- **Chave**: toda PK listada acima; `ficha_tecnica.UNIQUE(produto_id, insumo_id)` impede duplicar o par produto/insumo sem usar FK como identificador.
+- **Unicidade**: `fornecedor.nr_cnpj`, `cliente.nr_cpf`, `cliente.nr_cnpj`, `ordem_producao.nr_op`, `etapa_producao.nr_ordem_sequencial`.
 - **Unicidade**: `fornecedor.nr_cnpj`, `cliente.nr_cpf`, `ordem_producao.nr_op`, `etapa_producao.nr_ordem_sequencial`.
 - **Domínio (`CHECK`)**: `tp_categoria`, `un_medida`, `tp_produto`, `tp_status`, `tp_pagamento`, `tp_canal`, `tp_status_kanban`, `tp_vinculo` (em artesão e vendedor), além de todos os `CHECK > 0` / `CHECK >= 0` em preços, estoques e quantidades.
 - **Referencial (`FOREIGN KEY`)**: todas as FKs da tabela de cardinalidades acima; `ON DELETE CASCADE` em `bolsa`, `acessorio`, `ficha_tecnica`, `item_pedido` e `execucao_etapa` (ver justificativa em `RELATORIO_TECNICO.md` §1.5).
