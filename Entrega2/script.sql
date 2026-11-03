@@ -439,7 +439,7 @@ INSERT INTO insumo (id_insumo, nm_insumo, tp_insumo, un_medida, qt_estoque_minim
 (4, 'Fivela Metal Dourada', 'Ferragem', 'UN', 80.0, 540.0, 4.5),
 (5, 'Fivela Metal Prata', 'Ferragem', 'UN', 80.0, 480.0, 4.2),
 (6, 'Ziper Nylon 20cm', 'Ziper', 'UN', 100.0, 620.0, 2.8),
-(7, 'Ziper Metalico 15cm', 'Ziper', 'UN', 60.0, 300.0, 3.9),
+(7, 'Ziper Metalico 15cm', 'Ziper', 'UN', 60.0, 45.0, 3.9),
 (8, 'Linha de Costura Encerada', 'Ferragem', 'M', 200.0, 1200.0, 0.35),
 (9, 'Forro Sintetico Bege', 'Forro', 'M2', 40.0, 200.0, 18.0),
 (10, 'Caixa de Papelao Kraft', 'Embalagem', 'UN', 0.0, 0.0, 3.2);
@@ -1057,17 +1057,21 @@ WHERE id_insumo = 10
 
 
 -- =====================================================================
--- 8) CONSULTAS GERENCIAIS
+-- 8) CONSULTAS GERENCIAIS (prefixo G, formato "Atende: Kxx/Pxx" pedido
+--    pelo esqueleto oficial da Entrega 2 — ver RELATORIO_TECNICO.md §1.6
+--    para a tabela de rastreabilidade Problema/KPI → Tabelas → Consulta)
 -- =====================================================================
 
--- 8.1 Faturamento por mês (pedidos faturados ou expedidos)
+-- G01 - Faturamento por mês (pedidos faturados ou expedidos)
+-- Atende: K1 (Faturamento mensal)
 SELECT DATE_FORMAT(dt_pedido, '%Y-%m') AS mes, SUM(vl_total) AS faturamento
 FROM pedido
 WHERE tp_status IN ('Faturado', 'Expedido')
 GROUP BY DATE_FORMAT(dt_pedido, '%Y-%m')
 ORDER BY mes;
 
--- 8.2 Curva ABC — produtos mais vendidos por quantidade
+-- G02 - Curva ABC: produtos mais vendidos por quantidade
+-- Atende: K2 (Produtos mais vendidos)
 SELECT pr.nm_produto AS produto, SUM(ip.qt_quantidade) AS unidades_vendidas,
        SUM(ip.vl_subtotal) AS receita_total
 FROM item_pedido ip
@@ -1075,8 +1079,9 @@ JOIN produto pr ON pr.id_produto = ip.produto_id
 GROUP BY pr.id_produto, pr.nm_produto
 ORDER BY unidades_vendidas DESC;
 
--- 8.3 Margem estimada por produto (preço base - custo de matéria-prima
+-- G03 - Margem estimada por produto (preço base - custo de matéria-prima
 -- calculado a partir da ficha técnica, pelo preço de referência do insumo)
+-- Atende: K3 (Margem por produto/categoria)
 SELECT pr.nm_produto AS produto,
        pr.vl_preco_base,
        ROUND(SUM(ft.qt_necessaria * i.vl_preco_referencia), 2) AS custo_materia_prima,
@@ -1087,7 +1092,8 @@ JOIN insumo i ON i.id_insumo = ft.insumo_id
 GROUP BY pr.id_produto, pr.nm_produto, pr.vl_preco_base
 ORDER BY margem_estimada DESC;
 
--- 8.4 Ranking de clientes por valor total comprado
+-- G04 - Ranking de clientes por valor total comprado
+-- Atende: K4 (Concentração de receita por cliente)
 SELECT c.nm_cliente AS cliente, COUNT(p.id_pedido) AS total_pedidos, SUM(p.vl_total) AS valor_acumulado
 FROM cliente c
 JOIN pedido p ON p.cliente_id = c.id_cliente
@@ -1095,8 +1101,9 @@ WHERE p.tp_status <> 'Cancelado'
 GROUP BY c.id_cliente, c.nm_cliente
 ORDER BY valor_acumulado DESC;
 
--- 8.5 Consumo total de cada insumo, projetado a partir das vendas
+-- G05 - Consumo total de cada insumo, projetado a partir das vendas
 -- (quantidade vendida de cada produto × quantidade do insumo na ficha técnica)
+-- Atende: K5 (Consumo de insumo projetado)
 SELECT i.nm_insumo, i.un_medida,
        ROUND(SUM(ip.qt_quantidade * ft.qt_necessaria), 3) AS consumo_projetado
 FROM item_pedido ip
@@ -1105,8 +1112,9 @@ JOIN insumo i ON i.id_insumo = ft.insumo_id
 GROUP BY i.id_insumo, i.nm_insumo, i.un_medida
 ORDER BY consumo_projetado DESC;
 
--- 8.6 Aproveitamento médio de corte por artesão/facção (base da
+-- G06 - Aproveitamento médio de corte por artesão/facção (base da
 -- remuneração por etapa — RF15)
+-- Atende: K6 (Aproveitamento de corte por artesão)
 SELECT af.nm_artesao, af.tp_vinculo,
        COUNT(*) AS cortes_executados,
        ROUND(AVG(ee.pc_aproveitamento), 1) AS aproveitamento_medio,
@@ -1118,9 +1126,10 @@ WHERE et.nm_etapa = 'Corte'
 GROUP BY af.id_artesao, af.nm_artesao, af.tp_vinculo
 ORDER BY aproveitamento_medio DESC;
 
--- 8.7 Aging de contas a receber e a pagar em aberto (dias até o
+-- G07 - Aging de contas a receber e a pagar em aberto (dias até o
 -- vencimento, referência fixa 2025-10-15 — mesma lógica de "hoje"
 -- fictício usada na Seção 6.4)
+-- Atende: K7 (Aging de títulos a pagar/receber)
 SELECT 'receber' AS tipo, id_titulo_receber AS id_titulo, vl_valor, dt_vencimento,
        DATEDIFF('2025-10-15', dt_vencimento) AS dias_desde_vencimento
 FROM contas_receber WHERE tp_status = 'em aberto'
@@ -1130,12 +1139,25 @@ SELECT 'pagar' AS tipo, id_titulo_pagar AS id_titulo, vl_valor, dt_vencimento,
 FROM contas_pagar WHERE tp_status = 'em aberto'
 ORDER BY dias_desde_vencimento DESC;
 
+-- G08 - Quais insumos estão abaixo do estoque mínimo?
+-- Atende: K8 (Insumos abaixo do estoque mínimo) — massa de dados tem o
+-- insumo 7 (Ziper Metalico 15cm) deliberadamente abaixo do mínimo, para
+-- esta consulta não vir vazia (consulta vazia não demonstra nada).
+SELECT id_insumo, nm_insumo, un_medida, qt_estoque_minimo, qt_estoque_atual,
+       (qt_estoque_minimo - qt_estoque_atual) AS falta_para_o_minimo
+FROM insumo
+WHERE qt_estoque_atual < qt_estoque_minimo
+ORDER BY falta_para_o_minimo DESC;
+
 
 -- =====================================================================
--- 9) CONSULTAS DE AUDITORIA
+-- 9) CONSULTAS DE AUDITORIA (prefixo A, formato "Verifica: RNxx" pedido
+--    pelo esqueleto oficial — regras RN12-RN18 estão na Seção 4 do
+--    README.md, numeradas junto com as demais regras de negócio)
 -- =====================================================================
 
--- 9.1 Pedidos cujo vl_total NÃO bate com a soma real dos itens
+-- A01 - Pedidos cujo vl_total NÃO bate com a soma real dos itens
+-- Verifica: RN12 (vl_total deve sempre refletir a soma dos itens)
 -- (detecta inconsistência de denormalização — deveria vir vazio logo
 -- após rodar o UPDATE 6.1)
 SELECT p.id_pedido, p.vl_total AS valor_armazenado,
@@ -1145,13 +1167,16 @@ LEFT JOIN item_pedido ip ON ip.pedido_id = p.id_pedido
 GROUP BY p.id_pedido, p.vl_total
 HAVING valor_armazenado <> valor_real;
 
--- 9.2 Produtos sem nenhuma linha de ficha técnica (BOM incompleta)
+-- A02 - Produtos sem nenhuma linha de ficha técnica (BOM incompleta)
+-- Verifica: RN13 (todo produto comercializado deve ter ficha técnica completa)
 SELECT pr.id_produto, pr.nm_produto
 FROM produto pr
 LEFT JOIN ficha_tecnica ft ON ft.produto_id = pr.id_produto
 WHERE ft.produto_id IS NULL;
 
--- 9.3 Insumos nunca utilizados em nenhuma ficha técnica
+-- A03 - Insumos nunca utilizados em nenhuma ficha técnica
+-- Verifica: RN14 (todo insumo cadastrado deve estar vinculado a uma
+-- ficha técnica ou lote recebido — sem cadastro órfão)
 -- (vem vazia neste script porque o único caso — a caixa de papelão,
 -- insumo 10 — já foi removido na Seção 7.2; numa auditoria de rotina,
 -- rode esta consulta ANTES de decidir qualquer DELETE)
@@ -1160,10 +1185,11 @@ FROM insumo i
 LEFT JOIN ficha_tecnica ft ON ft.insumo_id = i.id_insumo
 WHERE ft.insumo_id IS NULL;
 
--- 9.4 Checagem da especialização TOTAL e DISJUNTA de PRODUTO:
--- todo produto deve existir em exatamente uma das tabelas BOLSA/ACESSORIO,
--- de acordo com o seu tp_produto. Esta consulta deveria vir vazia;
--- se trouxer linhas, a regra "Total e Disjunta" do DER foi violada.
+-- A04 - Checagem da especialização TOTAL e DISJUNTA de PRODUTO
+-- Verifica: RN15 (todo produto existe em exatamente uma das tabelas
+-- BOLSA/ACESSORIO, de acordo com o seu tp_produto)
+-- Esta consulta deveria vir vazia; se trouxer linhas, a regra
+-- "Total e Disjunta" do DER foi violada.
 SELECT pr.id_produto, pr.nm_produto, pr.tp_produto,
        (b.id_produto IS NOT NULL) AS tem_linha_bolsa,
        (a.id_produto IS NOT NULL) AS tem_linha_acessorio
@@ -1173,8 +1199,10 @@ LEFT JOIN acessorio a ON a.id_produto = pr.id_produto
 WHERE (pr.tp_produto = 'BOLSA'     AND (b.id_produto IS NULL OR a.id_produto IS NOT NULL))
    OR (pr.tp_produto = 'ACESSORIO' AND (a.id_produto IS NULL OR b.id_produto IS NOT NULL));
 
--- 9.5 Itens de pedido cujo preço praticado destoa muito do preço base
+-- A05 - Itens de pedido cujo preço praticado destoa muito do preço base
 -- atual do produto (possível erro de digitação ou promoção não documentada)
+-- Verifica: RN16 (preço praticado não deve variar mais que 10% do preço
+-- base vigente sem justificativa)
 SELECT ip.id_item_pedido, pr.nm_produto AS produto, ip.vl_preco_unitario, pr.vl_preco_base,
        ROUND(100 * (ip.vl_preco_unitario - pr.vl_preco_base) / pr.vl_preco_base, 1) AS variacao_percentual
 FROM item_pedido ip
@@ -1182,16 +1210,20 @@ JOIN produto pr ON pr.id_produto = ip.produto_id
 WHERE ABS(ip.vl_preco_unitario - pr.vl_preco_base) / pr.vl_preco_base > 0.10
 ORDER BY ABS(variacao_percentual) DESC;
 
--- 9.6 Fornecedores sem nenhum lote de insumo recebido (cadastro
+-- A06 - Fornecedores sem nenhum lote de insumo recebido (cadastro
 -- incompleto ou fornecedor nunca efetivamente acionado) — agora
 -- verificado via LOTE_INSUMO, não mais por uma FK direta em INSUMO
+-- Verifica: RN17 (todo fornecedor cadastrado deve ter ao menos um lote
+-- de insumo recebido)
 SELECT f.id_fornecedor, f.nm_fornecedor
 FROM fornecedor f
 LEFT JOIN lote_insumo li ON li.fornecedor_id = f.id_fornecedor
 WHERE li.id_lote IS NULL;
 
--- 9.7 Títulos (a pagar e a receber) vencidos e ainda em aberto —
--- mesma referência fixa de "hoje" usada na consulta gerencial 8.7
+-- A07 - Títulos (a pagar e a receber) vencidos e ainda em aberto —
+-- mesma referência fixa de "hoje" usada na consulta gerencial G07
+-- Verifica: RN18 (títulos vencidos e em aberto devem ser sinalizados
+-- para cobrança/pagamento)
 SELECT 'receber' AS tipo, id_titulo_receber AS id_titulo, vl_valor, dt_vencimento
 FROM contas_receber
 WHERE tp_status = 'em aberto' AND dt_vencimento < '2025-10-15'
