@@ -42,7 +42,7 @@
 **Fala:** mencionar o paralelo com esquema estrela, agora com dois processos de negócio representados (vendas e produção), e 1-2 aplicações de IA (previsão de demanda sazonal; previsão de aproveitamento de corte por profissional, a partir do histórico de `execucao_etapa`).
 
 ### 9. Benefícios diretos para a tomada de decisão (slide 11, fechamento)
-**No slide:** 3 números-chave (17 tabelas, 76 pedidos, R$ 87 mil) + 3 bullets de benefício.
+**No slide:** 3 números-chave (17 tabelas, 106 pedidos, R$ 130 mil) + 3 bullets de benefício.
 
 ### 10. Perguntas (slide 12)
 **No slide:** 3 perguntas já respondidas, incluindo a que o próprio grupo havia previsto na v1 deste roteiro ("cadê ordem de produção, financeiro?") — e que acabou sendo exatamente o que o professor apontou.
