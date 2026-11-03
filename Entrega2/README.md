@@ -44,4 +44,21 @@ cd "C:\Users\Matheus\mysql\mysql-8.4.10-winx64"
 .\bin\mysqld.exe --install MySQL84 --defaults-file="C:\Users\Matheus\mysql\mysql-8.4.10-winx64\my.ini"
 net start MySQL84
 
+
+## Rodando com o MySQL Workbench (interface visual)
+
+Além do terminal, o grupo também usa o **MySQL Workbench** para rodar e explorar o banco visualmente — útil para mostrar a estrutura e os resultados das consultas na apresentação.
+
+1. Baixe gratuitamente em `dev.mysql.com/downloads/workbench`.
+2. Abra o Workbench e clique no ícone **"+"** ao lado de "Database Connections" para criar uma conexão nova:
+   - **Hostname**: `127.0.0.1`
+   - **Port**: `3306`
+   - **Username**: `root`
+   - **Password**: deixe em branco (usuário sem senha, como configurado acima)
+3. Dê duplo clique na conexão criada para conectar.
+4. **File → Open SQL Script...** → selecione `Entrega2/script.sql`.
+5. Execute com o botão de raio (⚡) ou `Ctrl+Shift+Enter`.
+6. Os resultados de cada consulta aparecem no **Result Grid**, e o navegador de **Schemas** (painel esquerdo) lista as 17 tabelas de `contrasti_bolsas` para navegação visual — inclusive dá para gerar um diagrama ER automaticamente a partir do banco já criado, em **Database → Reverse Engineer**.
+
+
 ```
