@@ -19,7 +19,12 @@ Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com 
 | nr_cnpj | `VARCHAR(18)` | `NOT NULL`, `UNIQUE` |
 | nr_telefone | `VARCHAR(20)` | `NOT NULL` |
 | ds_email | `VARCHAR(160)` | `NOT NULL` |
-| ds_endereco | `VARCHAR(200)` | `NOT NULL` |
+| ds_logradouro | `VARCHAR(150)` | `NOT NULL` |
+| nr_numero | `VARCHAR(10)` | `NOT NULL` |
+| ds_bairro | `VARCHAR(80)` | `NOT NULL` |
+| nm_cidade | `VARCHAR(80)` | `NOT NULL` |
+| sg_uf | `CHAR(2)` | `NOT NULL` |
+| nr_cep | `VARCHAR(9)` | `NOT NULL` |
 | dt_cadastro | `DATE` | `NOT NULL`, padrão data atual |
 | tp_categoria | `VARCHAR(30)` | `NOT NULL`, `CHECK IN ('Couro','Ferragem','Ziper','Embalagem')` |
 
@@ -143,7 +148,12 @@ Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com 
 | nr_cnpj | `VARCHAR(18)` | `UNIQUE`, obrigatório se pessoa jurídica (exclusivo com nr_cpf) |
 | nr_telefone | `VARCHAR(20)` | `NOT NULL` |
 | ds_email | `VARCHAR(160)` | `NOT NULL` |
-| ds_endereco | `VARCHAR(200)` | `NOT NULL` |
+| ds_logradouro | `VARCHAR(150)` | `NOT NULL` |
+| nr_numero | `VARCHAR(10)` | `NOT NULL` |
+| ds_bairro | `VARCHAR(80)` | `NOT NULL` |
+| nm_cidade | `VARCHAR(80)` | `NOT NULL` |
+| sg_uf | `CHAR(2)` | `NOT NULL` |
+| nr_cep | `VARCHAR(9)` | `NOT NULL` |
 | dt_cadastro | `DATE` | `NOT NULL`, padrão data atual |
 
 ## vendedor 
