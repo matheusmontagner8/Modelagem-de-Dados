@@ -152,19 +152,26 @@ Todas as colunas não-chave de cada tabela dependem diretamente da PK, com duas 
 - Produtividade e qualidade por etapa de produção: aproveitamento/perda de couro por artesão/facção na etapa de Corte (consulta 8.6).
 - Saúde financeira: aging de títulos a pagar/receber em aberto (consultas 8.7 e 9.7).
 
-### Indicadores e métricas gerenciais propostos (KPIs)
+### Problemas e KPIs — rastreabilidade (problema/KPI → tabelas → consulta)
 
-| KPI | Cálculo | Tabelas envolvidas |
+Dois problemas operacionais identificados na Entrega 1 (Seção 1 do `README.md`) e nove indicadores gerenciais, cada um com a consulta do `script.sql` que o resolve ou calcula — consulta que não aparece aqui não conta como KPI.
+
+| Problema ou KPI | Tabelas envolvidas | Consulta |
 |---|---|---|
-| Faturamento mensal | `SUM(vl_total)` de pedidos faturados/expedidos, por mês | `pedido` |
-| Ticket médio | `AVG(vl_total)` por pedido | `pedido` |
-| Margem média por categoria | `AVG(vl_preco_base - custo_materia_prima)` agrupado por `tp_categoria` | `produto`, `ficha_tecnica`, `insumo` |
-| Giro de estoque por produto | unidades vendidas no período ÷ `qt_estoque_total` | `item_pedido`, `produto` |
-| Dependência por fornecedor | % do custo de matéria-prima concentrado em cada `fornecedor_id` | `insumo`, `ficha_tecnica`, `lote_insumo`, `fornecedor` |
-| Taxa de cancelamento | pedidos com `tp_status = 'Cancelado'` ÷ total de pedidos | `pedido` |
-| Comissão por vendedor/canal | `SUM(vl_total) * pc_comissao / 100`, agrupado por vendedor e canal | `pedido`, `vendedor` |
-| Aproveitamento médio de corte | `AVG(pc_aproveitamento)` na etapa "Corte", por artesão/facção | `execucao_etapa`, `etapa_producao`, `artesao` |
-| Aging de contas a receber/pagar | dias entre `dt_vencimento` e a data de referência, para títulos "em aberto" | `contas_receber`, `contas_pagar` |
+| P1 — Falta de rastreabilidade de insumo por fornecedor | `LOTE_INSUMO`, `INSUMO`, `FORNECEDOR` | consulta 5.4 |
+| P2 — Cálculo de custo de produto sem padronização | `FICHA_TECNICA`, `INSUMO`, `PRODUTO` | G03 |
+| K1 — Faturamento mensal | `PEDIDO` | G01 |
+| K2 — Produtos mais vendidos (Curva ABC) | `ITEM_PEDIDO`, `PRODUTO` | G02 |
+| K3 — Margem por produto | `PRODUTO`, `FICHA_TECNICA`, `INSUMO` | G03 |
+| K4 — Concentração de receita por cliente | `CLIENTE`, `PEDIDO` | G04 |
+| K5 — Consumo de insumo projetado | `ITEM_PEDIDO`, `FICHA_TECNICA`, `INSUMO` | G05 |
+| K6 — Aproveitamento de corte por artesão | `EXECUCAO_ETAPA`, `ETAPA_PRODUCAO`, `ARTESAO` | G06 |
+| K7 — Aging de títulos a pagar/receber | `CONTAS_RECEBER`, `CONTAS_PAGAR` | G07 |
+| K8 — Insumos abaixo do estoque mínimo | `INSUMO` | G08 |
+| K9 — Comissão por vendedor/canal | `PEDIDO`, `VENDEDOR` | consulta 5.7 |
+
+**KPIs propostos para expansão futura** (ainda sem consulta implementada, por isso fora da rastreabilidade acima): giro de estoque por produto, dependência por fornecedor, taxa de cancelamento de pedidos.
+
 
 ### Potencial dos dados para BI
 
