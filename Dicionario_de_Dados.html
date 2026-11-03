@@ -217,7 +217,7 @@
       <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
       <tbody>
         <tr><td class="attr pk">id_fornecedor</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema. É único e não pode ser reutilizado.</td></tr>
-        <tr><td class="attr">nm_fornecedor</td><td class="phys">VARCHAR(120) NOT NULL</td><td>Razão social ou nome fantasia utilizado em compras e no histórico de avaliação.</td></tr>
+        <tr><td class="attr">nm_fornecedor</td><td class="phys">VARCHAR(150) NOT NULL</td><td>Razão social ou nome fantasia utilizado em compras e no histórico de avaliação.</td></tr>
         <tr><td class="attr">nr_cnpj</td><td class="phys">VARCHAR(18) NOT NULL UNIQUE</td><td>Formato 00.000.000/0000-00. Único por fornecedor. Dado de identificação de pessoa jurídica — acesso restrito (ver seção LGPD).</td></tr>
         <tr><td class="attr">nr_telefone</td><td class="phys">VARCHAR(20) NULL</td><td>Contato direto com o fornecedor.</td></tr>
         <tr><td class="attr">ds_email</td><td class="phys">VARCHAR(160) NULL</td><td>Canal de contato comercial com o fornecedor.</td></tr>
@@ -297,9 +297,9 @@
       <tbody>
         <tr><td class="attr pk">id_produto</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Mesma chave usada por BOLSA e ACESSÓRIO na especialização.</td></tr>
         <tr><td class="attr">nm_produto</td><td class="phys">VARCHAR(120) NOT NULL</td><td>Ex.: Bolsa Tote.</td></tr>
-        <tr><td class="attr">ds_descricao</td><td class="phys">VARCHAR(255) NULL</td><td>Texto livre com detalhes do modelo, uso pretendido ou observações de venda.</td></tr>
+        <tr><td class="attr">ds_descricao</td><td class="phys">VARCHAR(255) NOT NULL</td><td>Texto livre com detalhes do modelo, uso pretendido ou observações de venda.</td></tr>
         <tr><td class="attr">vl_preco_base</td><td class="phys">DECIMAL(10,2) NOT NULL CHECK (&gt;0)</td><td>Valor de referência para venda, antes de eventuais descontos por item de pedido.</td></tr>
-        <tr><td class="attr">tp_categoria</td><td class="phys">VARCHAR(30) NOT NULL</td><td>Classificação comercial (linha/coleção/departamento) — independente da especialização BOLSA/ACESSÓRIO.</td></tr>
+        <tr><td class="attr">tp_categoria</td><td class="phys">VARCHAR(30) </td><td>Classificação comercial (linha/coleção/departamento) — independente da especialização BOLSA/ACESSÓRIO.</td></tr>
         <tr><td class="attr">qt_estoque_total</td><td class="phys">INT UNSIGNED NOT NULL DEFAULT 0</td><td>Unidades desse produto disponíveis para venda.</td></tr>
       </tbody>
     </table>
@@ -318,8 +318,8 @@
         <tr><td class="attr pk">id_produto</td><td class="phys">INT UNSIGNED (PK)</td><td>Mesmo valor de id_produto do PRODUTO correspondente — identifica a linha na especialização.</td></tr>
         <tr><td class="attr">ds_material</td><td class="phys">VARCHAR(60) NOT NULL</td><td>Ex.: couro legítimo, sintético.</td></tr>
         <tr><td class="attr">ds_cor</td><td class="phys">VARCHAR(40) NOT NULL</td><td>Cor da bolsa.</td></tr>
-        <tr><td class="attr">tp_tamanho</td><td class="phys">VARCHAR(10) NOT NULL</td><td>Domínio: {PP, P, M, G, GG}.</td></tr>
-        <tr><td class="attr">tp_alca</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Domínio: {mão, tiracolo, transversal}.</td></tr>
+        <tr><td class="attr">tp_tamanho</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Domínio: {PP, P, M, G, GG}.</td></tr>
+        <tr><td class="attr">tp_alca</td><td class="phys">VARCHAR(30) NOT NULL</td><td>Domínio: {mão, tiracolo, transversal}.</td></tr>
       </tbody>
     </table>
     <div class="idx-note"><b>Índices sugeridos:</b> PK (id_produto)</div>
@@ -426,7 +426,7 @@
       <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
       <tbody>
         <tr><td class="attr pk">id_cliente</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema.</td></tr>
-        <tr><td class="attr">nm_cliente</td><td class="phys">VARCHAR(120) NOT NULL</td><td>Obrigatório.</td></tr>
+        <tr><td class="attr">nm_cliente</td><td class="phys">VARCHAR(150) NOT NULL</td><td>Obrigatório.</td></tr>
         <tr><td class="attr">nr_cpf</td><td class="phys">VARCHAR(14) NOT NULL UNIQUE</td><td>Identificador único de pessoa natural. Dado pessoal sensível — ver seção LGPD.</td></tr>
         <tr><td class="attr">nr_telefone</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Canal principal de contato (telefone ou WhatsApp). Obrigatório — sem ele não há como contatar o cliente.</td></tr>
         <tr><td class="attr">ds_email</td><td class="phys">VARCHAR(160) NOT NULL</td><td>Usado para comunicação e envio de comprovantes. Obrigatório.</td></tr>
@@ -448,7 +448,7 @@
       <tbody>
         <tr><td class="attr pk">id_vendedor</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema.</td></tr>
         <tr><td class="attr">nm_vendedor</td><td class="phys">VARCHAR(120) NOT NULL</td><td>Dado pessoal do colaborador/representante.</td></tr>
-        <tr><td class="attr">tp_vinculo</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Domínio: {interno, representante externo}.</td></tr>
+        <tr><td class="attr">tp_vinculo</td><td class="phys">VARCHAR(25) NOT NULL</td><td>Domínio: {interno, representante externo}.</td></tr>
         <tr><td class="attr">pc_comissao</td><td class="phys">DECIMAL(5,2) NOT NULL</td><td>Percentual de comissão, variável por vendedor/canal.</td></tr>
       </tbody>
     </table>
