@@ -44,6 +44,7 @@ cd "C:\Users\Matheus\mysql\mysql-8.4.10-winx64"
 .\bin\mysqld.exe --install MySQL84 --defaults-file="C:\Users\Matheus\mysql\mysql-8.4.10-winx64\my.ini"
 net start MySQL84
 
+```
 
 ## Rodando com o MySQL Workbench (interface visual)
 
