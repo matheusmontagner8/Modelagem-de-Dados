@@ -238,13 +238,19 @@ DROP TABLE IF EXISTS cliente;
 CREATE TABLE cliente (
     id_cliente    INT UNSIGNED AUTO_INCREMENT,
     nm_cliente    VARCHAR(150) NOT NULL,
-    nr_cpf        VARCHAR(14)  NOT NULL,
+    nr_cpf        VARCHAR(14),
+    nr_cnpj       VARCHAR(18),
     nr_telefone   VARCHAR(20) NOT NULL,
     ds_email      VARCHAR(160) NOT NULL,
     ds_endereco   VARCHAR(200) NOT NULL,
     dt_cadastro   DATE NOT NULL DEFAULT (CURRENT_DATE),
-    CONSTRAINT pk_cliente     PRIMARY KEY (id_cliente),
-    CONSTRAINT uq_cliente_cpf UNIQUE (nr_cpf)
+    CONSTRAINT pk_cliente      PRIMARY KEY (id_cliente),
+    CONSTRAINT uq_cliente_cpf  UNIQUE (nr_cpf),
+    CONSTRAINT uq_cliente_cnpj UNIQUE (nr_cnpj),
+    CONSTRAINT ck_cliente_doc  CHECK (
+        (nr_cpf IS NOT NULL AND nr_cnpj IS NULL) OR
+        (nr_cpf IS NULL AND nr_cnpj IS NOT NULL)
+    )
 ) ENGINE = InnoDB;
 
 -- VENDEDOR (nova) ------------------------------------------------------------
@@ -538,18 +544,53 @@ INSERT INTO execucao_etapa (id_execucao, op_id, etapa_id, artesao_id, dt_inicio,
 (55, 8, 6, 3, '2025-09-20 08:00:00', NULL, NULL, NULL),
 (56, 8, 7, 4, '2025-09-21 08:00:00', NULL, NULL, NULL);
 
--- CLIENTE (10) ---------------------------------------------------------
-INSERT INTO cliente (id_cliente, nm_cliente, nr_cpf, nr_telefone, ds_email, ds_endereco, dt_cadastro) VALUES
-(1, 'Mariana Alves Ferreira', '111.111.111-01', '(11) 98888-0001', 'mariana.ferreira@email.com', 'Rua das Palmeiras, 220 - Sao Paulo/SP', '2025-01-10'),
-(2, 'Joao Pedro Santos', '111.111.111-02', '(11) 98888-0002', 'joaopedro.santos@email.com', 'Av. Brasil, 1500 - Sao Paulo/SP', '2025-01-15'),
-(3, 'Camila Rodrigues Lima', '111.111.111-03', '(11) 98888-0003', 'camila.lima@email.com', 'Rua Tupi, 88 - Sao Paulo/SP', '2025-01-22'),
-(4, 'Studio Elegance Multimarcas Ltda', '111.111.111-04', '(11) 98888-0004', 'compras@studioelegance.com', 'Rua Augusta, 900 - Sao Paulo/SP', '2025-02-02'),
-(5, 'Fernanda Costa Dias', '111.111.111-05', '(11) 98888-0005', 'fernanda.dias@email.com', 'Rua Vergueiro, 2100 - Sao Paulo/SP', '2025-02-10'),
-(6, 'Lucas Martins Oliveira', '111.111.111-06', '(11) 98888-0006', 'lucas.oliveira@email.com', 'Av. Paulista, 1200 - Sao Paulo/SP', '2025-02-18'),
-(7, 'Patricia Nunes Carvalho', '111.111.111-07', '(11) 98888-0007', 'patricia.carvalho@email.com', 'Rua Oscar Freire, 300 - Sao Paulo/SP', '2025-03-01'),
-(8, 'Bazar da Moda Comercio de Bolsas Ltda', '111.111.111-08', '(11) 98888-0008', 'compras@bazardamoda.com', 'Rua 25 de Marco, 450 - Sao Paulo/SP', '2025-03-08'),
-(9, 'Rafael Souza Pinto', '111.111.111-09', '(11) 98888-0009', 'rafael.pinto@email.com', 'Rua Haddock Lobo, 77 - Sao Paulo/SP', '2025-03-15'),
-(10, 'Juliana Barbosa Rezende', '111.111.111-10', '(11) 98888-0010', 'juliana.rezende@email.com', 'Av. Reboucas, 650 - Sao Paulo/SP', '2025-03-22');
+-- CLIENTE (40: 16 pessoas físicas com CPF + 24 lojas/empresas com CNPJ) ----
+-- Os clientes 4 e 8 (que já eram lojas na v1) foram migrados de um CPF
+-- fictício para CNPJ, agora que a tabela suporta os dois documentos
+-- (RF01 do README já previa "CNPJ/CPF" — a coluna nr_cnpj fechava essa
+-- lacuna entre o requisito e o modelo físico). Os 30 novos clientes
+-- (11-40) são, em maioria, lojas/multimarcas com CNPJ, conforme pedido.
+INSERT INTO cliente (id_cliente, nm_cliente, nr_cpf, nr_cnpj, nr_telefone, ds_email, ds_endereco, dt_cadastro) VALUES
+(1, 'Mariana Alves Ferreira', '111.111.111-01', NULL, '(11) 98888-0001', 'mariana.ferreira@email.com', 'Rua das Palmeiras, 220 - Sao Paulo/SP', '2025-01-10'),
+(2, 'Joao Pedro Santos', '111.111.111-02', NULL, '(11) 98888-0002', 'joaopedro.santos@email.com', 'Av. Brasil, 1500 - Sao Paulo/SP', '2025-01-15'),
+(3, 'Camila Rodrigues Lima', '111.111.111-03', NULL, '(11) 98888-0003', 'camila.lima@email.com', 'Rua Tupi, 88 - Sao Paulo/SP', '2025-01-22'),
+(4, 'Studio Elegance Multimarcas Ltda', NULL, '11.222.333/0001-44', '(11) 98888-0004', 'compras@studioelegance.com', 'Rua Augusta, 900 - Sao Paulo/SP', '2025-02-02'),
+(5, 'Fernanda Costa Dias', '111.111.111-05', NULL, '(11) 98888-0005', 'fernanda.dias@email.com', 'Rua Vergueiro, 2100 - Sao Paulo/SP', '2025-02-10'),
+(6, 'Lucas Martins Oliveira', '111.111.111-06', NULL, '(11) 98888-0006', 'lucas.oliveira@email.com', 'Av. Paulista, 1200 - Sao Paulo/SP', '2025-02-18'),
+(7, 'Patricia Nunes Carvalho', '111.111.111-07', NULL, '(11) 98888-0007', 'patricia.carvalho@email.com', 'Rua Oscar Freire, 300 - Sao Paulo/SP', '2025-03-01'),
+(8, 'Bazar da Moda Comercio de Bolsas Ltda', NULL, '22.333.444/0001-55', '(11) 98888-0008', 'compras@bazardamoda.com', 'Rua 25 de Marco, 450 - Sao Paulo/SP', '2025-03-08'),
+(9, 'Rafael Souza Pinto', '111.111.111-09', NULL, '(11) 98888-0009', 'rafael.pinto@email.com', 'Rua Haddock Lobo, 77 - Sao Paulo/SP', '2025-03-15'),
+(10, 'Juliana Barbosa Rezende', '111.111.111-10', NULL, '(11) 98888-0010', 'juliana.rezende@email.com', 'Av. Reboucas, 650 - Sao Paulo/SP', '2025-03-22'),
+(11, 'Boutique Charme e Couro Ltda', NULL, '61.111.222/0001-01', '(11) 3222-1011', 'compras@charmeecouro.com.br', 'Rua Teodoro Sampaio, 150 - Sao Paulo/SP', '2025-04-01'),
+(12, 'Casa das Bolsas Comercio Ltda', NULL, '61.222.333/0001-02', '(11) 3222-1012', 'compras@casadasbolsas.com.br', 'Rua Haddock Lobo, 500 - Sao Paulo/SP', '2025-04-03'),
+(13, 'Elegance Acessorios Eireli', NULL, '61.333.444/0001-03', '(11) 3222-1013', 'compras@eleganceacessorios.com.br', 'Av. Angelica, 800 - Sao Paulo/SP', '2025-04-05'),
+(14, 'Loja Vitrine Fashion Ltda', NULL, '61.444.555/0001-04', '(11) 3222-1014', 'compras@vitrinefashion.com.br', 'Rua da Consolacao, 1200 - Sao Paulo/SP', '2025-04-08'),
+(15, 'Studio Couro Fino Comercio Ltda', NULL, '61.555.666/0001-05', '(11) 3222-1015', 'compras@courofino.com.br', 'Rua Bela Cintra, 300 - Sao Paulo/SP', '2025-04-10'),
+(16, 'Points Bolsas e Cia Ltda', NULL, '61.666.777/0001-06', '(11) 3222-1016', 'compras@pointsbolsas.com.br', 'Av. Faria Lima, 1800 - Sao Paulo/SP', '2025-04-14'),
+(17, 'Imperio das Malas Comercio Ltda', NULL, '61.777.888/0001-07', '(11) 3222-1017', 'compras@imperiodasmalas.com.br', 'Rua Pamplona, 400 - Sao Paulo/SP', '2025-04-18'),
+(18, 'Grife Bags Comercio de Acessorios Ltda', NULL, '61.888.999/0001-08', '(11) 3222-1018', 'compras@grifebags.com.br', 'Rua Augusta, 2000 - Sao Paulo/SP', '2025-04-22'),
+(19, 'Espaco Couro Premium Ltda', NULL, '61.999.111/0001-09', '(11) 3222-1019', 'compras@couropremium.com.br', 'Alameda Santos, 700 - Sao Paulo/SP', '2025-04-25'),
+(20, 'Bolsas e Estilo Comercio Ltda', NULL, '62.111.222/0001-10', '(11) 3222-1020', 'compras@bolsaseestilo.com.br', 'Rua Oscar Freire, 900 - Sao Paulo/SP', '2025-04-29'),
+(21, 'Atelier Fashion Acessorios Ltda', NULL, '62.222.333/0001-11', '(11) 3222-1021', 'compras@atelierfashion.com.br', 'Rua Estados Unidos, 300 - Sao Paulo/SP', '2025-05-02'),
+(22, 'Nova Era Bolsas Comercio Ltda', NULL, '62.333.444/0001-12', '(11) 3222-1022', 'compras@novaerabolsas.com.br', 'Av. Reboucas, 1500 - Sao Paulo/SP', '2025-05-06'),
+(23, 'Prestige Couros Comercio Ltda', NULL, '62.444.555/0001-13', '(11) 3222-1023', 'compras@prestigecouros.com.br', 'Rua Joaquim Floriano, 200 - Sao Paulo/SP', '2025-05-09'),
+(24, 'Charme Urbano Acessorios Ltda', NULL, '62.555.666/0001-14', '(11) 3222-1024', 'compras@charmeurbano.com.br', 'Rua Fradique Coutinho, 600 - Sao Paulo/SP', '2025-05-13'),
+(25, 'Multimarcas Bella Bolsas Ltda', NULL, '62.666.777/0001-15', '(11) 3222-1025', 'compras@bellabolsas.com.br', 'Rua Vieira de Morais, 1000 - Sao Paulo/SP', '2025-05-17'),
+(26, 'Trend Store Acessorios Ltda', NULL, '62.777.888/0001-16', '(11) 3222-1026', 'compras@trendstore.com.br', 'Av. Ibirapuera, 2500 - Sao Paulo/SP', '2025-05-20'),
+(27, 'Luxo e Estilo Comercio Ltda', NULL, '62.888.999/0001-17', '(11) 3222-1027', 'compras@luxoeestilo.com.br', 'Rua Cardeal Arcoverde, 450 - Sao Paulo/SP', '2025-05-24'),
+(28, 'Casa Fashion Bolsas Ltda', NULL, '62.999.111/0001-18', '(11) 3222-1028', 'compras@casafashion.com.br', 'Rua Harmonia, 350 - Sao Paulo/SP', '2025-05-28'),
+(29, 'Donna Bags Comercio Ltda', NULL, '63.111.222/0001-19', '(11) 3222-1029', 'compras@donnabags.com.br', 'Rua Girassol, 250 - Sao Paulo/SP', '2025-06-02'),
+(30, 'Vip Acessorios Comercio Ltda', NULL, '63.222.333/0001-20', '(11) 3222-1030', 'compras@vipacessorios.com.br', 'Rua Mourato Coelho, 500 - Sao Paulo/SP', '2025-06-05'),
+(31, 'Classic Couro Comercio Ltda', NULL, '63.333.444/0001-21', '(11) 3222-1031', 'compras@classiccouro.com.br', 'Rua Wisard, 200 - Sao Paulo/SP', '2025-06-09'),
+(32, 'Glamour Bolsas Comercio Ltda', NULL, '63.444.555/0001-22', '(11) 3222-1032', 'compras@glamourbolsas.com.br', 'Rua Purpurina, 150 - Sao Paulo/SP', '2025-06-12'),
+(33, 'Marcelo Augusto Pereira', '222.222.222-01', NULL, '(11) 97777-0033', 'marcelo.pereira@email.com', 'Rua Cardoso de Almeida, 400 - Sao Paulo/SP', '2025-06-16'),
+(34, 'Beatriz Helena Souza', '222.222.222-02', NULL, '(11) 97777-0034', 'beatriz.souza@email.com', 'Rua Cayowaa, 120 - Sao Paulo/SP', '2025-06-19'),
+(35, 'Diego Fernandes Costa', '222.222.222-03', NULL, '(11) 97777-0035', 'diego.costa@email.com', 'Rua Heitor Penteado, 800 - Sao Paulo/SP', '2025-06-23'),
+(36, 'Larissa Mendes Alves', '222.222.222-04', NULL, '(11) 97777-0036', 'larissa.alves@email.com', 'Rua Aspicuelta, 300 - Sao Paulo/SP', '2025-06-27'),
+(37, 'Felipe Augusto Rocha', '222.222.222-05', NULL, '(11) 97777-0037', 'felipe.rocha@email.com', 'Rua Harmonia, 700 - Sao Paulo/SP', '2025-07-01'),
+(38, 'Gabriela Nunes Ribeiro', '222.222.222-06', NULL, '(11) 97777-0038', 'gabriela.ribeiro@email.com', 'Rua Sumidouro, 250 - Sao Paulo/SP', '2025-07-04'),
+(39, 'Thiago Martins Barbosa', '222.222.222-07', NULL, '(11) 97777-0039', 'thiago.barbosa@email.com', 'Rua Fidalga, 550 - Sao Paulo/SP', '2025-07-08'),
+(40, 'Priscila Andrade Lima', '222.222.222-08', NULL, '(11) 97777-0040', 'priscila.lima@email.com', 'Rua Simao Alvares, 180 - Sao Paulo/SP', '2025-07-11');
 
 -- VENDEDOR (4: 2 internos a 3%, 2 representantes externos a 7%) -------------
 INSERT INTO vendedor (id_vendedor, nm_vendedor, tp_vinculo, pc_comissao) VALUES
@@ -641,6 +682,42 @@ INSERT INTO pedido (id_pedido, cliente_id, vendedor_id, dt_pedido, tp_status, vl
 (76, 2, 1, '2025-09-20', 'Expedido', 0, 'PIX', 'loja fisica', NULL),
 (77, 6, 2, '2025-09-27', 'Expedido', 0, 'PIX', 'e-commerce', NULL);
 
+-- PEDIDO (30 novos, clientes 11-40) — primeira onda de pedidos dos
+-- clientes cadastrados mais recentemente: lojas (11-32, canal "atacado",
+-- vendedor representante externo 3/4, Boleto) e pessoas físicas (33-40,
+-- loja física/e-commerce alternados, vendedor interno 1/2, PIX/Cartão).
+INSERT INTO pedido (id_pedido, cliente_id, vendedor_id, dt_pedido, tp_status, vl_total, tp_pagamento, tp_canal, ds_observacoes) VALUES
+(78, 11, 3, '2025-10-01', 'Expedido', 0, 'Boleto', 'atacado', 'Pedido recorrente - cliente atacado'),
+(79, 12, 4, '2025-10-02', 'Faturado', 0, 'Boleto', 'atacado', NULL),
+(80, 13, 3, '2025-10-03', 'Expedido', 0, 'Boleto', 'atacado', NULL),
+(81, 14, 4, '2025-10-04', 'Faturado', 0, 'Boleto', 'atacado', 'Pedido recorrente - cliente atacado'),
+(82, 15, 3, '2025-10-05', 'Expedido', 0, 'Boleto', 'atacado', NULL),
+(83, 16, 4, '2025-10-06', 'Faturado', 0, 'Boleto', 'atacado', NULL),
+(84, 17, 3, '2025-10-07', 'Aberto', 0, 'Boleto', 'atacado', 'Pedido recorrente - cliente atacado'),
+(85, 18, 4, '2025-10-08', 'Faturado', 0, 'Boleto', 'atacado', NULL),
+(86, 19, 3, '2025-10-09', 'Expedido', 0, 'Boleto', 'atacado', NULL),
+(87, 20, 4, '2025-10-10', 'Faturado', 0, 'Boleto', 'atacado', 'Pedido recorrente - cliente atacado'),
+(88, 21, 3, '2025-10-11', 'Expedido', 0, 'Boleto', 'atacado', NULL),
+(89, 22, 4, '2025-10-12', 'Faturado', 0, 'Boleto', 'atacado', NULL),
+(90, 23, 3, '2025-10-13', 'Expedido', 0, 'Boleto', 'atacado', 'Pedido recorrente - cliente atacado'),
+(91, 24, 4, '2025-10-14', 'Aberto', 0, 'Boleto', 'atacado', NULL),
+(92, 25, 3, '2025-10-15', 'Cancelado', 0, 'Boleto', 'atacado', NULL),
+(93, 26, 4, '2025-10-16', 'Faturado', 0, 'Boleto', 'atacado', 'Pedido recorrente - cliente atacado'),
+(94, 27, 3, '2025-10-17', 'Expedido', 0, 'Boleto', 'atacado', NULL),
+(95, 28, 4, '2025-10-18', 'Faturado', 0, 'Boleto', 'atacado', NULL),
+(96, 29, 3, '2025-10-19', 'Expedido', 0, 'Boleto', 'atacado', 'Pedido recorrente - cliente atacado'),
+(97, 30, 4, '2025-10-20', 'Faturado', 0, 'Boleto', 'atacado', NULL),
+(98, 31, 3, '2025-10-21', 'Aberto', 0, 'Boleto', 'atacado', NULL),
+(99, 32, 4, '2025-10-22', 'Faturado', 0, 'Boleto', 'atacado', 'Pedido recorrente - cliente atacado'),
+(100, 33, 1, '2025-10-23', 'Expedido', 0, 'PIX', 'loja fisica', NULL),
+(101, 34, 2, '2025-10-24', 'Faturado', 0, 'Cartao', 'e-commerce', NULL),
+(102, 35, 1, '2025-10-25', 'Expedido', 0, 'PIX', 'loja fisica', NULL),
+(103, 36, 2, '2025-10-26', 'Faturado', 0, 'Cartao', 'e-commerce', NULL),
+(104, 37, 1, '2025-10-27', 'Expedido', 0, 'PIX', 'loja fisica', NULL),
+(105, 38, 2, '2025-10-28', 'Aberto', 0, 'Cartao', 'e-commerce', NULL),
+(106, 39, 1, '2025-10-29', 'Expedido', 0, 'PIX', 'loja fisica', NULL),
+(107, 40, 2, '2025-10-30', 'Cancelado', 0, 'Cartao', 'e-commerce', NULL);
+
 -- ITEM_PEDIDO (129) — a última linha (produto 1 no pedido 21, R$399,00) é
 -- uma anomalia de preço deliberada para a auditoria 9.5.
 INSERT INTO item_pedido (id_item_pedido, pedido_id, produto_id, qt_quantidade, vl_preco_unitario, vl_desconto) VALUES
@@ -670,6 +747,22 @@ INSERT INTO item_pedido (id_item_pedido, pedido_id, produto_id, qt_quantidade, v
 (116, 72, 4, 6, 295.0, 0), (117, 72, 5, 5, 410.0, 0), (118, 73, 7, 2, 65.0, 0), (119, 74, 6, 1, 95.0, 0), (120, 74, 2, 3, 456.6, 0),
 (121, 74, 8, 1, 120.0, 0), (122, 75, 2, 1, 480.0, 0), (123, 75, 5, 2, 410.0, 0), (124, 76, 2, 2, 480.0, 0), (125, 76, 5, 2, 410.0, 0),
 (126, 76, 1, 3, 480.0, 0), (127, 77, 5, 3, 410.0, 0), (128, 77, 7, 1, 65.0, 0), (129, 21, 1, 1, 399.0, 0);
+
+-- ITEM_PEDIDO (41 novos) — itens dos 30 pedidos novos (78-107): lojas
+-- compram em quantidade maior (4-8 unidades), pessoas físicas compram
+-- 1-2 unidades por item, todos pelo preço base (sem anomalia proposital).
+INSERT INTO item_pedido (id_item_pedido, pedido_id, produto_id, qt_quantidade, vl_preco_unitario, vl_desconto) VALUES
+(130, 78, 4, 5, 295.0, 0), (131, 78, 7, 6, 65.0, 0), (132, 79, 5, 6, 410.0, 0), (133, 80, 6, 7, 95.0, 0),
+(134, 80, 1, 8, 480.0, 0), (135, 81, 7, 8, 65.0, 0), (136, 82, 8, 4, 120.0, 0), (137, 82, 3, 5, 320.0, 0),
+(138, 83, 1, 5, 480.0, 0), (139, 84, 2, 6, 480.0, 0), (140, 84, 5, 7, 410.0, 0), (141, 85, 3, 7, 320.0, 0),
+(142, 86, 4, 8, 295.0, 0), (143, 86, 7, 4, 65.0, 0), (144, 87, 5, 4, 410.0, 0), (145, 88, 6, 5, 95.0, 0),
+(146, 88, 1, 6, 480.0, 0), (147, 89, 7, 6, 65.0, 0), (148, 90, 8, 7, 120.0, 0), (149, 90, 3, 8, 320.0, 0),
+(150, 91, 1, 8, 480.0, 0), (151, 92, 2, 4, 480.0, 0), (152, 92, 5, 5, 410.0, 0), (153, 93, 3, 5, 320.0, 0),
+(154, 94, 4, 6, 295.0, 0), (155, 94, 7, 7, 65.0, 0), (156, 95, 5, 7, 410.0, 0), (157, 96, 6, 8, 95.0, 0),
+(158, 96, 1, 4, 480.0, 0), (159, 97, 7, 4, 65.0, 0), (160, 98, 8, 5, 120.0, 0), (161, 98, 3, 6, 320.0, 0),
+(162, 99, 1, 6, 480.0, 0), (163, 100, 2, 2, 480.0, 0), (164, 101, 3, 1, 320.0, 0), (165, 102, 4, 2, 295.0, 0),
+(166, 103, 5, 1, 410.0, 0), (167, 104, 6, 2, 95.0, 0), (168, 105, 7, 1, 65.0, 0), (169, 106, 8, 2, 120.0, 0),
+(170, 107, 1, 1, 480.0, 0);
 
 -- CONTAS_RECEBER (61) — gerado para pedidos Faturado/Expedido. PIX/Cartao:
 -- recebido no mesmo dia. Boleto: vencimento +30 dias; status determinístico.
@@ -705,6 +798,24 @@ INSERT INTO contas_receber (id_titulo_receber, pedido_id, vl_valor, dt_venciment
 (57, 72, 5212.69, '2025-09-13', '2025-09-13', 'pago'), (58, 73, 130.0, '2025-09-11', '2025-09-11', 'pago'),
 (59, 75, 1300.0, '2025-09-05', '2025-09-05', 'pago'), (60, 76, 3220.0, '2025-09-20', '2025-09-20', 'pago'),
 (61, 77, 1295.0, '2025-09-27', '2025-09-27', 'pago');
+
+-- CONTAS_RECEBER (24 novos) — títulos dos pedidos novos (78-107) que já
+-- estão Faturado/Expedido (os Aberto/Cancelado não geram título). Boleto
+-- ainda não vencido (lojas) fica "em aberto"; PIX/Cartão (pessoas
+-- físicas) já "pago" no mesmo dia do pedido.
+INSERT INTO contas_receber (id_titulo_receber, pedido_id, vl_valor, dt_vencimento, dt_recebimento, tp_status) VALUES
+(62, 78, 1865.0, '2025-10-31', NULL, 'em aberto'), (63, 79, 2460.0, '2025-11-01', NULL, 'em aberto'),
+(64, 80, 4505.0, '2025-11-02', NULL, 'em aberto'), (65, 81, 520.0, '2025-11-03', NULL, 'em aberto'),
+(66, 82, 2080.0, '2025-11-04', NULL, 'em aberto'), (67, 83, 2400.0, '2025-11-05', NULL, 'em aberto'),
+(68, 85, 2240.0, '2025-11-07', NULL, 'em aberto'), (69, 86, 2620.0, '2025-11-08', NULL, 'em aberto'),
+(70, 87, 1640.0, '2025-11-09', NULL, 'em aberto'), (71, 88, 3355.0, '2025-11-10', NULL, 'em aberto'),
+(72, 89, 390.0, '2025-11-11', NULL, 'em aberto'), (73, 90, 3400.0, '2025-11-12', NULL, 'em aberto'),
+(74, 93, 1600.0, '2025-11-15', NULL, 'em aberto'), (75, 94, 2225.0, '2025-11-16', NULL, 'em aberto'),
+(76, 95, 2870.0, '2025-11-17', NULL, 'em aberto'), (77, 96, 2680.0, '2025-11-18', NULL, 'em aberto'),
+(78, 97, 260.0, '2025-11-19', NULL, 'em aberto'), (79, 99, 2880.0, '2025-11-21', NULL, 'em aberto'),
+(80, 100, 960.0, '2025-10-23', '2025-10-23', 'pago'), (81, 101, 320.0, '2025-10-24', '2025-10-24', 'pago'),
+(82, 102, 590.0, '2025-10-25', '2025-10-25', 'pago'), (83, 103, 410.0, '2025-10-26', '2025-10-26', 'pago'),
+(84, 104, 190.0, '2025-10-27', '2025-10-27', 'pago'), (85, 106, 240.0, '2025-10-29', '2025-10-29', 'pago');
 
 -- CONTAS_PAGAR (10) — um título por lote de insumo recebido.
 INSERT INTO contas_pagar (id_titulo_pagar, lote_id, vl_valor, dt_vencimento, dt_pagamento, tp_status) VALUES
