@@ -129,13 +129,6 @@
   - RN18 — Títulos financeiros vencidos e ainda "em aberto" devem ser sinalizados para cobrança/pagamento.
 
 
-
-- **Restrições organizacionais:**
-  - Exigência legal de emissão de NF-e (venda mercantil) ou NFC-e (cupom fiscal varejo), conforme o canal de venda.
-  - Dados pessoais de clientes e fornecedores (nome, CPF/CNPJ, contato) exigem tratamento conforme a LGPD.
-  - O prazo médio de entrega de cada fornecedor impacta diretamente o planejamento da produção (lead time de insumo).
-  - O pagamento de artesãos/facções terceirizadas depende do registro fiel de qual etapa cada um executou — sem esse registro não há como calcular a remuneração por produção.
-
 ---
 
 ## 5. Dicionário de Dados Conceitual
