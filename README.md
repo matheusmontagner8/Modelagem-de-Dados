@@ -102,7 +102,7 @@
   - Toda variação de produto (SKU) pertence a exatamente um modelo; um modelo pode ter uma ou várias variações.
   - A baixa de estoque de insumo ocorre automaticamente na abertura da Ordem de Produção (reserva de material necessário).
   - Todo insumo recebido é registrado com lote e fornecedor de origem, para garantir rastreabilidade de cor/textura entre peças da mesma coleção.
-  - - Comissão de vendedor: 3% para vendedor interno e 7% para representante externo, sobre pedidos faturados — percentual diferenciado por tipo de vínculo, já  refletido na tabela vendedor.
+  - Comissão de vendedor: 3% para vendedor interno e 7% para representante externo, sobre pedidos faturados — percentual diferenciado por tipo de vínculo, já     refletido na tabela vendedor.
   - Um chamado de garantia (RMA) está sempre associado a um item de pedido específico, nunca ao pedido inteiro.
   - Um pedido só é expedido depois de checklist de saída e conferência dos itens (leitura de código de barras).
 
