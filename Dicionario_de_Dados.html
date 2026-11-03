@@ -420,14 +420,15 @@
   <!-- CLIENTE -->
   <div class="entity">
     <div class="entity-header">CLIENTE</div>
-    <div class="leitura">CLIENTE(<span class="pk">id_cliente</span>, nm_cliente, nr_cpf, nr_telefone, ds_email, ds_endereco, dt_cadastro)</div>
+    <div class="leitura">CLIENTE(<span class="pk">id_cliente</span>, nm_cliente, nr_cpf, nr_cnpj, nr_telefone, ds_email, ds_endereco, dt_cadastro)</div>
     <table>
       <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
       <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
       <tbody>
         <tr><td class="attr pk">id_cliente</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema.</td></tr>
         <tr><td class="attr">nm_cliente</td><td class="phys">VARCHAR(150) NOT NULL</td><td>Obrigatório.</td></tr>
-        <tr><td class="attr">nr_cpf</td><td class="phys">VARCHAR(14) NOT NULL UNIQUE</td><td>Identificador único de pessoa natural. Dado pessoal sensível — ver seção LGPD.</td></tr>
+        <tr><td class="attr">nr_cpf</td><td class="phys">VARCHAR(14) UNIQUE</td><td>Identificador de pessoa física — preenchido quando o cliente é pessoa física (exclusivo com nr_cnpj). Dado pessoal sensível — ver seção LGPD.</td></tr>
+        <tr><td class="attr">nr_cnpj</td><td class="phys">VARCHAR(18) UNIQUE</td><td>Identificador de pessoa jurídica (loja/empresa) — preenchido quando o cliente é pessoa jurídica (exclusivo com nr_cpf).</td></tr>
         <tr><td class="attr">nr_telefone</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Canal principal de contato (telefone ou WhatsApp). Obrigatório — sem ele não há como contatar o cliente.</td></tr>
         <tr><td class="attr">ds_email</td><td class="phys">VARCHAR(160) NOT NULL</td><td>Usado para comunicação e envio de comprovantes. Obrigatório.</td></tr>
         <tr><td class="attr">ds_endereco</td><td class="phys">VARCHAR(200) NOT NULL</td><td>Endereço de entrega e/ou cobrança. Obrigatório.</td></tr>
