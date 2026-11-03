@@ -14,11 +14,19 @@
 
 
 - **Nome e natureza da organização:** Contrasti Bolsas e Acessórios Ltda — Indústria e Comércio de Bolsas e Acessórios de Couro, com fins lucrativos. Produção própria, com venda direta e por canais diversos (loja física, e-commerce, WhatsApp, representantes externos).
-- **O que foi observado diretamente na visita:** oficina de costura com múltiplas máquinas, bancada de corte/produção, estoque segmentado entre insumos e produtos prontos, e uso de facções terceirizadas para parte da produção (evidências fotográficas abaixo). Volume de pedidos informado pelo responsável: 50 a 70 por mês, com aumento nas datas comemorativas (Dia das Mães e Natal).
-- **Equipe e dificuldade operacional confirmadas com a organização:** em contato posterior, Osmar confirmou que a equipe da Contrasti é formada por 10 pessoas, e que boa parte da dificuldade operacional vem de processos que ainda ficam só no papel, sem um sistema que registre e integre as informações, o controle de estoque, produção e vendas depende de anotações manuais, o que dificulta o acompanhamento e aumenta o risco de erro. Os indícios notados pelo grupo durante a visita (estoque sem rastreabilidade de lote por fornecedor, ausência de regra formal de crédito) são expressões concretas dessa mesma dificuldade, agora confirmada pelo responsável.
-- **Como o levantamento foi feito:** visita presencial às instalações (fotos tiradas dentro da fábrica e do escritório administrativo, evidências abaixo) e entrevista com o responsável pela empresa, Osmar Lingiard, complementada por um questionário estruturado preenchido durante a conversa.
+- **Porte (números):** equipe de 10 pessoas; volume de 50 a 70 pedidos por mês, com aumento nas datas comemorativas (Dia das Mães e Natal).
+- **Escopo do levantamento:** cobre todos os setores observados na visita — compras/estoque, produção (chão de fábrica), vendas (todos os canais) e financeiro — não se restringe a um único departamento.
+- **Problemas identificados (resolvidos pelo modelo):**
+  - **P1 — Falta de rastreabilidade de insumo por fornecedor:** o estoque não registrava de qual fornecedor/lote cada insumo veio, dificultando o controle de cor/textura entre peças da mesma coleção. Resolvido por `LOTE_INSUMO` (Entrega 2).
+  - **P2 — Cálculo de custo de produto sem padronização:** o custo de cada peça era calculado "no olho", sem lista de materiais formal. Resolvido por `FICHA_TÉCNICA`.
+- **O que foi observado diretamente na visita (observação presencial):** oficina de costura com múltiplas máquinas, bancada de corte/produção, estoque segmentado entre insumos e produtos prontos, uso de facções terceirizadas para parte da produção, e processos de controle (estoque, produção) feitos manualmente/no papel (evidências fotográficas abaixo).
+- **Entrevista — o que foi dito:** segundo Osmar Lingiard (responsável pela empresa), a equipe tem 10 pessoas, o volume de pedidos é de 50 a 70 por mês, e boa parte da dificuldade operacional vem de processos que ainda ficam só no papel, sem um sistema que registre e integre as informações — o controle de estoque, produção e vendas depende de anotações manuais, o que dificulta o acompanhamento e aumenta o risco de erro.
+- **Entrevista — quem participou:** entrevistado: Osmar Lingiard (responsável pela empresa — vínculo: Dono). Pelo grupo: Guilherme da Silva Ferreira Batista, Guilherme Petrucelli Domingos, Jaime Luiz de Oliveira Neto, Matheus Montagner e Vinicius Marques de Melo.
+- **Entrevista — data e local:** 14/09, nas instalações da Contrasti (Rua Alpiste, 116 - Jd. Eliane - São Paulo/SP).
+- **Como o levantamento foi feito:** visita presencial às instalações (fotos abaixo) e entrevista com o responsável, complementada por questionário estruturado preenchido durante a conversa. Relato completo em [`levantamento/levantamento.md`](levantamento/levantamento.md).
 - **Justificativa da escolha:** organização de acesso facilitado para o grupo, com processos observáveis em uma única visita — nem tão simples a ponto de não ter o que modelar, nem tão complexa a ponto de inviabilizar o levantamento no prazo da disciplina.
-- **Evidências da organização:** Endereço: Rua Alpiste, 116 - Jd. Eliane - São Paulo - SP. Contato na empresa: Osmar Lingiard, telefone para contato: 11 97334-4846, email: osmar@specia.com.br.
+- **Evidências da organização:** Endereço: Rua Alpiste, 116 - Jd. Eliane - São Paulo - SP. Contato na empresa: Osmar Lingiard, telefone para contato: 11 97334-4846, email: osmar@specia.com.br. Fotos JPG/PNG da visita abaixo.
+
 
 <p align="center">
   <img src="evidencias/01-bancada-producao.jpg" width="32%" />
@@ -96,15 +104,31 @@
 
 ## 4. Regras de Negócio
 
-
 - **Regras operacionais:**
-  - Inscrição Estadual só é obrigatória quando o perfil do cliente é Atacado/Lojista.
-  - Toda variação de produto (SKU) pertence a exatamente um modelo; um modelo pode ter uma ou várias variações.
-  - A baixa de estoque de insumo ocorre automaticamente na abertura da Ordem de Produção (reserva de material necessário).
-  - Todo insumo recebido é registrado com lote e fornecedor de origem, para garantir rastreabilidade de cor/textura entre peças da mesma coleção.
-  - Comissão de vendedor: 3% para vendedor interno e 7% para representante externo, sobre pedidos faturados — percentual diferenciado por tipo de vínculo, já     refletido na tabela vendedor.
-  - Um chamado de garantia (RMA) está sempre associado a um item de pedido específico, nunca ao pedido inteiro.
-  - Um pedido só é expedido depois de checklist de saída e conferência dos itens (leitura de código de barras).
+  - RN01 — Inscrição Estadual só é obrigatória quando o perfil do cliente é Atacado/Lojista.
+  - RN02 — Toda variação de produto (SKU) pertence a exatamente um modelo; um modelo pode ter uma ou várias variações.
+  - RN03 — A baixa de estoque de insumo ocorre automaticamente na abertura da Ordem de Produção (reserva de material necessário).
+  - RN04 — Todo insumo recebido é registrado com lote e fornecedor de origem, para garantir rastreabilidade de cor/textura entre peças da mesma coleção.
+  - RN05 — Comissão de vendedor: 3% para vendedor interno e 7% para representante externo, sobre pedidos faturados — percentual diferenciado por tipo de vínculo, já refletido na tabela VENDEDOR.
+  - RN06 — Um chamado de garantia (RMA) está sempre associado a um item de pedido específico, nunca ao pedido inteiro.
+  - RN07 — Um pedido só é expedido depois de checklist de saída e conferência dos itens (leitura de código de barras).
+
+- **Restrições organizacionais:**
+  - RN08 — Exigência legal de emissão de NF-e (venda mercantil) ou NFC-e (cupom fiscal varejo), conforme o canal de venda.
+  - RN09 — Dados pessoais de clientes e fornecedores (nome, CPF/CNPJ, contato) exigem tratamento conforme a LGPD.
+  - RN10 — O prazo médio de entrega de cada fornecedor impacta diretamente o planejamento da produção (lead time de insumo).
+  - RN11 — O pagamento de artesãos/facções terceirizadas depende do registro fiel de qual etapa cada um executou — sem esse registro não há como calcular a remuneração por produção.
+
+- **Regras de integridade verificadas por auditoria** (consultas A01-A07 do `script.sql`, Seção 9):
+  - RN12 — `pedido.vl_total` deve sempre refletir a soma dos itens do pedido (denormalização controlada, não um erro — ver `RELATORIO_TECNICO.md` §1.4).
+  - RN13 — Todo produto comercializado deve ter ficha técnica (BOM) completa.
+  - RN14 — Todo insumo cadastrado deve estar vinculado a pelo menos uma ficha técnica ou lote recebido (sem cadastro órfão).
+  - RN15 — A especialização de PRODUTO é Total e Disjunta: toda linha deve existir em exatamente uma das tabelas BOLSA/ACESSORIO.
+  - RN16 — O preço praticado no item de pedido não deve variar mais que 10% do preço base vigente do produto sem justificativa (promoção/erro).
+  - RN17 — Todo fornecedor cadastrado deve ter ao menos um lote de insumo recebido (cadastro ativo).
+  - RN18 — Títulos financeiros vencidos e ainda "em aberto" devem ser sinalizados para cobrança/pagamento.
+
+
 
 - **Restrições organizacionais:**
   - Exigência legal de emissão de NF-e (venda mercantil) ou NFC-e (cupom fiscal varejo), conforme o canal de venda.
