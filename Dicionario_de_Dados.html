@@ -290,7 +290,7 @@
   <div class="entity">
     <div class="entity-header">PRODUTO</div>
     <div class="entity-note">Supertipo — especializado em BOLSA e ACESSÓRIO (TD: Total e Disjunta).</div>
-    <div class="leitura">PRODUTO(<span class="pk">id_produto</span>, nm_produto, ds_descricao, vl_preco_base, tp_categoria, qt_estoque_total)</div>
+    <div class="leitura">PRODUTO(<span class="pk">id_produto</span>, nm_produto, ds_descricao, vl_preco_base, tp_categoria, qt_estoque_total, tp_produto)</div>
     <table>
       <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
       <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
@@ -299,8 +299,8 @@
         <tr><td class="attr">nm_produto</td><td class="phys">VARCHAR(120) NOT NULL</td><td>Ex.: Bolsa Tote.</td></tr>
         <tr><td class="attr">ds_descricao</td><td class="phys">VARCHAR(255) NOT NULL</td><td>Texto livre com detalhes do modelo, uso pretendido ou observações de venda.</td></tr>
         <tr><td class="attr">vl_preco_base</td><td class="phys">DECIMAL(10,2) NOT NULL CHECK (&gt;0)</td><td>Valor de referência para venda, antes de eventuais descontos por item de pedido.</td></tr>
-        <tr><td class="attr">tp_categoria</td><td class="phys">VARCHAR(30) </td><td>Classificação comercial (linha/coleção/departamento) — independente da especialização BOLSA/ACESSÓRIO.</td></tr>
-        <tr><td class="attr">qt_estoque_total</td><td class="phys">INT UNSIGNED NOT NULL DEFAULT 0</td><td>Unidades desse produto disponíveis para venda.</td></tr>
+        <tr><td class="attr">tp_categoria</td><td class="phys">VARCHAR(50) </td><td>Classificação comercial (linha/coleção/departamento) — independente da especialização BOLSA/ACESSÓRIO.</td></tr>
+        <tr><td class="attr">tp_produto</td><td class="phys">VARCHAR(30) NOT NULL CHECK (IN 'BOLSA','ACESSORIO')</td><td>Discriminador da especialização Total e Disjunta — define se a linha também existe em BOLSA ou em ACESSORIO.</td></tr>
       </tbody>
     </table>
     <div class="idx-note"><b>Índices sugeridos:</b> PK (id_produto) · INDEX idx_produto_categoria (tp_categoria)</div>
