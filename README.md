@@ -64,7 +64,7 @@
 
 | # | O sistema deve permitir... |
 |---|---|
-| RF01 | Cadastrar clientes com razão social/nome, CNPJ/CPF, inscrição estadual (quando lojista), e-mail para NF-e, telefone/WhatsApp e comprador responsável. |
+| RF01 | Cadastrar clientes com razão social/nome, CNPJ/CPF, inscrição estadual (quando lojista), e-mail para NF-e, telefone/WhatsApp, endereço completo (logradouro, número, bairro, cidade, UF, CEP) e comprador responsável.  |
 | RF02 | Registrar múltiplos endereços por cliente (matriz, entrega, cobrança). |
 | RF03 | Diferenciar clientes por perfil (Varejo Final × Atacado/Lojista) com regras de preço distintas. |
 | RF04 | Consultar restrição de CPF/CNPJ e aplicar limite de crédito para boleto, exigindo aprovação financeira para novos lojistas. |
