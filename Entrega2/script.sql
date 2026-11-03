@@ -714,6 +714,20 @@ INSERT INTO contas_pagar (id_titulo_pagar, lote_id, vl_valor, dt_vencimento, dt_
 (7, 7, 192.5, '2025-03-27', '2025-03-27', 'pago'), (8, 8, 154.0, '2025-03-27', '2025-03-27', 'pago'),
 (9, 9, 85.0, '2025-03-30', NULL, 'em aberto'), (10, 10, 792.0, '2025-04-17', '2025-04-17', 'pago');
 
+-- Fecha a carga: pedido.vl_total entrou como 0 (placeholder) nos INSERTs
+-- acima e só é calculado de verdade a partir dos itens (mesma lógica da
+-- Seção 6.1, repetida aqui) — sem isso, as consultas da Seção 5 que usam
+-- vl_total (5.1, 5.7) mostrariam tudo zerado. O UPDATE 6.1, na Seção 6,
+-- continua existindo por exigência do esqueleto do script (demonstrar o
+-- comando UPDATE) e, rodando pela segunda vez, não muda mais nada —
+-- também serve como a própria prova de que o recálculo é idempotente.
+UPDATE pedido p
+SET vl_total = (
+    SELECT COALESCE(SUM(ip.vl_subtotal), 0)
+    FROM item_pedido ip
+    WHERE ip.pedido_id = p.id_pedido
+);
+
 
 -- =====================================================================
 -- 5) SELECT com JOIN
