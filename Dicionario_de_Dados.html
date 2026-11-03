@@ -428,9 +428,9 @@
         <tr><td class="attr pk">id_cliente</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema.</td></tr>
         <tr><td class="attr">nm_cliente</td><td class="phys">VARCHAR(120) NOT NULL</td><td>Obrigatório.</td></tr>
         <tr><td class="attr">nr_cpf</td><td class="phys">VARCHAR(14) NOT NULL UNIQUE</td><td>Identificador único de pessoa natural. Dado pessoal sensível — ver seção LGPD.</td></tr>
-        <tr><td class="attr">nr_telefone</td><td class="phys">VARCHAR(20) NULL</td><td>Canal principal de contato (telefone ou WhatsApp).</td></tr>
-        <tr><td class="attr">ds_email</td><td class="phys">VARCHAR(160) NULL</td><td>Usado para comunicação e envio de comprovantes.</td></tr>
-        <tr><td class="attr">ds_endereco</td><td class="phys">VARCHAR(200) NULL</td><td>Endereço de entrega e/ou cobrança.</td></tr>
+        <tr><td class="attr">nr_telefone</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Canal principal de contato (telefone ou WhatsApp). Obrigatório — sem ele não há como contatar o cliente.</td></tr>
+        <tr><td class="attr">ds_email</td><td class="phys">VARCHAR(160) NOT NULL</td><td>Usado para comunicação e envio de comprovantes. Obrigatório.</td></tr>
+        <tr><td class="attr">ds_endereco</td><td class="phys">VARCHAR(200) NOT NULL</td><td>Endereço de entrega e/ou cobrança. Obrigatório.</td></tr>
         <tr><td class="attr">dt_cadastro</td><td class="phys">DATE NOT NULL DEFAULT (CURRENT_DATE)</td><td>Preenchida automaticamente na criação do registro.</td></tr>
       </tbody>
     </table>
