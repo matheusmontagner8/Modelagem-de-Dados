@@ -342,6 +342,31 @@ CREATE TABLE contas_pagar (
 
 
 -- =====================================================================
+-- 3.1) ÍNDICES SECUNDÁRIOS
+--      Além dos índices automáticos de PK/UNIQUE/FK (o MySQL já cria um
+--      índice para toda coluna de FK sozinho), os índices abaixo
+--      implementam os "Índices sugeridos" documentados por entidade em
+--      Dicionario_de_Dados.html, cobrindo as colunas usadas em WHERE/
+--      GROUP BY/ORDER BY das consultas das Seções 5, 8 e 9.
+-- =====================================================================
+CREATE INDEX idx_fornecedor_categoria ON fornecedor(tp_categoria);
+CREATE INDEX idx_insumo_tipo          ON insumo(tp_insumo);
+CREATE INDEX idx_lote_data            ON lote_insumo(dt_recebimento);
+CREATE INDEX idx_lote_numero          ON lote_insumo(nr_lote);
+CREATE INDEX idx_produto_categoria    ON produto(tp_categoria);
+CREATE INDEX idx_op_status            ON ordem_producao(tp_status_kanban);
+CREATE INDEX idx_artesao_vinculo      ON artesao(tp_vinculo);
+CREATE INDEX idx_execucao_datas       ON execucao_etapa(dt_inicio, dt_fim);
+CREATE INDEX idx_vendedor_vinculo     ON vendedor(tp_vinculo);
+CREATE INDEX idx_pedido_data          ON pedido(dt_pedido);
+CREATE INDEX idx_pedido_status        ON pedido(tp_status);
+CREATE INDEX idx_receber_vencimento   ON contas_receber(dt_vencimento);
+CREATE INDEX idx_receber_status       ON contas_receber(tp_status);
+CREATE INDEX idx_pagar_vencimento     ON contas_pagar(dt_vencimento);
+CREATE INDEX idx_pagar_status         ON contas_pagar(tp_status);
+
+
+-- =====================================================================
 -- 4) INSERT INTO — massa de dados (fictícia, coerente com a operação
 --    observada: couro/ferragens/zíperes/forro/embalagens, bolsas e
 --    acessórios, produção por etapa, clientes variados, pedidos em
@@ -819,6 +844,30 @@ WHERE op_id = 8 AND dt_fim IS NULL;
 UPDATE ordem_producao
 SET tp_status_kanban = 'concluida'
 WHERE id_op = 8;
+
+-- 6.7 Demonstração de integridade transacional (RNF05): "baixa de estoque,
+-- geração de título financeiro... devem ocorrer de forma atômica (tudo ou
+-- nada)". Simula o recebimento de um novo lote de insumo: INSERT em
+-- lote_insumo, INSERT do título a pagar correspondente (usando
+-- LAST_INSERT_ID() para referenciar o lote recém-criado) e UPDATE do
+-- estoque do insumo — as três operações, ou todas juntas, ou nenhuma.
+-- Termina com ROLLBACK (em vez de COMMIT) de propósito, para a massa de
+-- dados final continuar batendo com as contagens documentadas no
+-- Entrega2/README.md (10 lotes de insumo, 10 títulos a pagar); em uso
+-- real, a aplicação daria COMMIT aqui.
+START TRANSACTION;
+
+INSERT INTO lote_insumo (insumo_id, fornecedor_id, nr_lote, dt_recebimento, qt_recebida, vl_preco_pago, ds_cor_tonalidade)
+VALUES (2, 1, 'LT-2025-1030-A', '2025-10-30', 30.0, 83.0, 'Preto fosco');
+
+INSERT INTO contas_pagar (lote_id, vl_valor, dt_vencimento, dt_pagamento, tp_status)
+VALUES (LAST_INSERT_ID(), 30.0 * 83.0, DATE_ADD('2025-10-30', INTERVAL 30 DAY), NULL, 'em aberto');
+
+UPDATE insumo
+SET qt_estoque_atual = qt_estoque_atual + 30.0
+WHERE id_insumo = 2;
+
+ROLLBACK;
 
 
 -- =====================================================================
