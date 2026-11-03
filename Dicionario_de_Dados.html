@@ -300,7 +300,7 @@
         <tr><td class="attr">ds_descricao</td><td class="phys">VARCHAR(255) NOT NULL</td><td>Texto livre com detalhes do modelo, uso pretendido ou observações de venda.</td></tr>
         <tr><td class="attr">vl_preco_base</td><td class="phys">DECIMAL(10,2) NOT NULL CHECK (&gt;0)</td><td>Valor de referência para venda, antes de eventuais descontos por item de pedido.</td></tr>
         <tr><td class="attr">tp_categoria</td><td class="phys">VARCHAR(50) </td><td>Classificação comercial (linha/coleção/departamento) — independente da especialização BOLSA/ACESSÓRIO.</td></tr>
-        <tr><td class="attr">tp_produto</td><td class="phys">VARCHAR(30) NOT NULL CHECK (IN 'BOLSA','ACESSORIO')</td><td>Discriminador da especialização Total e Disjunta — define se a linha também existe em BOLSA ou em ACESSORIO.</td></tr>
+        <tr><td class="attr">tp_produto</td><td class="phys">VARCHAR(30) NOT NULL</td><td>Domínio: {BOLSA, ACESSORIO}. Discriminador da especialização Total e Disjunta — define se a linha também existe em BOLSA ou em ACESSORIO.</td></tr>
       </tbody>
     </table>
     <div class="idx-note"><b>Índices sugeridos:</b> PK (id_produto) · INDEX idx_produto_categoria (tp_categoria)</div>
