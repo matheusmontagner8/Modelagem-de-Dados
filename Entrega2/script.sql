@@ -43,43 +43,48 @@ USE contrasti_bolsas;
 -- =====================================================================
 
 -- FORNECEDOR ------------------------------------------------------------
+DROP TABLE IF EXISTS fornecedor;
 CREATE TABLE fornecedor (
-    id_fornecedor INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_fornecedor INT UNSIGNED AUTO_INCREMENT,
     nm_fornecedor VARCHAR(150) NOT NULL,
     nr_cnpj       VARCHAR(18)  NOT NULL,
-    nr_telefone   VARCHAR(11),
+    nr_telefone   VARCHAR(20),
     ds_email      VARCHAR(140),
     ds_endereco   VARCHAR(200),
     dt_cadastro   DATE NOT NULL DEFAULT (CURRENT_DATE),
     tp_categoria  VARCHAR(30) NOT NULL,
+    CONSTRAINT pk_fornecedor           PRIMARY KEY (id_fornecedor),
     CONSTRAINT uq_fornecedor_cnpj      UNIQUE (nr_cnpj),
     CONSTRAINT ck_fornecedor_categoria CHECK (tp_categoria IN ('Couro','Ferragem','Ziper','Embalagem'))
-);
+) ENGINE = InnoDB;
 
 -- INSUMO ------------------------------------------------------------------
 -- Sem FK direta para fornecedor: a origem de cada recebimento agora é
 -- registrada por LOTE_INSUMO (um insumo pode vir de fornecedores
 -- diferentes ao longo do tempo — ver nota na Entrega 1, Critério 10).
+DROP TABLE IF EXISTS insumo;
 CREATE TABLE insumo (
-    id_insumo           INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_insumo           INT UNSIGNED AUTO_INCREMENT,
     nm_insumo            VARCHAR(120)  NOT NULL,
     tp_insumo            VARCHAR(30)   NOT NULL,
     un_medida            VARCHAR(10)   NOT NULL,
     qt_estoque_minimo    DECIMAL(10,3) NOT NULL DEFAULT 0,
     qt_estoque_atual     DECIMAL(10,3) NOT NULL DEFAULT 0,
     vl_preco_referencia  DECIMAL(10,2) NOT NULL,
+    CONSTRAINT pk_insumo             PRIMARY KEY (id_insumo),
     CONSTRAINT ck_insumo_unidade     CHECK (un_medida IN ('DM2','M2','UN','M','KG','L')),
     CONSTRAINT ck_insumo_estoque     CHECK (qt_estoque_atual >= 0),
     CONSTRAINT ck_insumo_estoque_min CHECK (qt_estoque_minimo >= 0),
     CONSTRAINT ck_insumo_preco       CHECK (vl_preco_referencia > 0)
-);
+) ENGINE = InnoDB;
 
 -- LOTE_INSUMO (nova) -------------------------------------------------------
 -- Cada recebimento de insumo, por lote e fornecedor — resolve a
 -- contradição apontada pelo professor (FORNECEDOR–INSUMO (1,1) não
 -- permitia múltiplos fornecedores para o mesmo insumo ao longo do tempo).
+DROP TABLE IF EXISTS lote_insumo;
 CREATE TABLE lote_insumo (
-    id_lote           INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_lote           INT UNSIGNED AUTO_INCREMENT,
     insumo_id         INT UNSIGNED NOT NULL,
     fornecedor_id     INT UNSIGNED NOT NULL,
     nr_lote           VARCHAR(30) NOT NULL,
@@ -87,106 +92,129 @@ CREATE TABLE lote_insumo (
     qt_recebida       DECIMAL(10,3) NOT NULL,
     vl_preco_pago     DECIMAL(10,2) NOT NULL,
     ds_cor_tonalidade VARCHAR(60),
-    CONSTRAINT fk_lote_insumo     FOREIGN KEY (insumo_id)     REFERENCES insumo(id_insumo),
-    CONSTRAINT fk_lote_fornecedor FOREIGN KEY (fornecedor_id) REFERENCES fornecedor(id_fornecedor),
+    CONSTRAINT pk_lote_insumo     PRIMARY KEY (id_lote),
+    CONSTRAINT fk_lote_insumo     FOREIGN KEY (insumo_id)     REFERENCES insumo(id_insumo)
+        ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT fk_lote_fornecedor FOREIGN KEY (fornecedor_id) REFERENCES fornecedor(id_fornecedor)
+        ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT ck_lote_qtd        CHECK (qt_recebida > 0),
     CONSTRAINT ck_lote_preco      CHECK (vl_preco_pago > 0)
-);
+) ENGINE = InnoDB;
 
 -- PRODUTO (supertipo) -----------------------------------------------------
 -- tp_produto é o discriminador da especialização TD (Total e Disjunta):
 -- toda linha de produto tem que ter uma linha correspondente em BOLSA
 -- OU em ACESSORIO (nunca nas duas) — ver auditoria 9.4.
+DROP TABLE IF EXISTS produto;
 CREATE TABLE produto (
-    id_produto        INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_produto        INT UNSIGNED AUTO_INCREMENT,
     nm_produto        VARCHAR(120)  NOT NULL,
-    ds_descricao      VARCHAR(255), NOT NULL,
+    ds_descricao      VARCHAR(255) NOT NULL,
     vl_preco_base     DECIMAL(10,2) NOT NULL,
     tp_categoria      VARCHAR(50),
     qt_estoque_total  INT UNSIGNED NOT NULL DEFAULT 0,
     tp_produto        VARCHAR(30) NOT NULL,
+    CONSTRAINT pk_produto       PRIMARY KEY (id_produto),
     CONSTRAINT ck_produto_preco CHECK (vl_preco_base > 0),
     CONSTRAINT ck_produto_tipo  CHECK (tp_produto IN ('BOLSA','ACESSORIO'))
-);
+) ENGINE = InnoDB;
 
 -- BOLSA (subtipo de PRODUTO) ------------------------------------------------
 -- Estratégia "tabela por subtipo": id_produto é PK e também FK para
 -- PRODUTO (relacionamento 1:1 que implementa a especialização).
+DROP TABLE IF EXISTS bolsa;
 CREATE TABLE bolsa (
-    id_produto  INT UNSIGNED PRIMARY KEY,
+    id_produto  INT UNSIGNED,
     ds_material VARCHAR(60) NOT NULL,
     ds_cor      VARCHAR(40) NOT NULL,
     tp_tamanho  VARCHAR(20) NOT NULL,
     tp_alca     VARCHAR(30) NOT NULL,
-    CONSTRAINT fk_bolsa_produto FOREIGN KEY (id_produto) REFERENCES produto(id_produto) ON DELETE CASCADE
-);
+    CONSTRAINT pk_bolsa         PRIMARY KEY (id_produto),
+    CONSTRAINT fk_bolsa_produto FOREIGN KEY (id_produto) REFERENCES produto(id_produto)
+        ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB;
 
 -- ACESSORIO (subtipo de PRODUTO) --------------------------------------------
+DROP TABLE IF EXISTS acessorio;
 CREATE TABLE acessorio (
-    id_produto         INT UNSIGNED PRIMARY KEY,
+    id_produto         INT UNSIGNED,
     ds_material        VARCHAR(60) NOT NULL,
     ds_cor             VARCHAR(40) NOT NULL,
     tp_acessorio       VARCHAR(30) NOT NULL,
     ds_compatibilidade VARCHAR(120),
-    CONSTRAINT fk_acessorio_produto FOREIGN KEY (id_produto) REFERENCES produto(id_produto) ON DELETE CASCADE
-);
+    CONSTRAINT pk_acessorio         PRIMARY KEY (id_produto),
+    CONSTRAINT fk_acessorio_produto FOREIGN KEY (id_produto) REFERENCES produto(id_produto)
+        ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB;
 
 -- FICHA_TECNICA (associativa, agora com CHAVE PRÓPRIA) ---------------------
 -- A versão anterior usava produto_id+insumo_id como PK composta por FKs
 -- ("FK como identificador", apontado como agravante pelo professor).
 -- id_ficha resolve isso sem perder a regra "cada par aparece uma única
 -- vez" (garantida pelo UNIQUE abaixo).
+DROP TABLE IF EXISTS ficha_tecnica;
 CREATE TABLE ficha_tecnica (
-    id_ficha       INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_ficha       INT UNSIGNED AUTO_INCREMENT,
     produto_id     INT UNSIGNED NOT NULL,
     insumo_id      INT UNSIGNED NOT NULL,
     qt_necessaria  DECIMAL(10,3) NOT NULL,
     un_medida_item VARCHAR(10) NOT NULL,
-    CONSTRAINT fk_ficha_produto        FOREIGN KEY (produto_id) REFERENCES produto(id_produto) ON DELETE CASCADE,
-    CONSTRAINT fk_ficha_insumo         FOREIGN KEY (insumo_id)  REFERENCES insumo(id_insumo),
+    CONSTRAINT pk_ficha_tecnica         PRIMARY KEY (id_ficha),
+    CONSTRAINT fk_ficha_produto        FOREIGN KEY (produto_id) REFERENCES produto(id_produto)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_ficha_insumo         FOREIGN KEY (insumo_id)  REFERENCES insumo(id_insumo)
+        ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT uq_ficha_produto_insumo UNIQUE (produto_id, insumo_id),
     CONSTRAINT ck_ficha_qtd            CHECK (qt_necessaria > 0)
-);
+) ENGINE = InnoDB;
 
 -- ORDEM_PRODUCAO (nova, essencial) -----------------------------------------
 -- Apontada como ausência essencial pelo professor (Critério 10): sem ela
 -- não havia onde registrar o processo de fabricação já descrito no README.
+DROP TABLE IF EXISTS ordem_producao;
 CREATE TABLE ordem_producao (
-    id_op            INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_op            INT UNSIGNED AUTO_INCREMENT,
     produto_id       INT UNSIGNED NOT NULL,
     nr_op            VARCHAR(20) NOT NULL,
     dt_abertura      DATE NOT NULL,
     qt_produzir      INT UNSIGNED NOT NULL,
     tp_status_kanban VARCHAR(20) NOT NULL,
-    CONSTRAINT fk_op_produto FOREIGN KEY (produto_id) REFERENCES produto(id_produto),
+    CONSTRAINT pk_ordem_producao PRIMARY KEY (id_op),
+    CONSTRAINT fk_op_produto FOREIGN KEY (produto_id) REFERENCES produto(id_produto)
+        ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT uq_op_numero  UNIQUE (nr_op),
     CONSTRAINT ck_op_qtd     CHECK (qt_produzir > 0),
     CONSTRAINT ck_op_status  CHECK (tp_status_kanban IN ('aberta','em producao','concluida','cancelada'))
-);
+) ENGINE = InnoDB;
 
 -- ETAPA_PRODUCAO (nova, tabela de domínio) ----------------------------------
 -- Etapas padrão do processo produtivo (README, Seção 2, processo 5).
+DROP TABLE IF EXISTS etapa_producao;
 CREATE TABLE etapa_producao (
-    id_etapa            INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_etapa            INT UNSIGNED AUTO_INCREMENT,
     nm_etapa             VARCHAR(60) NOT NULL,
     nr_ordem_sequencial  SMALLINT UNSIGNED NOT NULL,
+    CONSTRAINT pk_etapa_producao PRIMARY KEY (id_etapa),
     CONSTRAINT uq_etapa_ordem UNIQUE (nr_ordem_sequencial)
-);
+) ENGINE = InnoDB;
 
 -- ARTESAO (nova) ------------------------------------------------------
+DROP TABLE IF EXISTS artesao;
 CREATE TABLE artesao (
-    id_artesao  INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_artesao  INT UNSIGNED AUTO_INCREMENT,
     nm_artesao  VARCHAR(120) NOT NULL,
     tp_vinculo  VARCHAR(20) NOT NULL,
     nr_telefone VARCHAR(20),
+    CONSTRAINT pk_artesao          PRIMARY KEY (id_artesao),
     CONSTRAINT ck_artesao_vinculo CHECK (tp_vinculo IN ('interno','faccao terceirizada'))
-);
+) ENGINE = InnoDB;
 
 -- EXECUCAO_ETAPA (nova, associativa de três vias) ----------------------------
 -- Liga ORDEM_PRODUCAO a ETAPA_PRODUCAO executada por um ARTESAO.
 -- pc_aproveitamento/pc_perda sustentam a regra de pagamento por etapa (RF15).
+DROP TABLE IF EXISTS execucao_etapa;
 CREATE TABLE execucao_etapa (
-    id_execucao        INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_execucao        INT UNSIGNED AUTO_INCREMENT,
     op_id              INT UNSIGNED NOT NULL,
     etapa_id           INT UNSIGNED NOT NULL,
     artesao_id         INT UNSIGNED NOT NULL,
@@ -194,42 +222,51 @@ CREATE TABLE execucao_etapa (
     dt_fim             DATETIME,
     pc_aproveitamento  DECIMAL(5,2),
     pc_perda           DECIMAL(5,2),
-    CONSTRAINT fk_execucao_op       FOREIGN KEY (op_id)      REFERENCES ordem_producao(id_op) ON DELETE CASCADE,
-    CONSTRAINT fk_execucao_etapa    FOREIGN KEY (etapa_id)   REFERENCES etapa_producao(id_etapa),
-    CONSTRAINT fk_execucao_artesao  FOREIGN KEY (artesao_id) REFERENCES artesao(id_artesao),
+    CONSTRAINT pk_execucao_etapa    PRIMARY KEY (id_execucao),
+    CONSTRAINT fk_execucao_op       FOREIGN KEY (op_id)      REFERENCES ordem_producao(id_op)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_execucao_etapa    FOREIGN KEY (etapa_id)   REFERENCES etapa_producao(id_etapa)
+        ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT fk_execucao_artesao  FOREIGN KEY (artesao_id) REFERENCES artesao(id_artesao)
+        ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT ck_execucao_aprov CHECK (pc_aproveitamento IS NULL OR pc_aproveitamento BETWEEN 0 AND 100),
     CONSTRAINT ck_execucao_perda CHECK (pc_perda IS NULL OR pc_perda BETWEEN 0 AND 100)
-);
+) ENGINE = InnoDB;
 
 -- CLIENTE -------------------------------------------------------------------
+DROP TABLE IF EXISTS cliente;
 CREATE TABLE cliente (
-    id_cliente    INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_cliente    INT UNSIGNED AUTO_INCREMENT,
     nm_cliente    VARCHAR(150) NOT NULL,
     nr_cpf        VARCHAR(14)  NOT NULL,
     nr_telefone   VARCHAR(20),
     ds_email      VARCHAR(160),
     ds_endereco   VARCHAR(200),
     dt_cadastro   DATE NOT NULL DEFAULT (CURRENT_DATE),
+    CONSTRAINT pk_cliente     PRIMARY KEY (id_cliente),
     CONSTRAINT uq_cliente_cpf UNIQUE (nr_cpf)
-);
+) ENGINE = InnoDB;
 
 -- VENDEDOR (nova) ------------------------------------------------------------
 -- Sustenta a regra de comissão por canal (README, Seção 4).
+DROP TABLE IF EXISTS vendedor;
 CREATE TABLE vendedor (
-    id_vendedor  INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_vendedor  INT UNSIGNED AUTO_INCREMENT,
     nm_vendedor  VARCHAR(120) NOT NULL,
     tp_vinculo   VARCHAR(25) NOT NULL,
     pc_comissao  DECIMAL(5,2) NOT NULL,
+    CONSTRAINT pk_vendedor          PRIMARY KEY (id_vendedor),
     CONSTRAINT ck_vendedor_vinculo CHECK (tp_vinculo IN ('interno','representante externo'))
-);
+) ENGINE = InnoDB;
 
 -- PEDIDO ----------------------------------------------------------------
 -- vl_total é mantido por recálculo explícito (ver Seção 6 — UPDATE) em
 -- vez de GENERATED COLUMN, porque depende de uma soma em OUTRA tabela
 -- (item_pedido) — denormalização deliberada, discutida em
 -- RELATORIO_TECNICO.md §1.4.
+DROP TABLE IF EXISTS pedido;
 CREATE TABLE pedido (
-    id_pedido       INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_pedido       INT UNSIGNED AUTO_INCREMENT,
     cliente_id      INT UNSIGNED NOT NULL,
     vendedor_id     INT UNSIGNED NOT NULL,
     dt_pedido       DATE NOT NULL DEFAULT (CURRENT_DATE),
@@ -238,57 +275,70 @@ CREATE TABLE pedido (
     tp_pagamento    VARCHAR(10),
     tp_canal        VARCHAR(20) NOT NULL,
     ds_observacoes  VARCHAR(255),
-    CONSTRAINT fk_pedido_cliente  FOREIGN KEY (cliente_id)  REFERENCES cliente(id_cliente),
-    CONSTRAINT fk_pedido_vendedor FOREIGN KEY (vendedor_id) REFERENCES vendedor(id_vendedor),
+    CONSTRAINT pk_pedido          PRIMARY KEY (id_pedido),
+    CONSTRAINT fk_pedido_cliente  FOREIGN KEY (cliente_id)  REFERENCES cliente(id_cliente)
+        ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT fk_pedido_vendedor FOREIGN KEY (vendedor_id) REFERENCES vendedor(id_vendedor)
+        ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT ck_pedido_status    CHECK (tp_status IN ('Aberto','Faturado','Expedido','Cancelado')),
     CONSTRAINT ck_pedido_pagamento CHECK (tp_pagamento IN ('PIX','Cartao','Boleto')),
     CONSTRAINT ck_pedido_canal     CHECK (tp_canal IN ('loja fisica','e-commerce','atacado'))
-);
+) ENGINE = InnoDB;
 
 -- ITEM_PEDIDO (associativa, identificador próprio) -----------------
 -- vl_subtotal é coluna gerada (depende só de colunas da própria linha).
+DROP TABLE IF EXISTS item_pedido;
 CREATE TABLE item_pedido (
-    id_item_pedido    INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_item_pedido    INT UNSIGNED AUTO_INCREMENT,
     pedido_id         INT UNSIGNED NOT NULL,
     produto_id        INT UNSIGNED NOT NULL,
     qt_quantidade     INT UNSIGNED NOT NULL,
     vl_preco_unitario DECIMAL(10,2) NOT NULL,
     vl_desconto       DECIMAL(10,2) NOT NULL DEFAULT 0,
     vl_subtotal       DECIMAL(10,2) GENERATED ALWAYS AS (qt_quantidade * vl_preco_unitario - vl_desconto) STORED,
-    CONSTRAINT fk_item_pedido_pedido  FOREIGN KEY (pedido_id)  REFERENCES pedido(id_pedido) ON DELETE CASCADE,
-    CONSTRAINT fk_item_pedido_produto FOREIGN KEY (produto_id) REFERENCES produto(id_produto),
+    CONSTRAINT pk_item_pedido         PRIMARY KEY (id_item_pedido),
+    CONSTRAINT fk_item_pedido_pedido  FOREIGN KEY (pedido_id)  REFERENCES pedido(id_pedido)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT fk_item_pedido_produto FOREIGN KEY (produto_id) REFERENCES produto(id_produto)
+        ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT ck_item_qtd      CHECK (qt_quantidade > 0),
     CONSTRAINT ck_item_preco    CHECK (vl_preco_unitario > 0),
     CONSTRAINT ck_item_desconto CHECK (vl_desconto >= 0)
-);
+) ENGINE = InnoDB;
 
 -- CONTAS_RECEBER (nova) -------------------------------------------------------
 -- Título gerado a partir de um pedido faturado/expedido (RF22).
+DROP TABLE IF EXISTS contas_receber;
 CREATE TABLE contas_receber (
-    id_titulo_receber INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_titulo_receber INT UNSIGNED AUTO_INCREMENT,
     pedido_id         INT UNSIGNED NOT NULL,
     vl_valor          DECIMAL(10,2) NOT NULL,
     dt_vencimento     DATE NOT NULL,
     dt_recebimento    DATE,
     tp_status         VARCHAR(15) NOT NULL,
-    CONSTRAINT fk_receber_pedido FOREIGN KEY (pedido_id) REFERENCES pedido(id_pedido),
+    CONSTRAINT pk_contas_receber PRIMARY KEY (id_titulo_receber),
+    CONSTRAINT fk_receber_pedido FOREIGN KEY (pedido_id) REFERENCES pedido(id_pedido)
+        ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT ck_receber_valor  CHECK (vl_valor > 0),
     CONSTRAINT ck_receber_status CHECK (tp_status IN ('em aberto','pago','atrasado','cancelado'))
-);
+) ENGINE = InnoDB;
 
 -- CONTAS_PAGAR (nova) ----------------------------------------------------------
 -- Título gerado a partir de um lote de insumo recebido (RF22).
+DROP TABLE IF EXISTS contas_pagar;
 CREATE TABLE contas_pagar (
-    id_titulo_pagar INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id_titulo_pagar INT UNSIGNED AUTO_INCREMENT,
     lote_id         INT UNSIGNED NOT NULL,
     vl_valor        DECIMAL(10,2) NOT NULL,
     dt_vencimento   DATE NOT NULL,
     dt_pagamento    DATE,
     tp_status       VARCHAR(15) NOT NULL,
-    CONSTRAINT fk_pagar_lote   FOREIGN KEY (lote_id) REFERENCES lote_insumo(id_lote),
+    CONSTRAINT pk_contas_pagar PRIMARY KEY (id_titulo_pagar),
+    CONSTRAINT fk_pagar_lote   FOREIGN KEY (lote_id) REFERENCES lote_insumo(id_lote)
+        ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT ck_pagar_valor  CHECK (vl_valor > 0),
     CONSTRAINT ck_pagar_status CHECK (tp_status IN ('em aberto','pago','atrasado','cancelado'))
-);
+) ENGINE = InnoDB;
 
 
 -- =====================================================================
@@ -645,6 +695,7 @@ INSERT INTO contas_pagar (id_titulo_pagar, lote_id, vl_valor, dt_vencimento, dt_
 -- =====================================================================
 
 -- 5.1 Pedidos com nome do cliente, vendedor e total do pedido
+-- Atende: RF16 - Registrar pedidos de venda por canal, com vendedor responsável
 SELECT p.id_pedido, c.nm_cliente AS cliente, v.nm_vendedor AS vendedor, p.dt_pedido, p.tp_status, p.vl_total
 FROM pedido p
 JOIN cliente c  ON c.id_cliente  = p.cliente_id
@@ -652,12 +703,14 @@ JOIN vendedor v ON v.id_vendedor = p.vendedor_id
 ORDER BY p.dt_pedido;
 
 -- 5.2 Itens de um pedido específico, com o nome do produto
+-- Atende: RF18 - Emitir NF-e/NFC-e, que exige o detalhe item a item do pedido
 SELECT ip.id_item_pedido, pr.nm_produto AS produto, ip.qt_quantidade, ip.vl_preco_unitario, ip.vl_subtotal
 FROM item_pedido ip
 JOIN produto pr ON pr.id_produto = ip.produto_id
 WHERE ip.pedido_id = 4;
 
 -- 5.3 Ficha técnica "legível": produto, insumo e quantidade necessária
+-- Atende: RF09 - Manter a Ficha Técnica (BOM) de cada SKU, com a quantidade de cada insumo
 SELECT pr.nm_produto AS produto, i.nm_insumo AS insumo, ft.qt_necessaria, i.un_medida
 FROM ficha_tecnica ft
 JOIN produto pr ON pr.id_produto = ft.produto_id
@@ -667,6 +720,7 @@ ORDER BY pr.nm_produto, i.nm_insumo;
 -- 5.4 Produtos com todos os fornecedores que já forneceram cada insumo
 -- usado neles (join quádruplo via LOTE_INSUMO) — mostra que um mesmo
 -- insumo pode vir de mais de um fornecedor (ex.: Bolsa Tote Caramelo)
+-- Atende: RF06 - Registrar entrada de insumos por lote, vinculando o fornecedor (rastreabilidade)
 SELECT DISTINCT pr.nm_produto AS produto, i.nm_insumo AS insumo, f.nm_fornecedor AS fornecedor
 FROM ficha_tecnica ft
 JOIN produto     pr ON pr.id_produto     = ft.produto_id
@@ -677,6 +731,7 @@ ORDER BY pr.nm_produto, f.nm_fornecedor;
 
 -- 5.5 Pedidos com detalhe de especialização do produto vendido
 -- (LEFT JOIN em bolsa e acessorio, já que cada produto só aparece em um dos dois)
+-- Atende: RF08 - Cadastrar produtos por modelo e variação (SKU), combinando cor/tipo
 SELECT p.id_pedido, pr.nm_produto AS produto, pr.tp_produto,
        b.ds_cor AS cor_bolsa, a.ds_cor AS cor_acessorio
 FROM item_pedido ip
@@ -688,6 +743,8 @@ ORDER BY p.id_pedido;
 
 -- 5.6 Rastreabilidade de uma Ordem de Produção: etapa, quem executou,
 -- quando e o aproveitamento de couro (quando aplicável)
+-- Atende: RF15 - Registrar, por etapa de produção, o artesão responsável e o
+-- percentual de aproveitamento/perda de couro na etapa de Corte
 SELECT op.nr_op, pr.nm_produto AS produto, et.nm_etapa, af.nm_artesao,
        ee.dt_inicio, ee.dt_fim, ee.pc_aproveitamento, ee.pc_perda
 FROM execucao_etapa ee
@@ -699,6 +756,8 @@ WHERE op.nr_op = 'OP-2025-001'
 ORDER BY et.nr_ordem_sequencial;
 
 -- 5.7 Comissão por vendedor nos pedidos faturados/expedidos
+-- Atende: RF17 - Calcular comissão de vendedores/representantes sobre pedidos
+-- faturados, com percentuais diferenciados por canal
 SELECT v.nm_vendedor, v.pc_comissao, p.tp_canal,
        SUM(p.vl_total) AS total_vendido,
        ROUND(SUM(p.vl_total) * v.pc_comissao / 100, 2) AS comissao_devida
