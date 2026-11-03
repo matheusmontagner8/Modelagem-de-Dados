@@ -197,7 +197,7 @@
     <tbody>
       <tr><td class="p">id_</td><td>Identificador (chave primária)</td><td>id_fornecedor, id_pedido</td></tr>
       <tr><td class="p">nm_</td><td>Nome</td><td>nm_fornecedor, nm_cliente</td></tr>
-      <tr><td class="p">ds_</td><td>Descrição / texto livre</td><td>ds_endereco, ds_observacoes</td></tr>
+      <tr><td class="p">ds_</td><td>Descrição / texto livre</td><td>ds_logradouro, ds_bairro, ds_observacoes</td></tr>
       <tr><td class="p">dt_</td><td>Data (ou data/hora)</td><td>dt_cadastro, dt_vencimento</td></tr>
       <tr><td class="p">vl_</td><td>Valor monetário</td><td>vl_total, vl_preco_unitario</td></tr>
       <tr><td class="p">qt_</td><td>Quantidade</td><td>qt_estoque_atual, qt_quantidade</td></tr>
@@ -211,7 +211,7 @@
   <!-- FORNECEDOR -->
   <div class="entity">
     <div class="entity-header">FORNECEDOR</div>
-    <div class="leitura">FORNECEDOR(<span class="pk">id_fornecedor</span>, nm_fornecedor, nr_cnpj, nr_telefone, ds_email, ds_endereco, dt_cadastro, tp_categoria)</div>
+    <div class="leitura">FORNECEDOR(<span class="pk">id_fornecedor</span>, nm_fornecedor, nr_cnpj, nr_telefone, ds_email, ds_logradouro, nr_numero, ds_bairro, nm_cidade, sg_uf, nr_cep, dt_cadastro, tp_categoria)</div>
     <table>
       <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
       <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
@@ -219,9 +219,14 @@
         <tr><td class="attr pk">id_fornecedor</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema. É único e não pode ser reutilizado.</td></tr>
         <tr><td class="attr">nm_fornecedor</td><td class="phys">VARCHAR(150) NOT NULL</td><td>Razão social ou nome fantasia utilizado em compras e no histórico de avaliação.</td></tr>
         <tr><td class="attr">nr_cnpj</td><td class="phys">VARCHAR(18) NOT NULL UNIQUE</td><td>Formato 00.000.000/0000-00. Único por fornecedor. Dado de identificação de pessoa jurídica — acesso restrito (ver seção LGPD).</td></tr>
-        <tr><td class="attr">nr_telefone</td><td class="phys">VARCHAR(20) NULL</td><td>Contato direto com o fornecedor.</td></tr>
-        <tr><td class="attr">ds_email</td><td class="phys">VARCHAR(160) NULL</td><td>Canal de contato comercial com o fornecedor.</td></tr>
-        <tr><td class="attr">ds_endereco</td><td class="phys">VARCHAR(200) NULL</td><td>Endereço comercial, usado para correspondência e logística de coleta/entrega.</td></tr>
+        <tr><td class="attr">nr_telefone</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Contato direto com o fornecedor.</td></tr>
+        <tr><td class="attr">ds_email</td><td class="phys">VARCHAR(160) NOT NULL</td><td>Canal de contato comercial com o fornecedor.</td></tr>
+        <tr><td class="attr">ds_logradouro</td><td class="phys">VARCHAR(150) NOT NULL</td><td>Rua/avenida do endereço comercial.</td></tr>
+        <tr><td class="attr">nr_numero</td><td class="phys">VARCHAR(10) NOT NULL</td><td>Número do endereço.</td></tr>
+        <tr><td class="attr">ds_bairro</td><td class="phys">VARCHAR(80) NOT NULL</td><td>Bairro do endereço comercial.</td></tr>
+        <tr><td class="attr">nm_cidade</td><td class="phys">VARCHAR(80) NOT NULL</td><td>Cidade do endereço comercial.</td></tr>
+        <tr><td class="attr">sg_uf</td><td class="phys">CHAR(2) NOT NULL</td><td>Sigla da UF (ex.: SP).</td></tr>
+        <tr><td class="attr">nr_cep</td><td class="phys">VARCHAR(9) NOT NULL</td><td>CEP, usado para logística de coleta/entrega.</td></tr>
         <tr><td class="attr">dt_cadastro</td><td class="phys">DATE NOT NULL DEFAULT (CURRENT_DATE)</td><td>Preenchida automaticamente na criação do registro.</td></tr>
         <tr><td class="attr">tp_categoria</td><td class="phys">VARCHAR(30) NOT NULL</td><td>Domínio fechado: {couro, ferragem, zíper, embalagem, outros}. Classifica o tipo de insumo que o fornecedor costuma vender.</td></tr>
       </tbody>
@@ -420,7 +425,7 @@
   <!-- CLIENTE -->
   <div class="entity">
     <div class="entity-header">CLIENTE</div>
-    <div class="leitura">CLIENTE(<span class="pk">id_cliente</span>, nm_cliente, nr_cpf, nr_cnpj, nr_telefone, ds_email, ds_endereco, dt_cadastro)</div>
+    <div class="leitura">CLIENTE(<span class="pk">id_cliente</span>, nm_cliente, nr_cpf, nr_cnpj, nr_telefone, ds_email, ds_logradouro, nr_numero, ds_bairro, nm_cidade, sg_uf, nr_cep, dt_cadastro)</div>
     <table>
       <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
       <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
@@ -431,7 +436,12 @@
         <tr><td class="attr">nr_cnpj</td><td class="phys">VARCHAR(18) UNIQUE</td><td>Identificador de pessoa jurídica (loja/empresa) — preenchido quando o cliente é pessoa jurídica (exclusivo com nr_cpf).</td></tr>
         <tr><td class="attr">nr_telefone</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Canal principal de contato (telefone ou WhatsApp). Obrigatório — sem ele não há como contatar o cliente.</td></tr>
         <tr><td class="attr">ds_email</td><td class="phys">VARCHAR(160) NOT NULL</td><td>Usado para comunicação e envio de comprovantes. Obrigatório.</td></tr>
-        <tr><td class="attr">ds_endereco</td><td class="phys">VARCHAR(200) NOT NULL</td><td>Endereço de entrega e/ou cobrança. Obrigatório.</td></tr>
+        <tr><td class="attr">ds_logradouro</td><td class="phys">VARCHAR(150) NOT NULL</td><td>Rua/avenida de entrega e/ou cobrança. Obrigatório.</td></tr>
+        <tr><td class="attr">nr_numero</td><td class="phys">VARCHAR(10) NOT NULL</td><td>Número do endereço. Obrigatório.</td></tr>
+        <tr><td class="attr">ds_bairro</td><td class="phys">VARCHAR(80) NOT NULL</td><td>Bairro. Obrigatório.</td></tr>
+        <tr><td class="attr">nm_cidade</td><td class="phys">VARCHAR(80) NOT NULL</td><td>Cidade. Obrigatório.</td></tr>
+        <tr><td class="attr">sg_uf</td><td class="phys">CHAR(2) NOT NULL</td><td>Sigla da UF. Obrigatório.</td></tr>
+        <tr><td class="attr">nr_cep</td><td class="phys">VARCHAR(9) NOT NULL</td><td>CEP. Obrigatório.</td></tr>
         <tr><td class="attr">dt_cadastro</td><td class="phys">DATE NOT NULL DEFAULT (CURRENT_DATE)</td><td>Preenchida automaticamente na criação do registro.</td></tr>
       </tbody>
     </table>
@@ -578,7 +588,7 @@
   <table class="conv-table">
     <colgroup><col style="width:24%"><col style="width:76%"></colgroup>
     <tbody>
-      <tr><td class="k">Entidades auditadas</td><td>FORNECEDOR (nr_cnpj), CLIENTE (nr_cpf, ds_email, ds_endereco), VENDEDOR, ARTESÃO (dados pessoais), CONTAS_PAGAR e CONTAS_RECEBER (dados financeiros) — qualquer entidade com dado pessoal ou financeiro sensível.</td></tr>
+      <tr><td class="k">Entidades auditadas</td><td>FORNECEDOR (nr_cnpj), CLIENTE (nr_cpf, ds_email, ds_logradouro, ds_bairro, nr_cep), VENDEDOR, ARTESÃO (dados pessoais), CONTAS_PAGAR e CONTAS_RECEBER (dados financeiros) — qualquer entidade com dado pessoal ou financeiro sensível.</td></tr>
       <tr><td class="k">Estrutura proposta</td><td><code>LOG_ACESSO(id_log PK, nm_usuario, dt_hora, nm_entidade, nm_operacao, ds_chave_registro, ds_valor_anterior, ds_valor_novo)</code> — tabela de log no nível lógico, fora do DER conceitual.</td></tr>
       <tr><td class="k">Captura de INSERT/UPDATE/DELETE</td><td>Triggers <code>AFTER INSERT/UPDATE/DELETE</code> nas tabelas sensíveis (CLIENTE, FORNECEDOR, VENDEDOR, ARTESÃO, CONTAS_PAGAR, CONTAS_RECEBER), gravando usuário da sessão, data/hora e os valores antigo/novo dos campos alterados.</td></tr>
       <tr><td class="k">Captura de SELECT</td><td>MySQL não audita leitura nativamente sem plugin de auditoria; a leitura de dados pessoais (CPF, CNPJ) é registrada em nível de aplicação (middleware/API), não no banco.</td></tr>
