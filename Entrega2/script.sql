@@ -272,7 +272,7 @@ CREATE TABLE pedido (
     dt_pedido       DATE NOT NULL DEFAULT (CURRENT_DATE),
     tp_status       VARCHAR(20) NOT NULL DEFAULT 'Aberto',
     vl_total        DECIMAL(10,2) NOT NULL DEFAULT 0,
-    tp_pagamento    VARCHAR(10),
+    tp_pagamento    VARCHAR(10) NOT NULL,
     tp_canal        VARCHAR(20) NOT NULL,
     ds_observacoes  VARCHAR(255),
     CONSTRAINT pk_pedido          PRIMARY KEY (id_pedido),
@@ -295,7 +295,7 @@ CREATE TABLE item_pedido (
     qt_quantidade     INT UNSIGNED NOT NULL,
     vl_preco_unitario DECIMAL(10,2) NOT NULL,
     vl_desconto       DECIMAL(10,2) NOT NULL DEFAULT 0,
-    vl_subtotal       DECIMAL(10,2) GENERATED ALWAYS AS (qt_quantidade * vl_preco_unitario - vl_desconto) STORED,
+    vl_subtotal       DECIMAL(10,2) GENERATED ALWAYS AS (qt_quantidade * vl_preco_unitario - vl_desconto) STORED NOT NULL,
     CONSTRAINT pk_item_pedido         PRIMARY KEY (id_item_pedido),
     CONSTRAINT fk_item_pedido_pedido  FOREIGN KEY (pedido_id)  REFERENCES pedido(id_pedido)
         ON DELETE CASCADE ON UPDATE CASCADE,
