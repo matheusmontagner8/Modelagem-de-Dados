@@ -200,11 +200,11 @@ Este recorte de 17 entidades cobre, os módulos: produção detalhada (ORDEM_PRO
 
 # Entrega 2 — Modelo Lógico, Modelo Físico e Implementação SQL
 
-**As três etapas da modelagem, e onde cada uma está neste repositório:** Conceitual (independente de SGBD, Entrega 1 — Seções 1-9 acima e `Diagrama/Diagrama.png`) → Lógico (tabelas/colunas/PK-FK/normalização, Seções 1.2–1.4 abaixo e `Entrega2/modelo_logico.md`) → **Físico** (implementação executável num SGBD real, com tipos, índices e constraints exatos do MySQL 8.4 — `Entrega2/script.sql`, testado em servidor real).
+**As três etapas da modelagem, e onde cada uma está neste repositório:** Conceitual (independente de SGBD, Entrega 1 — Seções 1-8 acima e `Diagrama/Diagrama.png`) → Lógico (tabelas/colunas/PK-FK/normalização, Seções 1.2–1.4 abaixo e `Entrega2/modelo_logico.md`) → **Físico** (implementação executável num SGBD real, com tipos, índices e constraints exatos do MySQL 8.4 — `Entrega2/script.sql`, testado em servidor real).
 
 ## 1.1 Revisão do Modelo Conceitual
 
-O DER da Entrega 1 (`Diagrama/Diagrama.png`) **foi reconstruído** nesta etapa, em resposta à avaliação do professor: de 9 para 17 entidades e de 6 para 16 relacionamentos, todos agora com cardinalidade mínima e máxima em ambas as pontas, sem nenhuma marcação de FK no diagrama. O detalhamento completo dessa correção está nas Seções 5–9 acima e no `Dicionario_de_Dados.html`; esta seção parte diretamente do modelo já corrigido.
+O DER da Entrega 1 (`Diagrama/Diagrama.png`) **foi reconstruído** nesta etapa, em resposta à avaliação do professor: de 9 para 17 entidades e de 6 para 16 relacionamentos, todos agora com cardinalidade mínima e máxima em ambas as pontas, sem nenhuma marcação de FK no diagrama. O detalhamento completo dessa correção está nas Seções 5–8 acima e no `Dicionario_de_Dados.html`; esta seção parte diretamente do modelo já corrigido.
 
 Oito entidades novas entraram no recorte: duas essenciais (`ORDEM_PRODUCAO`, `LOTE_INSUMO`) e seis desejáveis (`ETAPA_PRODUCAO`, `ARTESAO`, `EXECUCAO_ETAPA`, `VENDEDOR`, `CONTAS_RECEBER`, `CONTAS_PAGAR`). A conversão lógica abaixo cobre as 17.
 
