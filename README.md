@@ -131,37 +131,7 @@
 
 ---
 
-
-## 5. Modelagem Conceitual (Entidades, Atributos, Relacionamentos)
-
-
-- **Entidades reconhecidas:** FORNECEDOR, INSUMO, LOTE_INSUMO, FICHA_TÉCNICA, PRODUTO, BOLSA, ACESSÓRIO, ORDEM_PRODUÇÃO, ETAPA_PRODUÇÃO, ARTESÃO, EXECUÇÃO_ETAPA, CLIENTE, VENDEDOR, PEDIDO, ITEM_PEDIDO, CONTAS_RECEBER e CONTAS_PAGAR. Quatro são **entidades associativas** (LOTE_INSUMO, FICHA_TÉCNICA, EXECUÇÃO_ETAPA, ITEM_PEDIDO), e PRODUTO é um **supertipo** especializado em BOLSA e ACESSÓRIO. Detalhamento completo (atributos, tipo físico, índices) em [`Dicionario_de_Dados.html`](Dicionario_de_Dados.html).
-- **Especialização PRODUTO → BOLSA / ACESSÓRIO:** total e disjunta, todo produto é obrigatoriamente bolsa OU acessório, nunca os dois. BOLSA e ACESSÓRIO herdam todos os atributos de PRODUTO.
-- **Relacionamentos pertinentes (16 no total, mais a especialização):**
-
-| # | Entidade A | Card. A | Verbo | Card. B | Entidade B | Observação |
-|---|---|---|---|---|---|---|
-| 01 | FORNECEDOR | (1,1) | fornece | (0,N) | LOTE_INSUMO | um fornecedor fornece vários lotes; cada lote tem um único fornecedor |
-| 02 | INSUMO | (1,1) | é_recebido_como | (0,N) | LOTE_INSUMO | um insumo pode ter lotes de fornecedores diferentes ao longo do tempo |
-| 03 | LOTE_INSUMO | (1,1) | gera | (0,N) | CONTAS_PAGAR | um lote recebido pode gerar um ou mais títulos a pagar |
-| 04 | PRODUTO | (1,1) | é_detalhado_em | (0,N) | FICHA_TÉCNICA | um produto tem uma linha de ficha técnica por insumo usado |
-| 05 | INSUMO | (1,1) | compõe | (0,N) | FICHA_TÉCNICA | cada linha da ficha técnica usa exatamente um insumo |
-| 06 | PRODUTO | (1,1) | é_produzido_em | (0,N) | ORDEM_PRODUÇÃO | um produto pode ter várias ordens de produção |
-| 07 | ORDEM_PRODUÇÃO | (1,1) | se_desdobra_em | (0,N) | EXECUÇÃO_ETAPA | uma OP se desdobra em várias execuções de etapa |
-| 08 | ETAPA_PRODUÇÃO | (1,1) | classifica | (0,N) | EXECUÇÃO_ETAPA | cada execução é classificada em exatamente uma etapa padrão |
-| 09 | ARTESÃO | (1,1) | realiza | (0,N) | EXECUÇÃO_ETAPA | cada execução é realizada por exatamente um artesão/facção |
-| TD | PRODUTO | (1,1) | especializa-se em | (1,1) | BOLSA / ACESSÓRIO | total e disjunta — todo produto é bolsa OU acessório |
-| 10 | CLIENTE | (1,1) | realiza | (0,N) | PEDIDO | um cliente pode realizar vários pedidos |
-| 11 | VENDEDOR | (1,1) | atende | (0,N) | PEDIDO | um vendedor atende vários pedidos — base de comissão |
-| 12 | PEDIDO | (1,1) | contém | (1,N) | ITEM_PEDIDO | todo pedido contém pelo menos um item |
-| 13 | PRODUTO | (1,1) | é_vendido_em | (0,N) | ITEM_PEDIDO | um produto pode ser vendido em vários itens |
-| 14 | PEDIDO | (1,1) | gera | (0,N) | CONTAS_RECEBER | um pedido pode gerar um ou mais títulos a receber |
-
-- **Restrições e políticas organizacionais aplicadas ao modelo:** a categoria do fornecedor orienta que tipo de insumo ele fornece; o preço de venda do item de pedido (`vl_preco_unitario`) fica congelado no momento da venda, independente de mudanças futuras no `vl_preco_base` do produto; todo produto precisa se especializar em bolsa ou acessório, nunca os dois; todo insumo é rastreado por lote e fornecedor de origem (LOTE_INSUMO), permitindo que o mesmo insumo venha de fornecedores diferentes sem perder a rastreabilidade de cor/tonalidade exigida para peças da mesma coleção.
-
----
-
-## 6. Diagrama Entidade-Relacionamento (DER)
+## 5. Diagrama Entidade-Relacionamento (DER)
 
 **Arquivos anexados:** `Diagrama/Diagrama.png` (imagem, 17 entidades) e `Dicionario_de_Dados.html` (dicionário completo).
 
@@ -171,7 +141,7 @@ Este recorte de 17 entidades cobre, os módulos: produção detalhada (ORDEM_PRO
 
 ---
 
-## 7. Justificativa Técnica
+## 6. Justificativa Técnica
 
 - **Por que 17 entidades:** a versão de 9 entidades modelava apenas o núcleo de custo e venda, mas o professor apontou que ORDEM_PRODUÇÃO e um mecanismo de lote de insumo eram **ausências essenciais** — sem eles, os processos de produção e de rastreabilidade de compra já descritos na Seção 2 não tinham onde ser registrados no modelo. As 6 entidades desejáveis (ETAPA_PRODUÇÃO, ARTESÃO, EXECUÇÃO_ETAPA, VENDEDOR, CONTAS_RECEBER, CONTAS_PAGAR) foram incorporadas porque o grupo já tinha a regra de negócio correspondente documentada (Seção 4) sem entidade que a sustentasse.
 - **Por que LOTE_INSUMO substitui a relação direta FORNECEDOR–INSUMO:** a versão anterior modelava FORNECEDOR–INSUMO como (1,1), ou seja, cada insumo vinha de um único fornecedor fixo — o professor apontou que isso contradiz a própria regra de rastreabilidade por lote (Seção 4), já que, na prática, um mesmo insumo (ex.: couro caramelo) pode ser recebido de fornecedores diferentes em momentos diferentes, cada lote com sua cor/tonalidade. LOTE_INSUMO resolve isso: liga-se a exatamente um INSUMO e a exatamente um FORNECEDOR por recebimento, permitindo múltiplos lotes (e múltiplos fornecedores) para o mesmo insumo ao longo do tempo.
@@ -182,14 +152,14 @@ Este recorte de 17 entidades cobre, os módulos: produção detalhada (ORDEM_PRO
 
 ---
 
-## 8. Uso de Inteligência Artificial
+## 7. Uso de Inteligência Artificial
 
 | Item | Registro |
 |---|---|
-| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — usado em oito momentos: (1) leitura do questionário de requisitos e construção de um primeiro modelo conceitual (21 entidades) e dicionário de dados; (2) geração de um primeiro diagrama ER (notação "pé-de-galinha"); (3) preenchimento deste README a partir do esqueleto oficial da Entrega 1;  (4) depois que o grupo (Guilherme) remodelou o DER para um recorte mais enxuto de 9 entidades direto no BrModeloWeb, reorganização do dicionário HTML já produzido pelo grupo e reescrita das Seções 5–8 para descrever esse modelo; (5) substituição do diagrama do repositório pela versão corrigida que o grupo enviou (PDF exportado do BrModeloWeb, com nomes de atributo, PKs/FKs e cardinalidades revisados), com o dicionário HTML e as Seções 5–8 atualizados para bater com essa versão; (6) a pedido do grupo, correção pontual de duas cardinalidades da própria imagem do diagrama ("compõe" e "detalha", ao redor de FICHA_TÉCNICA) para o padrão 1:N esperado de uma entidade associativa, e atualização do dicionário HTML e do README para refletir a correção.  |
+| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — usado em seis momentos: (1) leitura do questionário de requisitos e construção de um primeiro modelo conceitual (21 entidades) e dicionário de dados; (2) geração de um primeiro diagrama ER (notação "pé-de-galinha"); (3) preenchimento deste README a partir do esqueleto oficial da Entrega 1;  (4) depois que o grupo (Guilherme) remodelou o DER para um recorte mais enxuto de 9 entidades direto no BrModeloWeb, reorganização do dicionário HTML já produzido pelo grupo e reescrita das Seções 5–8 para descrever esse modelo; (5) substituição do diagrama do repositório pela versão corrigida que o grupo enviou (PDF exportado do BrModeloWeb, com nomes de atributo, PKs/FKs e cardinalidades revisados), com o dicionário HTML e as Seções 5–8 atualizados para bater com essa versão; (6) a pedido do grupo, correção pontual de duas cardinalidades da própria imagem do diagrama ("compõe" e "detalha", ao redor de FICHA_TÉCNICA) para o padrão 1:N esperado de uma entidade associativa, e atualização do dicionário HTML e do README para refletir a correção.  |
 | **Motivação** | Acelerar a tradução do levantamento de requisitos para um modelo estruturado e para o formato de entrega exigido pela disciplina; depois, manter o README, o diagrama e o dicionário sempre consistentes entre si; corrigir duas cardinalidades que a própria IA havia sinalizado como pouco usuais, com autorização explícita do grupo; por fim, responder item a item à avaliação formal do professor, corrigindo exatamente o que foi apontado como ausente ou inconsistente, sem contestar os pontos levantados. |
 | **Prompt(s) utilizados** | 1. "Preciso montar um diagrama e o dicionário desse diagrama, como se fosse no modelo BrModeloWeb..."<br>2. "Consegue gerar um arquivo pdf com esse arquivo que montou? Contendo somente o diagrama e o dicionário"<br>3. "adicione essas fotos no readme, na parte de evidências"<br>4. "De acordo com o dicionário e o diagrama que estão agora, crie o arquivo de dicionário de dados em html"<br>5. "Arrume o diagrama para esse pdf, agora ele está correto. No readme faça todas as correções necessárias, de acordo com esse diagrama novo e finalizado"<br>6. "Pode ajustar" (autorizando a correção das cardinalidades sinalizadas). | 
-| **Resposta recebida** | Um primeiro modelo (21 entidades); o DER redesenhado em notação de Chen; a troca do diagrama de 9 entidades pela versão corrigida enviada pelo grupo, com dicionário e README reescritos atributo a atributo; a edição direta dos pixels do PNG para duas cardinalidades pontuais; e, nesta última etapa, um DER inteiramente regerado por script (não mais edição de pixel) — 17 entidades, 16 relacionamentos com `mínimo,máximo` nas duas pontas, sem nenhuma FK — mais o dicionário HTML reescrito do zero (convenções, tipo físico, índices, log de acesso, matriz LGPD) e as Seções 1, 2, 4–7 deste README revisadas. |
+| **Resposta recebida** | Um primeiro modelo (21 entidades); o DER redesenhado em notação de Chen; a troca do diagrama de 9 entidades pela versão corrigida enviada pelo grupo, com dicionário e README reescritos atributo a atributo; a edição direta dos pixels do PNG para duas cardinalidades pontuais; e, nesta última etapa, um DER inteiramente regerado por script (não mais edição de pixel) — 17 entidades, 16 relacionamentos com `mínimo,máximo` nas duas pontas, sem nenhuma FK — mais o dicionário HTML reescrito do zero (convenções, tipo físico, índices, log de acesso, matriz LGPD) e as Seções 1, 2, 4–6 deste README revisadas. |
 | **Fontes consultadas e verificadas** | Nenhuma fonte externa em nenhuma das oito etapas. Nesta última, a única fonte foi o corpo da issue #1 do próprio repositório (avaliação literal do professor, obtida via `gh api repos/.../issues/1`), usada como lista de verificação exaustiva do que corrigir. |
 | **Trechos rejeitados ou corrigidos** | Histórico completo nas etapas 1–7 acima. Nesta etapa (8): a relação direta FORNECEDOR–INSUMO (1,1) foi substituída por FORNECEDOR–LOTE_INSUMO–INSUMO, porque contradizia a regra de rastreabilidade por lote; a chave composta de FICHA_TÉCNICA (`produto_id (PK,FK)` + `insumo_id (PK,FK)`) foi substituída por `id_ficha` próprio; toda marcação `(FK)` foi removida das entidades; os rótulos de cardinalidade, que só mostravam `1`/`N`, passaram a mostrar sempre `mínimo,máximo`; a linguagem condicional da Seção 1 ("sugerem", "prováveis de estarem") foi substituída por uma separação explícita entre o que foi observado e o que ainda está pendente de confirmação; a legenda "Jaime no escritório" (ambígua frente ao nome do arquivo "responsável") foi trocada por uma descrição neutra do ambiente fotografado. |
 | **Justificativa da escolha final** | O DER e o dicionário agora atacam diretamente os dois critérios de maior peso reprovados na avaliação (DER, -0,40; Dicionário, -0,20), que juntos respondiam por mais de um terço da nota máxima possível. A Seção 1 e a Seção 2 foram ajustadas para os critérios parciais que o grupo podia corrigir sem nova coleta de dados (linguagem de inferência; fluxo/integração dos processos). O número de pessoas na equipe e o relato da dificuldade operacional (também citados como lacuna no Critério 4) foram preenchidos nesta revisão, a partir de um contato posterior do grupo com a organização — equipe de 10 pessoas e dificuldade concentrada em processos que ainda ficam só no papel. |
@@ -200,11 +170,11 @@ Este recorte de 17 entidades cobre, os módulos: produção detalhada (ORDEM_PRO
 
 # Entrega 2 — Modelo Lógico, Modelo Físico e Implementação SQL
 
-**As três etapas da modelagem, e onde cada uma está neste repositório:** Conceitual (independente de SGBD, Entrega 1 — Seções 1-8 acima e `Diagrama/Diagrama.png`) → Lógico (tabelas/colunas/PK-FK/normalização, Seções 1.2–1.4 abaixo e `Entrega2/modelo_logico.md`) → **Físico** (implementação executável num SGBD real, com tipos, índices e constraints exatos do MySQL 8.4 — `Entrega2/script.sql`, testado em servidor real).
+**As três etapas da modelagem, e onde cada uma está neste repositório:** Conceitual (independente de SGBD, Entrega 1 — Seções 1-7 acima e `Diagrama/Diagrama.png`) → Lógico (tabelas/colunas/PK-FK/normalização, Seções 1.2–1.4 abaixo e `Entrega2/modelo_logico.md`) → **Físico** (implementação executável num SGBD real, com tipos, índices e constraints exatos do MySQL 8.4 — `Entrega2/script.sql`, testado em servidor real).
 
 ## 1.1 Revisão do Modelo Conceitual
 
-O DER da Entrega 1 (`Diagrama/Diagrama.png`) **foi reconstruído** nesta etapa, em resposta à avaliação do professor: de 9 para 17 entidades e de 6 para 16 relacionamentos, todos agora com cardinalidade mínima e máxima em ambas as pontas, sem nenhuma marcação de FK no diagrama. O detalhamento completo dessa correção está nas Seções 5–8 acima e no `Dicionario_de_Dados.html`; esta seção parte diretamente do modelo já corrigido.
+O DER da Entrega 1 (`Diagrama/Diagrama.png`) **foi reconstruído** nesta etapa, em resposta à avaliação do professor: de 9 para 17 entidades e de 6 para 16 relacionamentos, todos agora com cardinalidade mínima e máxima em ambas as pontas, sem nenhuma marcação de FK no diagrama. O detalhamento completo dessa correção está nas Seções 5–7 acima e no `Dicionario_de_Dados.html`; esta seção parte diretamente do modelo já corrigido.
 
 Oito entidades novas entraram no recorte: duas essenciais (`ORDEM_PRODUCAO`, `LOTE_INSUMO`) e seis desejáveis (`ETAPA_PRODUCAO`, `ARTESAO`, `EXECUCAO_ETAPA`, `VENDEDOR`, `CONTAS_RECEBER`, `CONTAS_PAGAR`). A conversão lógica abaixo cobre as 17.
 
