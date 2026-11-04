@@ -6,7 +6,8 @@
 
 ![Diagrama do modelo lógico](modelo_logico.png)
 
-Notação de tabela (estilo crow's foot): cada caixa é uma tabela física, com tipo | coluna | `PK`/`FK` por linha; a "pata de galinha" (▷<) marca o lado "muitos" de cada FK e o traço simples (⊢) marca o lado "um" da PK referenciada, e cada linha traz também o rótulo do tipo de ligação (`1:N` ou `1:1`). `bolsa` e `acessorio` usam traço simples nas duas pontas e rótulo `1:1`, porque a relação com `produto` é de chave compartilhada (especialização) — todas as demais 14 ligações são `1:N`. **Este diagrama é do modelo lógico/físico (Entrega 2)** — diferente do DER conceitual da Entrega 1 (`../Diagrama/Diagrama.png`), que segue notação de Chen e, por exigência da disciplina, não mostra FK nem tipo físico dentro das entidades. Gerado a partir desta mesma especificação de tabelas (script determinístico, sem edição manual).
+Notação do lógico: cada caixa é uma tabela física, com coluna | tipo em cada linha; colunas de chave primária e/ou estrangeira trazem o selo verde `PK`, `FK` ou `PK, FK` ao lado do tipo, e as demais colunas mostram só o tipo. Cada ligação é uma linha simples entre as duas tabelas, com a cardinalidade `(mínimo,máximo)` escrita em cada ponta — por exemplo, em `cliente (0,N) ─ pedido (1,1)`: um cliente pode estar em zero ou vários pedidos, e cada pedido pertence a exatamente um cliente. `produto─bolsa` e `produto─acessorio` usam `(1,1)`/`(0,1)`, porque a relação é de chave compartilhada (especialização) — todas as demais 14 ligações são `(0,N)`/`(1,1)` ou `(1,N)`/`(1,1)`. **Este diagrama é do modelo lógico/físico (Entrega 2)** — diferente do DER conceitual da Entrega 1 (`../Diagrama/Diagrama.png`), que segue notação de Chen e, por exigência da disciplina, não mostra FK nem tipo físico dentro das entidades. Gerado a partir desta mesma especificação de tabelas (script determinístico, sem edição manual).
+
 
 ---
 
