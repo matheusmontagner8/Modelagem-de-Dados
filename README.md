@@ -131,34 +131,8 @@
 
 ---
 
-## 5. Dicionário de Dados Conceitual
 
-
-| Entidade | Chave primária | Papel no modelo |
-|---|---|---|
-| FORNECEDOR | id_fornecedor | Quem fornece os insumos. |
-| INSUMO | id_insumo | Material usado na produção (couro, ferragem, zíper, forro). |
-| LOTE_INSUMO | id_lote | Cada recebimento de insumo, por lote e fornecedor — rastreabilidade. *(nova)* |
-| FICHA_TÉCNICA | id_ficha | Lista de materiais (BOM) de cada produto. Associativa PRODUTO↔INSUMO. |
-| PRODUTO | id_produto | Supertipo comercial — especializado em BOLSA/ACESSÓRIO (TD). |
-| BOLSA | id_produto | Subtipo de PRODUTO. |
-| ACESSÓRIO | id_produto | Subtipo de PRODUTO. |
-| ORDEM_PRODUÇÃO | id_op | Ordem de fabricação de um produto. *(nova, essencial)* |
-| ETAPA_PRODUÇÃO | id_etapa | Etapa padrão do processo produtivo (corte, costura...). *(nova)* |
-| ARTESÃO | id_artesao | Quem executa cada etapa (interno ou terceirizado). *(nova)* |
-| EXECUÇÃO_ETAPA | id_execucao | Associativa OP↔ETAPA↔ARTESÃO — base do pagamento por etapa. *(nova)* |
-| CLIENTE | id_cliente | Quem compra. |
-| VENDEDOR | id_vendedor | Quem atende o pedido — base da comissão por canal. *(nova)* |
-| PEDIDO | id_pedido | Venda registrada. |
-| ITEM_PEDIDO | id_item_pedido | Linha de produto dentro de um pedido. Associativa PEDIDO↔PRODUTO. |
-| CONTAS_RECEBER | id_titulo_receber | Título financeiro gerado a partir do pedido. *(nova)* |
-| CONTAS_PAGAR | id_titulo_pagar | Título financeiro gerado a partir do lote de insumo. *(nova)* |
-
-As 8 entidades marcadas *(nova)* foram adicionadas nesta revisão: ORDEM_PRODUÇÃO e LOTE_INSUMO porque o professor as apontou como **essenciais e ausentes** (sem ORDEM_PRODUÇÃO não havia como registrar o processo de fabricação já descrito na Seção 2; sem LOTE_INSUMO, a relação direta FORNECEDOR–INSUMO (1,1) contradizia a própria regra de negócio de rastreabilidade por lote, já que um insumo pode ser recebido de fornecedores diferentes ao longo do tempo); ETAPA_PRODUÇÃO, ARTESÃO, EXECUÇÃO_ETAPA, VENDEDOR, CONTAS_RECEBER e CONTAS_PAGAR porque o professor as sugeriu como **desejáveis**, e o grupo já tinha as regras de negócio correspondentes documentadas (pagamento de facção por etapa, comissão por canal, contas a pagar/receber) sem entidade no DER para sustentá-las.
-
----
-
-## 6. Modelagem Conceitual (Entidades, Atributos, Relacionamentos)
+## 5. Modelagem Conceitual (Entidades, Atributos, Relacionamentos)
 
 
 - **Entidades reconhecidas:** FORNECEDOR, INSUMO, LOTE_INSUMO, FICHA_TÉCNICA, PRODUTO, BOLSA, ACESSÓRIO, ORDEM_PRODUÇÃO, ETAPA_PRODUÇÃO, ARTESÃO, EXECUÇÃO_ETAPA, CLIENTE, VENDEDOR, PEDIDO, ITEM_PEDIDO, CONTAS_RECEBER e CONTAS_PAGAR. Quatro são **entidades associativas** (LOTE_INSUMO, FICHA_TÉCNICA, EXECUÇÃO_ETAPA, ITEM_PEDIDO), e PRODUTO é um **supertipo** especializado em BOLSA e ACESSÓRIO. Detalhamento completo (atributos, tipo físico, índices) na Seção 5 e em [`Dicionario_de_Dados.html`](Dicionario_de_Dados.html).
@@ -187,7 +161,7 @@ As 8 entidades marcadas *(nova)* foram adicionadas nesta revisão: ORDEM_PRODUÇ
 
 ---
 
-## 7. Diagrama Entidade-Relacionamento (DER)
+## 6. Diagrama Entidade-Relacionamento (DER)
 
 **Arquivos anexados:** `Diagrama/Diagrama.png` (imagem, 17 entidades) e `Dicionario_de_Dados.html` (dicionário completo).
 
@@ -197,7 +171,7 @@ Este recorte de 17 entidades cobre, os módulos: produção detalhada (ORDEM_PRO
 
 ---
 
-## 8. Justificativa Técnica
+## 7. Justificativa Técnica
 
 - **Por que 17 entidades:** a versão de 9 entidades modelava apenas o núcleo de custo e venda, mas o professor apontou que ORDEM_PRODUÇÃO e um mecanismo de lote de insumo eram **ausências essenciais** — sem eles, os processos de produção e de rastreabilidade de compra já descritos na Seção 2 não tinham onde ser registrados no modelo. As 6 entidades desejáveis (ETAPA_PRODUÇÃO, ARTESÃO, EXECUÇÃO_ETAPA, VENDEDOR, CONTAS_RECEBER, CONTAS_PAGAR) foram incorporadas porque o grupo já tinha a regra de negócio correspondente documentada (Seção 4) sem entidade que a sustentasse.
 - **Por que LOTE_INSUMO substitui a relação direta FORNECEDOR–INSUMO:** a versão anterior modelava FORNECEDOR–INSUMO como (1,1), ou seja, cada insumo vinha de um único fornecedor fixo — o professor apontou que isso contradiz a própria regra de rastreabilidade por lote (Seção 4), já que, na prática, um mesmo insumo (ex.: couro caramelo) pode ser recebido de fornecedores diferentes em momentos diferentes, cada lote com sua cor/tonalidade. LOTE_INSUMO resolve isso: liga-se a exatamente um INSUMO e a exatamente um FORNECEDOR por recebimento, permitindo múltiplos lotes (e múltiplos fornecedores) para o mesmo insumo ao longo do tempo.
@@ -208,7 +182,7 @@ Este recorte de 17 entidades cobre, os módulos: produção detalhada (ORDEM_PRO
 
 ---
 
-## 9. Uso de Inteligência Artificial
+## 8. Uso de Inteligência Artificial
 
 | Item | Registro |
 |---|---|
