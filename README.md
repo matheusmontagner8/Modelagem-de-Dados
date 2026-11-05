@@ -350,11 +350,28 @@ A estrutura normalizada (fatos em `pedido`/`item_pedido`/`execucao_etapa`, dimen
 
 ---
 
+
+### Volume da massa de dados e sua relação com o porte real
+
+A massa de dados fictícia do `script.sql` foi dimensionada a partir do porte declarado pela organização (Seção 1: equipe de 10 pessoas, 50-70 pedidos/mês), não de forma arbitrária:
+
+- **109 pedidos** — equivalente a pouco menos de 2 meses de operação no volume real informado (50-70/mês). Os meses simulados não são uniformes de propósito: abril/maio têm só 15 pedidos "de estrutura" (o suficiente para testar o modelo sem inflar o volume à toa), enquanto setembro foi gerado com 62 pedidos — dentro da faixa real de um mês cheio — para servir de base realista às consultas gerenciais.
+- **43 clientes** (40 ativos + 3 recém-cadastrados, ainda sem compra) — compatível com a carteira de uma indústria desse porte, cobrindo pessoas físicas (varejo/e-commerce) e empresas com CNPJ (lojistas do atacado).
+- **5 fornecedores e 10 lotes de insumo recebidos** — reflete o relato da entrevista (Seção 1) de que a empresa trabalha com fornecedores fixos de longo prazo, não uma base pulverizada.
+- **8 produtos (5 bolsas + 3 acessórios) e 23 linhas de ficha técnica** — cobre o catálogo real sem inflar artificialmente o número de SKUs.
+- **8 ordens de produção, 56 execuções de etapa e 4 artesãos** — compatível com as 7 etapas de produção descritas no processo de negócio (Seção 2, processo 5) e a produção mista (própria + facção terceirizada) relatada na entrevista.
+- **87 títulos a receber (um por pedido Faturado/Expedido) e 10 a pagar (um por lote de insumo recebido)** — segue 1:1 a regra de geração automática de título (Seção 4).
+
+A variedade também foi dimensionada para que nenhuma consulta gerencial/auditoria venha vazia sem necessidade: a massa inclui pedidos cancelados (4), clientes sem nenhuma compra (3), um insumo abaixo do estoque mínimo (consulta G08), e os 4 canais de venda relatados na entrevista — incluindo "whatsapp", adicionado nesta revisão junto com o ajuste da constraint `ck_pedido_canal`, que antes só aceitava 3 dos 4 canais descritos no processo de negócio.
+
+---
+
 ## Uso de Inteligência Artificial — Entrega 2 (Modelo Lógico/Físico)
 
 | Item | Registro |
 |---|---|
-| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — usado em múltiplos momentos nesta Entrega 2: conversão do modelo conceitual para o lógico (tabelas/colunas/tipos, normalização 1FN/2FN/3FN); escrita do `script.sql` (DDL + massa de dados + consultas) e desta seção do relatório; ampliação da massa de dados (de 15 para 106 pedidos, 40 clientes com CPF/CNPJ); instalação de um MySQL Community Server 8.4.10 LTS local e execução completa do `script.sql` nele; reescrita para o modelo de 17 entidades em resposta à issue #1; renomeação de `artesao_faccao` para `artesao`; adição de índices secundários, triggers de exclusividade (especialização TD) e demonstração de transação atômica (RNF05); reestruturação das consultas gerenciais/auditoria para o padrão G/A (`-- Atende:`/`-- Verifica:`) e numeração RN01-RN18 das regras de negócio, após leitura do esqueleto oficial da Entrega 2 fornecido pelo professor; fusão deste relatório técnico no `README.md` da raiz, por exigência da regra de correção do repositório ("o relatório é o README.md da raiz; outro .md não é corrigido"). |
+| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — usado em múltiplos momentos nesta Entrega 2: conversão do modelo conceitual para o lógico (tabelas/colunas/tipos, normalização 1FN/2FN/3FN); escrita do `script.sql` (DDL + massa de dados + consultas) e desta seção do relatório; ampliação da massa de dados (de 15 para 109 pedidos, 43 clientes com CPF/CNPJ); verificação de conformidade da massa de dados com o enunciado oficial e correção dos 3 gaps encontrados, adição de clientes sem nenhuma compra, do canal de venda "whatsapp" e da justificativa textual do volume de registros;
+ instalação de um MySQL Community Server 8.4.10 LTS local e execução completa do `script.sql` nele; reescrita para o modelo de 17 entidades em resposta à issue #1; renomeação de `artesao_faccao` para `artesao`; adição de índices secundários, triggers de exclusividade (especialização TD) e demonstração de transação atômica (RNF05); reestruturação das consultas gerenciais/auditoria para o padrão G/A (`-- Atende:`/`-- Verifica:`) e numeração RN01-RN18 das regras de negócio, após leitura do esqueleto oficial da Entrega 2 fornecido pelo professor; fusão deste relatório técnico no `README.md` da raiz, por exigência da regra de correção do repositório ("o relatório é o README.md da raiz; outro .md não é corrigido"). |
 | **Motivação** | Acelerar a conversão sistemática de entidades conceituais em tabelas relacionais; validar o script em um SGBD real a cada mudança; manter o modelo sincronizado com o DER/dicionário corrigidos da Entrega 1; e, nesta rodada final, alinhar toda a estrutura do repositório ao esqueleto oficial da Entrega 2 (nomenclatura de consultas, rastreabilidade de problemas/KPIs, localização do relatório técnico). |
 | **Prompt(s) utilizados** | 1. "Me ajude com o esqueleto da entrega 2"<br>2. "De acordo com esse projeto do professor, veja se nosso projeto está de acordo"<br>3. "Prepare a etapa 2 e 3 dos ainda pendentes". |
 | **Resposta recebida** | O modelo lógico e o script SQL completos (17 tabelas), validados em MySQL real a cada rodada de mudança; a massa de dados ampliada e com CPF/CNPJ; os triggers de exclusividade da especialização TD; as consultas renomeadas para o padrão G/A com rastreabilidade formal a problemas/KPIs e regras de negócio numeradas; o endereço de cliente/fornecedor decomposto em logradouro/número/bairro/cidade/UF/CEP; e, por fim, este relatório técnico movido para dentro do README.md da raiz. |
