@@ -208,6 +208,8 @@ As evidências da organização (fotos, endereço, contato) seguem as mesmas da 
 
 ## 1.2 Conversão do Modelo Conceitual para o Modelo Lógico
 
+**Diagrama e software utilizado:** o diagrama do modelo lógico (`Entrega2/modelo_logico.png`, incluído em `Entrega2/modelo_logico.md`) segue a notação visual do brModelo para modelo lógico — tabela como retângulo, coluna com tipo à direita, `PK`/`FK`/`PK, FK` ao lado do tipo, e cardinalidade `(mínimo,máximo)` em cada ponta da ligação. Foi gerado por script Python (biblioteca Pillow), a partir da mesma especificação de tabelas desta seção, sem edição manual — a mesma ferramenta usada na versão final do DER conceitual (Seção 5).
+
 ### Entidades → Tabelas
 
 Cada uma das 17 entidades do DER virou uma tabela. A especialização PRODUTO → BOLSA/ACESSÓRIO segue a estratégia tabela por subtipo: PRODUTO guarda os atributos comuns, e BOLSA/ACESSÓRIO guardam só os atributos exclusivos de cada subtipo, com a própria chave primária de PRODUTO reaproveitada como chave primária e estrangeira (`id_produto`). Essa é a estratégia mais fiel à especialização Total e Disjunta (TD) do DER: ela evita colunas que ficariam sempre nulas para um dos dois subtipos e não perde a identidade comum de PRODUTO.
