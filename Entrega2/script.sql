@@ -1092,7 +1092,7 @@ ORDER BY unidades_vendidas DESC;
 
 -- G03 - Margem estimada por produto (preço base - custo de matéria-prima
 -- calculado a partir da ficha técnica, pelo preço de referência do insumo)
--- Atende: K3 (Margem por produto/categoria)
+-- Atende: K3 (Margem por produto/categoria), P2 (custo de produto sem padronização)
 SELECT pr.nm_produto AS produto,
        pr.vl_preco_base,
        ROUND(SUM(ft.qt_necessaria * i.vl_preco_referencia), 2) AS custo_materia_prima,
@@ -1159,6 +1159,29 @@ SELECT id_insumo, nm_insumo, un_medida, qt_estoque_minimo, qt_estoque_atual,
 FROM insumo
 WHERE qt_estoque_atual < qt_estoque_minimo
 ORDER BY falta_para_o_minimo DESC;
+
+-- G09 - De qual(is) fornecedor(es) veio cada insumo usado em cada produto?
+-- Atende: P1 (falta de rastreabilidade de insumo por fornecedor) — mesma
+-- lógica da consulta 5.4, promovida a gerencial por cobrir diretamente P1
+SELECT DISTINCT pr.nm_produto AS produto, i.nm_insumo AS insumo, f.nm_fornecedor AS fornecedor
+FROM ficha_tecnica ft
+JOIN produto     pr ON pr.id_produto     = ft.produto_id
+JOIN insumo      i  ON i.id_insumo       = ft.insumo_id
+JOIN lote_insumo li ON li.insumo_id      = i.id_insumo
+JOIN fornecedor  f  ON f.id_fornecedor   = li.fornecedor_id
+ORDER BY pr.nm_produto, f.nm_fornecedor;
+
+-- G10 - Comissão devida por vendedor e por canal de venda
+-- Atende: K9 (comissão por vendedor/canal) — mesma lógica da consulta 5.7,
+-- promovida a gerencial por cobrir diretamente K9
+SELECT v.nm_vendedor, v.pc_comissao, p.tp_canal,
+       SUM(p.vl_total) AS total_vendido,
+       ROUND(SUM(p.vl_total) * v.pc_comissao / 100, 2) AS comissao_devida
+FROM pedido p
+JOIN vendedor v ON v.id_vendedor = p.vendedor_id
+WHERE p.tp_status IN ('Faturado', 'Expedido')
+GROUP BY v.id_vendedor, v.nm_vendedor, v.pc_comissao, p.tp_canal
+ORDER BY comissao_devida DESC;
 
 
 -- =====================================================================
