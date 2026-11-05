@@ -322,7 +322,7 @@ Dois problemas operacionais identificados na Entrega 1 (Seção 1 acima) e nove 
 
 | Problema ou KPI | Tabelas envolvidas | Consulta |
 |---|---|---|
-| P1 — Falta de rastreabilidade de insumo por fornecedor | `LOTE_INSUMO`, `INSUMO`, `FORNECEDOR` | consulta 5.4 |
+| P1 — Falta de rastreabilidade de insumo por fornecedor | `LOTE_INSUMO`, `INSUMO`, `FORNECEDOR` | G09 |
 | P2 — Cálculo de custo de produto sem padronização | `FICHA_TECNICA`, `INSUMO`, `PRODUTO` | G03 |
 | K1 — Faturamento mensal | `PEDIDO` | G01 |
 | K2 — Produtos mais vendidos (Curva ABC) | `ITEM_PEDIDO`, `PRODUTO` | G02 |
@@ -332,13 +332,13 @@ Dois problemas operacionais identificados na Entrega 1 (Seção 1 acima) e nove 
 | K6 — Aproveitamento de corte por artesão | `EXECUCAO_ETAPA`, `ETAPA_PRODUCAO`, `ARTESAO` | G06 |
 | K7 — Aging de títulos a pagar/receber | `CONTAS_RECEBER`, `CONTAS_PAGAR` | G07 |
 | K8 — Insumos abaixo do estoque mínimo | `INSUMO` | G08 |
-| K9 — Comissão por vendedor/canal | `PEDIDO`, `VENDEDOR` | consulta 5.7 |
+| K9 — Comissão por vendedor/canal | `PEDIDO`, `VENDEDOR` | G10 |
 
 **KPIs propostos para expansão futura** (ainda sem consulta implementada, por isso fora da rastreabilidade acima): giro de estoque por produto, dependência por fornecedor, taxa de cancelamento de pedidos.
 
 ### Potencial dos dados para BI
 
-A estrutura normalizada (fatos em `pedido`/`item_pedido`/`execucao_etapa`, dimensões em `cliente`/`vendedor`/`produto`/`insumo`/`fornecedor`/`artesao`) já se parece com um esquema estrela simplificado, com dois processos de negócio representados (vendas e produção). As consultas gerenciais G01-G08 do script já são, na prática, protótipos de dashboards.
+A estrutura normalizada (fatos em `pedido`/`item_pedido`/`execucao_etapa`, dimensões em `cliente`/`vendedor`/`produto`/`insumo`/`fornecedor`/`artesao`) já se parece com um esquema estrela simplificado, com dois processos de negócio representados (vendas e produção). As consultas gerenciais G01-G10 do script já são, na prática, protótipos de dashboards.
 
 ### Aplicações analíticas e de IA
 
