@@ -177,7 +177,7 @@ Notação do lógico: cada caixa é uma tabela física, com coluna | tipo em cad
 | tp_status | `VARCHAR(20)` | `NOT NULL`, padrão `'Aberto'`, `CHECK IN ('Aberto','Faturado','Expedido','Cancelado')` |
 | vl_total | `DECIMAL(10,2)` | `NOT NULL`, padrão `0` — denormalização controlada (ver `RELATORIO_TECNICO.md` §1.4) |
 | tp_pagamento | `VARCHAR(10)` | `CHECK IN ('PIX','Cartao','Boleto')` |
-| tp_canal | `VARCHAR(20)` | `NOT NULL`, `CHECK IN ('loja fisica','e-commerce','atacado')` |
+| tp_canal | `VARCHAR(20)` | `NOT NULL`, `CHECK IN ('loja fisica','e-commerce','atacado','whatsapp')` |
 | ds_observacoes | `VARCHAR(255)` | opcional |
 
 ## item_pedido *(associativa, identificador próprio)*
