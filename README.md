@@ -58,8 +58,6 @@
    
 **Processos prováveis não incluídos:** manutenção de máquinas e equipamentos de produção, gestão de recursos humanos/folha de pagamento da equipe interna e marketing/divulgação não aparecem como processos modelados — a entrevista e a observação presencial não registraram controle sistemático desses processos na Contrasti (a equipe interna é CLT, com folha tratada por contabilidade terceirizada, fora da gestão operacional da empresa), e nenhum deles é um problema de gestão de informação (P1/P2) nem foi citado como dificuldade pelo responsável.
 
----
-
 
 
 ---
