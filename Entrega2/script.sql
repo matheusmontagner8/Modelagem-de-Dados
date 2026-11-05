@@ -298,7 +298,7 @@ CREATE TABLE pedido (
         ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT ck_pedido_status    CHECK (tp_status IN ('Aberto','Faturado','Expedido','Cancelado')),
     CONSTRAINT ck_pedido_pagamento CHECK (tp_pagamento IN ('PIX','Cartao','Boleto')),
-    CONSTRAINT ck_pedido_canal     CHECK (tp_canal IN ('loja fisica','e-commerce','atacado'))
+    CONSTRAINT ck_pedido_canal     CHECK (tp_canal IN ('loja fisica','e-commerce','atacado','whatsapp'))
 ) ENGINE = InnoDB;
 
 -- ITEM_PEDIDO (associativa, identificador próprio) -----------------
@@ -595,7 +595,9 @@ INSERT INTO execucao_etapa (id_execucao, op_id, etapa_id, artesao_id, dt_inicio,
 (55, 8, 6, 3, '2025-09-20 08:00:00', NULL, NULL, NULL),
 (56, 8, 7, 4, '2025-09-21 08:00:00', NULL, NULL, NULL);
 
--- CLIENTE (40: 16 pessoas físicas com CPF + 24 lojas/empresas com CNPJ) ----
+-- CLIENTE (43: 18 pessoas físicas com CPF + 25 lojas/empresas com CNPJ;
+-- 3 deles — 41, 42, 43 — cadastrados recentemente e ainda sem nenhum
+-- pedido, caso de teste exigido pelo enunciado) ------------------------
 -- Os clientes 4 e 8 (que já eram lojas na v1) foram migrados de um CPF
 -- fictício para CNPJ, agora que a tabela suporta os dois documentos
 -- (RF01 do README já previa "CNPJ/CPF" — a coluna nr_cnpj fechava essa
@@ -641,7 +643,13 @@ INSERT INTO cliente (id_cliente, nm_cliente, nr_cpf, nr_cnpj, nr_telefone, ds_em
 (37, 'Felipe Augusto Rocha', '222.222.222-05', NULL, '(11) 97777-0037', 'felipe.rocha@email.com', 'Rua Harmonia', '700', 'Vila Madalena', 'Sao Paulo', 'SP', '05435-001', '2025-07-01'),
 (38, 'Gabriela Nunes Ribeiro', '222.222.222-06', NULL, '(11) 97777-0038', 'gabriela.ribeiro@email.com', 'Rua Sumidouro', '250', 'Vila Madalena', 'Sao Paulo', 'SP', '05436-000', '2025-07-04'),
 (39, 'Thiago Martins Barbosa', '222.222.222-07', NULL, '(11) 97777-0039', 'thiago.barbosa@email.com', 'Rua Fidalga', '550', 'Vila Madalena', 'Sao Paulo', 'SP', '05432-000', '2025-07-08'),
-(40, 'Priscila Andrade Lima', '222.222.222-08', NULL, '(11) 97777-0040', 'priscila.lima@email.com', 'Rua Simao Alvares', '180', 'Pinheiros', 'Sao Paulo', 'SP', '05417-001', '2025-07-11');
+(40, 'Priscila Andrade Lima', '222.222.222-08', NULL, '(11) 97777-0040', 'priscila.lima@email.com', 'Rua Simao Alvares', '180', 'Pinheiros', 'Sao Paulo', 'SP', '05417-001', '2025-07-11'),
+
+-- CLIENTE (3 novos, cadastrados recentemente e ainda sem nenhum pedido —
+-- caso de teste explícito exigido pelo enunciado: "clientes sem compras")
+(41, 'Henrique Vasconcelos Dias', '333.333.333-01', NULL, '(11) 96666-0041', 'henrique.dias@email.com', 'Rua Groenlandia', '210', 'Sumarezinho', 'Sao Paulo', 'SP', '05445-000', '2025-10-20'),
+(42, 'Studio Pele Nobre Comercio Ltda', NULL, '64.111.222/0001-23', '(11) 3222-1042', 'compras@pelenobre.com.br', 'Rua Artur de Azevedo', '650', 'Pinheiros', 'Sao Paulo', 'SP', '05404-000', '2025-10-25'),
+(43, 'Sofia Ramos Teixeira', '333.333.333-02', NULL, '(11) 96666-0043', 'sofia.teixeira@email.com', 'Rua Inhambu', '320', 'Moema', 'Sao Paulo', 'SP', '04520-010', '2025-10-30');
 
 
 -- VENDEDOR (4: 2 internos a 3%, 2 representantes externos a 7%) -------------
@@ -770,6 +778,14 @@ INSERT INTO pedido (id_pedido, cliente_id, vendedor_id, dt_pedido, tp_status, vl
 (106, 39, 1, '2025-10-29', 'Expedido', 0, 'PIX', 'loja fisica', NULL),
 (107, 40, 2, '2025-10-30', 'Cancelado', 0, 'Cartao', 'e-commerce', NULL);
 
+-- PEDIDO (3 novos, canal "whatsapp") — canal descrito no processo de
+-- negócio (Seção 2) e na entrevista do levantamento, mas que ainda não
+-- tinha nenhum pedido de exemplo na massa de dados original.
+INSERT INTO pedido (id_pedido, cliente_id, vendedor_id, dt_pedido, tp_status, vl_total, tp_pagamento, tp_canal, ds_observacoes) VALUES
+(108, 5, 2, '2025-09-15', 'Expedido', 0, 'PIX', 'whatsapp', 'Pedido fechado por WhatsApp'),
+(109, 7, 1, '2025-09-21', 'Faturado', 0, 'Boleto', 'whatsapp', 'Pedido fechado por WhatsApp'),
+(110, 9, 2, '2025-10-05', 'Aberto', 0, 'PIX', 'whatsapp', 'Pedido fechado por WhatsApp');
+
 -- ITEM_PEDIDO (129) — a última linha (produto 1 no pedido 21, R$399,00) é
 -- uma anomalia de preço deliberada para a auditoria 9.5.
 INSERT INTO item_pedido (id_item_pedido, pedido_id, produto_id, qt_quantidade, vl_preco_unitario, vl_desconto) VALUES
@@ -815,6 +831,12 @@ INSERT INTO item_pedido (id_item_pedido, pedido_id, produto_id, qt_quantidade, v
 (162, 99, 1, 6, 480.0, 0), (163, 100, 2, 2, 480.0, 0), (164, 101, 3, 1, 320.0, 0), (165, 102, 4, 2, 295.0, 0),
 (166, 103, 5, 1, 410.0, 0), (167, 104, 6, 2, 95.0, 0), (168, 105, 7, 1, 65.0, 0), (169, 106, 8, 2, 120.0, 0),
 (170, 107, 1, 1, 480.0, 0);
+
+-- ITEM_PEDIDO (6 novos) — itens dos 3 pedidos novos por WhatsApp (108-110)
+INSERT INTO item_pedido (id_item_pedido, pedido_id, produto_id, qt_quantidade, vl_preco_unitario, vl_desconto) VALUES
+(171, 108, 7, 2, 65.0, 0), (172, 108, 3, 1, 320.0, 0),
+(173, 109, 1, 1, 480.0, 0), (174, 109, 6, 1, 95.0, 0),
+(175, 110, 4, 1, 295.0, 0), (176, 110, 8, 1, 120.0, 0);
 
 -- CONTAS_RECEBER (61) — gerado para pedidos Faturado/Expedido. PIX/Cartao:
 -- recebido no mesmo dia. Boleto: vencimento +30 dias; status determinístico.
@@ -868,6 +890,12 @@ INSERT INTO contas_receber (id_titulo_receber, pedido_id, vl_valor, dt_venciment
 (80, 100, 960.0, '2025-10-23', '2025-10-23', 'pago'), (81, 101, 320.0, '2025-10-24', '2025-10-24', 'pago'),
 (82, 102, 590.0, '2025-10-25', '2025-10-25', 'pago'), (83, 103, 410.0, '2025-10-26', '2025-10-26', 'pago'),
 (84, 104, 190.0, '2025-10-27', '2025-10-27', 'pago'), (85, 106, 240.0, '2025-10-29', '2025-10-29', 'pago');
+
+-- CONTAS_RECEBER (2 novos) — títulos dos pedidos 108 e 109 (WhatsApp),
+-- já Expedido/Faturado; o pedido 110 está "Aberto" e não gera título.
+INSERT INTO contas_receber (id_titulo_receber, pedido_id, vl_valor, dt_vencimento, dt_recebimento, tp_status) VALUES
+(86, 108, 450.0, '2025-09-15', '2025-09-15', 'pago'),
+(87, 109, 575.0, '2025-10-21', NULL, 'em aberto');
 
 -- CONTAS_PAGAR (10) — um título por lote de insumo recebido.
 INSERT INTO contas_pagar (id_titulo_pagar, lote_id, vl_valor, dt_vencimento, dt_pagamento, tp_status) VALUES
