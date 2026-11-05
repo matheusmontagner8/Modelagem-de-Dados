@@ -106,8 +106,6 @@
 
 **Requisitos prováveis não incluídos:** integração com marketplaces externos (Mercado Livre, Shopee), aplicativo mobile dedicado ao cliente final e controle de ponto/folha de pagamento da equipe interna não foram incluídos como requisitos, nenhum desses pontos foi relatado como necessidade pelo responsável, e marketplace/app mobile não fazem parte dos canais de venda reais da empresa.
 
----
-
 
 ---
 
@@ -138,8 +136,6 @@
   - RN18 — Títulos financeiros vencidos e ainda "em aberto" devem ser sinalizados para cobrança/pagamento.
 
 - **Regras prováveis não incluídas:** normas sanitárias (ANVISA) não se aplicam, pois a Contrasti não manipula alimentos; certificações ambientais/de origem sustentável do couro (ex.: selo LWG) não foram mencionadas pelo responsável como exigência atual da empresa ou de seus fornecedores, e por isso não foram modeladas como regra de negócio.
-
----
 
 
 ---
