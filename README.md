@@ -160,7 +160,7 @@ Este recorte de 17 entidades cobre, os módulos: produção detalhada (ORDEM_PRO
 - **Por que PRODUTO como supertipo (BOLSA/ACESSÓRIO):** bolsa e acessório compartilham identificador, nome, descrição, preço base, categoria e estoque — mas cada um tem atributos exclusivos (tamanho/tipo_alça para bolsa; tipo_acessorio/compatibilidade para acessório). Generalização/especialização evita repetir os atributos comuns em duas entidades soltas e ainda documenta, no próprio diagrama, que um produto é sempre um dos dois (TD).
 - **Por que nenhuma FK aparece mais no diagrama conceitual:** a versão anterior marcava FKs explicitamente dentro das entidades, como antecipação deliberada do modelo lógico. O professor foi claro que isso não é adequado a um DER conceitual, mesmo quando deliberado — FK é resultado da conversão para o modelo lógico (como já documentado em `Entrega2/modelo_logico.md`), não um atributo do conceitual. O diagrama atual não tem nenhuma FK; a correspondência entre entidades associativas e suas referências continua explícita pelos próprios relacionamentos (losangos) do DER.
 - **Alternativas descartadas:** cogitou-se manter BOLSA e ACESSÓRIO como uma única entidade PRODUTO com campos opcionais — descartado porque misturaria atributos obrigatórios de um subtipo com atributos irrelevantes do outro. Para LOTE_INSUMO, cogitou-se apenas adicionar um atributo multivalorado de "fornecedores" a INSUMO — descartado porque um atributo multivalorado não teria onde guardar data, quantidade e preço de cada recebimento individual; só uma entidade própria resolve isso.
-- 
+  
 ### 6.1 Apontamento da correção (Caso A — mesma organização da Entrega 1)
 
 | Apontamento da correção E1 | O que mudou no trabalho | Por quê |
@@ -172,7 +172,6 @@ Este recorte de 17 entidades cobre, os módulos: produção detalhada (ORDEM_PRO
 | Marcação `(FK)` presente dentro das entidades do DER conceitual | Toda marcação de FK foi removida do diagrama | FK é resultado da conversão para o modelo lógico (`Entrega2/modelo_logico.md`), não um atributo do conceitual |
 | Dicionário de dados sem SGBD/collation, tipo físico, índices sugeridos, log de acesso nem matriz de acesso/LGPD | Dicionário HTML reescrito do zero com essas seções | Critério Dicionário (-0,20) respondia, junto com o DER, por mais de um terço da nota máxima perdida |
 | Seção 1 com linguagem condicional ("sugerem", "prováveis de estarem") sem separar fato de inferência | Linguagem revisada para distinguir explicitamente o que foi observado do que ainda está pendente de confirmação | O professor pediu precisão sobre o que é levantamento direto versus suposição do grupo |
-
 
 
 ---
