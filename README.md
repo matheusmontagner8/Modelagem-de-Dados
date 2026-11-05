@@ -55,6 +55,10 @@
 6. **Vendas, pedidos e faturamento** — Abertura do pedido por canal (loja física, e-commerce, WhatsApp, representante) → definição de forma de pagamento e congelamento do preço no item → faturamento e emissão de NF-e/NFC-e → cálculo de comissão do vendedor sobre o pedido faturado. *Integra com:* Cadastro de clientes (processo 1, pré-requisito), Estoque (processo 4, baixa de produto pronto), Expedição (processo 7, próximo passo) e Financeiro (processo 8, título a receber).
 7. **Expedição e pós-venda** — Separação e conferência por código de barras (picking) → embalagem (checklist + dust bag) → envio com integração logística e rastreio → registro de troca/devolução/garantia (RMA) vinculado ao item efetivamente entregue. *Integra com:* Vendas (processo 6, pedido de origem) e Financeiro (processo 8, estorno em caso de devolução).
 8. **Gestão financeira e relatórios gerenciais** — Geração automática de Contas a Pagar (a partir de cada lote de insumo recebido, processo 2/4) e Contas a Receber (a partir de cada pedido faturado, processo 6) → baixa conforme pagamento/recebimento → consolidação em indicadores gerenciais (Curva ABC, margem por produto, DRE, fluxo de caixa previsto × realizado). *Integra com:* todos os processos anteriores — é o ponto de encontro dos dois fluxos de caixa (compras e vendas).
+**Processos prováveis não incluídos:** manutenção de máquinas e equipamentos de produção, gestão de recursos humanos/folha de pagamento da equipe interna e marketing/divulgação não aparecem como processos modelados — a entrevista e a observação presencial não registraram controle sistemático desses processos na Contrasti (a equipe interna é CLT, com folha tratada por contabilidade terceirizada, fora da gestão operacional da empresa), e nenhum deles é um problema de gestão de informação (P1/P2) nem foi citado como dificuldade pelo responsável.
+
+---
+
 
 
 ---
@@ -101,6 +105,11 @@
 | RNF05 | **Integridade transacional:** baixa de estoque, geração de título financeiro e emissão de nota fiscal devem ocorrer de forma atômica (tudo ou nada). |
 | RNF06 | **Auditabilidade:** histórico de preços por fornecedor e de status de OP deve ser preservado para consultas gerenciais futuras. |
 
+**Requisitos prováveis não incluídos:** integração com marketplaces externos (Mercado Livre, Shopee), aplicativo mobile dedicado ao cliente final e controle de ponto/folha de pagamento da equipe interna não foram incluídos como requisitos, nenhum desses pontos foi relatado como necessidade pelo responsável, e marketplace/app mobile não fazem parte dos canais de venda reais da empresa.
+
+---
+
+
 ---
 
 ## 4. Regras de Negócio
@@ -128,6 +137,10 @@
   - RN16 — O preço praticado no item de pedido não deve variar mais que 10% do preço base vigente do produto sem justificativa (promoção/erro).
   - RN17 — Todo fornecedor cadastrado deve ter ao menos um lote de insumo recebido (cadastro ativo).
   - RN18 — Títulos financeiros vencidos e ainda "em aberto" devem ser sinalizados para cobrança/pagamento.
+
+- **Regras prováveis não incluídas:** normas sanitárias (ANVISA) não se aplicam, pois a Contrasti não manipula alimentos; certificações ambientais/de origem sustentável do couro (ex.: selo LWG) não foram mencionadas pelo responsável como exigência atual da empresa ou de seus fornecedores, e por isso não foram modeladas como regra de negócio.
+
+---
 
 
 ---
