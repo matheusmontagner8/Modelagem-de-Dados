@@ -144,6 +144,8 @@
 
 **Arquivos anexados:** `Diagrama/Diagrama.png` (imagem, 17 entidades) e `Dicionario_de_Dados.html` (dicionário completo).
 
+**Software utilizado:** a versão de 9 entidades foi desenhada diretamente no **BrModeloWeb**; esta versão final (17 entidades) foi regerada por script Python (biblioteca Pillow), seguindo manualmente as mesmas convenções visuais do BrModeloWeb (retângulo = entidade, losango = relacionamento, elipse = atributo com chave primária sublinhada em vermelho, triângulo "TD" = especialização), não mais por edição direta no aplicativo.
+
 O diagrama segue a notação de Chen conceitual pura: entidades como **retângulos**, relacionamentos como **losangos** rotulados com o verbo, atributos como **elipses** (chave primária sublinhada, em vermelho). A especialização PRODUTO → BOLSA/ACESSÓRIO usa o triângulo "TD" (Total e Disjunta). **Toda aresta de relacionamento traz o rótulo `mínimo,máximo` nas duas pontas** — a versão anterior só mostrava 1/N na imagem (apesar de o Dicionario_de_Dados.html já declarar (1,1)/(0,N)), inconsistência apontada pelo professor como a maior deficiência da entrega (Critério 10, -0,40).
 
 Este recorte de 17 entidades cobre, os módulos: produção detalhada (ORDEM_PRODUÇÃO, ETAPA_PRODUÇÃO, ARTESÃO, EXECUÇÃO_ETAPA — Seção 2, processo 5), recebimento rastreável de insumo (LOTE_INSUMO — Seção 2, processo 4) e financeiro básico (CONTAS_PAGAR, CONTAS_RECEBER — Seção 2, processo 8), além de VENDEDOR para sustentar a regra de comissão por canal (Seção 4).
@@ -158,6 +160,20 @@ Este recorte de 17 entidades cobre, os módulos: produção detalhada (ORDEM_PRO
 - **Por que PRODUTO como supertipo (BOLSA/ACESSÓRIO):** bolsa e acessório compartilham identificador, nome, descrição, preço base, categoria e estoque — mas cada um tem atributos exclusivos (tamanho/tipo_alça para bolsa; tipo_acessorio/compatibilidade para acessório). Generalização/especialização evita repetir os atributos comuns em duas entidades soltas e ainda documenta, no próprio diagrama, que um produto é sempre um dos dois (TD).
 - **Por que nenhuma FK aparece mais no diagrama conceitual:** a versão anterior marcava FKs explicitamente dentro das entidades, como antecipação deliberada do modelo lógico. O professor foi claro que isso não é adequado a um DER conceitual, mesmo quando deliberado — FK é resultado da conversão para o modelo lógico (como já documentado em `Entrega2/modelo_logico.md`), não um atributo do conceitual. O diagrama atual não tem nenhuma FK; a correspondência entre entidades associativas e suas referências continua explícita pelos próprios relacionamentos (losangos) do DER.
 - **Alternativas descartadas:** cogitou-se manter BOLSA e ACESSÓRIO como uma única entidade PRODUTO com campos opcionais — descartado porque misturaria atributos obrigatórios de um subtipo com atributos irrelevantes do outro. Para LOTE_INSUMO, cogitou-se apenas adicionar um atributo multivalorado de "fornecedores" a INSUMO — descartado porque um atributo multivalorado não teria onde guardar data, quantidade e preço de cada recebimento individual; só uma entidade própria resolve isso.
+- 
+### 6.1 Apontamento da correção (Caso A — mesma organização da Entrega 1)
+
+| Apontamento da correção E1 | O que mudou no trabalho | Por quê |
+|---|---|---|
+| DER com apenas 9 entidades, sem ORDEM_PRODUÇÃO nem mecanismo de lote de insumo | DER reconstruído para 17 entidades, incluindo ORDEM_PRODUÇÃO, ETAPA_PRODUÇÃO, ARTESÃO, EXECUÇÃO_ETAPA, LOTE_INSUMO, VENDEDOR, CONTAS_RECEBER e CONTAS_PAGAR | Sem essas entidades, os processos de produção e de rastreabilidade de insumo já descritos na Seção 2 não tinham onde ser registrados no modelo (Critério 10, -0,40) |
+| Relação direta FORNECEDOR–INSUMO (1,1), como se cada insumo viesse de um único fornecedor fixo | Substituída por FORNECEDOR–LOTE_INSUMO–INSUMO | Contradizia a própria regra de rastreabilidade por lote (Seção 4): na prática, o mesmo insumo pode ser recebido de fornecedores diferentes em lotes diferentes |
+| Cardinalidades no diagrama mostrando só `1`/`N`, sem o mínimo explícito | Todas as 16 relações passaram a exibir `mínimo,máximo` nas duas pontas | Apontado como a maior deficiência da entrega (Critério 10, -0,40) — a notação estava incompleta mesmo com o dicionário já declarando os valores corretos |
+| FICHA_TÉCNICA com chave composta por FKs (`produto_id (PK,FK)` + `insumo_id (PK,FK)`) | Chave própria (`id_ficha`) substituiu a chave composta | Misturava um detalhe de implementação (FK) com a identidade conceitual da entidade — agravante apontado pelo professor |
+| Marcação `(FK)` presente dentro das entidades do DER conceitual | Toda marcação de FK foi removida do diagrama | FK é resultado da conversão para o modelo lógico (`Entrega2/modelo_logico.md`), não um atributo do conceitual |
+| Dicionário de dados sem SGBD/collation, tipo físico, índices sugeridos, log de acesso nem matriz de acesso/LGPD | Dicionário HTML reescrito do zero com essas seções | Critério Dicionário (-0,20) respondia, junto com o DER, por mais de um terço da nota máxima perdida |
+| Seção 1 com linguagem condicional ("sugerem", "prováveis de estarem") sem separar fato de inferência | Linguagem revisada para distinguir explicitamente o que foi observado do que ainda está pendente de confirmação | O professor pediu precisão sobre o que é levantamento direto versus suposição do grupo |
+
+
 
 ---
 
