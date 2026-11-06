@@ -479,7 +479,7 @@
         <tr><td class="attr">tp_status</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Domínio: {aberto, faturado, expedido, entregue, cancelado}.</td></tr>
         <tr><td class="attr">vl_total</td><td class="phys">DECIMAL(10,2) NOT NULL</td><td>Soma de vl_subtotal de todos os itens do pedido — denormalização deliberada, documentada e já validada em <code>Entrega2/script.sql</code>.</td></tr>
         <tr><td class="attr">tp_pagamento</td><td class="phys">VARCHAR(10) NOT NULL</td><td>Domínio: {PIX, Cartão, Boleto}.</td></tr>
-        <tr><td class="attr">tp_canal</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Domínio: {loja física, e-commerce, atacado}. Base do cálculo de comissão do vendedor.</td></tr>
+        <tr><td class="attr">tp_canal</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Domínio: {loja física, e-commerce, atacado, whatsapp}. Base do cálculo de comissão do vendedor.</td></tr>
         <tr><td class="attr">ds_observacoes</td><td class="phys">VARCHAR(255) NULL</td><td>Campo livre para instruções específicas do cliente ou da venda.</td></tr>
       </tbody>
     </table>
