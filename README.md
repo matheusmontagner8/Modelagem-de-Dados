@@ -127,7 +127,7 @@
   - RN11 — O pagamento de artesãos/facções terceirizadas depende do registro fiel de qual etapa cada um executou — sem esse registro não há como calcular a remuneração por produção.
 
 - **Regras de integridade verificadas por auditoria** (consultas A01-A07 do `script.sql`, Seção 9):
-  - RN12 — `pedido.vl_total` deve sempre refletir a soma dos itens do pedido (denormalização controlada, não um erro — ver `RELATORIO_TECNICO.md` §1.4).
+  - RN12 — `pedido.vl_total` deve sempre refletir a soma dos itens do pedido (denormalização controlada, não um erro, ver Seção 1.4 abaixo, item 1).
   - RN13 — Todo produto comercializado deve ter ficha técnica (BOM) completa.
   - RN14 — Todo insumo cadastrado deve estar vinculado a pelo menos uma ficha técnica ou lote recebido (sem cadastro órfão).
   - RN15 — A especialização de PRODUTO é Total e Disjunta: toda linha deve existir em exatamente uma das tabelas BOLSA/ACESSORIO.
