@@ -278,8 +278,8 @@ CREATE TABLE vendedor (
 -- PEDIDO ----------------------------------------------------------------
 -- vl_total é mantido por recálculo explícito (ver Seção 6 — UPDATE) em
 -- vez de GENERATED COLUMN, porque depende de uma soma em OUTRA tabela
--- (item_pedido) — denormalização deliberada, discutida em
--- RELATORIO_TECNICO.md §1.4.
+-- (item_pedido) — denormalização deliberada, discutida no
+-- README.md da raiz, Seção 1.4, item 1.
 DROP TABLE IF EXISTS pedido;
 CREATE TABLE pedido (
     id_pedido       INT UNSIGNED AUTO_INCREMENT,
@@ -1058,8 +1058,8 @@ WHERE id_op = 8;
 -- estoque do insumo — as três operações, ou todas juntas, ou nenhuma.
 -- Termina com ROLLBACK (em vez de COMMIT) de propósito, para a massa de
 -- dados final continuar batendo com as contagens documentadas no
--- Entrega2/README.md (10 lotes de insumo, 10 títulos a pagar); em uso
--- real, a aplicação daria COMMIT aqui.
+-- README.md da raiz, Seção 1.6 (10 lotes de insumo, 10 títulos a pagar);
+-- em uso real, a aplicação daria COMMIT aqui.
 START TRANSACTION;
 
 INSERT INTO lote_insumo (insumo_id, fornecedor_id, nr_lote, dt_recebimento, qt_recebida, vl_preco_pago, ds_cor_tonalidade)
@@ -1097,7 +1097,7 @@ WHERE id_insumo = 10
 
 -- =====================================================================
 -- 8) CONSULTAS GERENCIAIS (prefixo G, formato "Atende: Kxx/Pxx" pedido
---    pelo esqueleto oficial da Entrega 2 — ver RELATORIO_TECNICO.md §1.6
+--    pelo esqueleto oficial da Entrega 2 — ver README.md da raiz, Seção 1.6
 --    para a tabela de rastreabilidade Problema/KPI → Tabelas → Consulta)
 -- =====================================================================
 
