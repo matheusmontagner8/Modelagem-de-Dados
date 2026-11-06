@@ -175,7 +175,7 @@ Notação do lógico: cada caixa é uma tabela física, com coluna | tipo em cad
 | *vendedor_id* | `INT UNSIGNED` | **FK** → `vendedor.id_vendedor`, `NOT NULL` |
 | dt_pedido | `DATE` | `NOT NULL`, padrão data atual |
 | tp_status | `VARCHAR(20)` | `NOT NULL`, padrão `'Aberto'`, `CHECK IN ('Aberto','Faturado','Expedido','Cancelado')` |
-| vl_total | `DECIMAL(10,2)` | `NOT NULL`, padrão `0` — denormalização controlada (ver `RELATORIO_TECNICO.md` §1.4) |
+| vl_total | `DECIMAL(10,2)` | `NOT NULL`, padrão `0` — denormalização controlada (ver `README.md` da raiz, Seção 1.4, item 1) |
 | tp_pagamento | `VARCHAR(10)` | `CHECK IN ('PIX','Cartao','Boleto')` |
 | tp_canal | `VARCHAR(20)` | `NOT NULL`, `CHECK IN ('loja fisica','e-commerce','atacado','whatsapp')` |
 | ds_observacoes | `VARCHAR(255)` | opcional |
@@ -243,4 +243,4 @@ Notação do lógico: cada caixa é uma tabela física, com coluna | tipo em cad
 
 - **Unicidade**: `fornecedor.nr_cnpj`, `cliente.nr_cpf`, `cliente.nr_cnpj`, `ordem_producao.nr_op`, `etapa_producao.nr_ordem_sequencial`.
 - **Domínio (`CHECK`)**: `tp_categoria`, `un_medida`, `tp_produto`, `tp_status`, `tp_pagamento`, `tp_canal`, `tp_status_kanban`, `tp_vinculo` (em artesão e vendedor), além de todos os `CHECK > 0` / `CHECK >= 0` em preços, estoques e quantidades.
-- **Referencial (`FOREIGN KEY`)**: todas as FKs da tabela de cardinalidades acima; `ON DELETE CASCADE` em `bolsa`, `acessorio`, `ficha_tecnica`, `item_pedido` e `execucao_etapa` (ver justificativa em `RELATORIO_TECNICO.md` §1.5).
+- - **Referencial (`FOREIGN KEY`)**: todas as FKs da tabela de cardinalidades acima; `ON DELETE CASCADE` em `bolsa`, `acessorio`, `ficha_tecnica`, `item_pedido` e `execucao_etapa` (ver justificativa em `README.md` da raiz, Seção 1.5).
