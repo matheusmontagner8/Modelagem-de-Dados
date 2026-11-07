@@ -15,7 +15,7 @@
 
 
 - **Nome e natureza da organização:** Contrasti Bolsas e Acessórios Ltda — Indústria e Comércio de Bolsas e Acessórios de Couro, com fins lucrativos. Produção própria, com venda direta e por canais diversos (loja física, e-commerce, WhatsApp, representantes externos).
-- **Porte (números):** equipe de 10 pessoas; volume de 50 a 70 pedidos por mês, com aumento nas datas comemorativas (Dia das Mães e Natal).
+- **Porte (números):** equipe de 12 pessoas; volume de 50 a 70 pedidos por mês, com aumento nas datas comemorativas (Dia das Mães e Natal).
 - **Escopo do sistema:** o banco de dados cobre todas as áreas da organização observadas no levantamento — compras/estoque, produção (chão de fábrica), vendas (todos os canais) e financeiro — não se restringe a um único setor, nem apenas às áreas dos problemas declarados (P1, P2) acima.
 - **Problemas identificados (resolvidos pelo modelo):**
   - **P1 — Falta de rastreabilidade de insumo por fornecedor:** o estoque não registrava de qual fornecedor/lote cada insumo veio, dificultando o controle de cor/textura entre peças da mesma coleção. Resolvido por `LOTE_INSUMO` (Entrega 2).
