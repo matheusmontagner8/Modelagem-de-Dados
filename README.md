@@ -381,7 +381,7 @@ A estrutura normalizada (fatos em `pedido`/`item_pedido`/`execucao_etapa`, dimen
 
 A massa de dados fictícia do `script.sql` foi dimensionada a partir do porte declarado pela organização (Seção 1: equipe de 10 pessoas, 50-70 pedidos/mês), não de forma arbitrária:
 
-- **109 pedidos** — equivalente a pouco menos de 2 meses de operação no volume real informado (50-70/mês). Os meses simulados não são uniformes de propósito: abril/maio têm só 15 pedidos "de estrutura" (o suficiente para testar o modelo sem inflar o volume à toa), enquanto setembro foi gerado com 62 pedidos — dentro da faixa real de um mês cheio — para servir de base realista às consultas gerenciais.
+- **109 pedidos** — equivalente a pouco menos de 2 meses de operação no volume real informado (50-70/mês). A distribuição por mês não é uniforme de propósito: **maio concentra 43 pedidos**, o pico do período simulado, refletindo o aumento em datas comemorativas já descrito na Seção 1 (Dia das Mães); abril (11) é o mês de "estrutura", com o mínimo necessário para testar o modelo; setembro (24) e outubro (31) seguem o volume real informado (50-70/mês) como meses comuns.
 - **43 clientes** (40 ativos + 3 recém-cadastrados, ainda sem compra) — compatível com a carteira de uma indústria desse porte, cobrindo pessoas físicas (varejo/e-commerce) e empresas com CNPJ (lojistas do atacado).
 - **5 fornecedores e 10 lotes de insumo recebidos** — reflete o relato da entrevista (Seção 1) de que a empresa trabalha com fornecedores fixos de longo prazo, não uma base pulverizada.
 - **8 produtos (5 bolsas + 3 acessórios) e 23 linhas de ficha técnica** — cobre o catálogo real sem inflar artificialmente o número de SKUs.
