@@ -3,7 +3,7 @@
 | Nome | RGM | Usuário do GitHub |
 |---|---|---|
 | Guilherme da Silva Ferreira Batista | 47302518 | dark60895-cpu |
-| Guilherme Petrucelli Domingos | 47270161 | (a confirmar) |
+| Guilherme Petrucelli Domingos | 47270161 | GuilhermeP28 |
 | Jaime Luiz de Oliveira Neto | 47336951 | jaimelneto77-alt |
 | Matheus Montagner | 47209470 | MatheusMontagner8 |
 | Vinicius Marques de Melo | 47213426 | viniciusmarquesmelo |
