@@ -385,7 +385,7 @@ A massa de dados fictícia do `script.sql` foi dimensionada a partir do porte de
 - **43 clientes** (40 ativos + 3 recém-cadastrados, ainda sem compra) — compatível com a carteira de uma indústria desse porte, cobrindo pessoas físicas (varejo/e-commerce) e empresas com CNPJ (lojistas do atacado).
 - **5 fornecedores e 10 lotes de insumo recebidos** — reflete o relato da entrevista (Seção 1) de que a empresa trabalha com fornecedores fixos de longo prazo, não uma base pulverizada.
 - **8 produtos (5 bolsas + 3 acessórios) e 23 linhas de ficha técnica** — cobre o catálogo real sem inflar artificialmente o número de SKUs.
-- **8 ordens de produção, 56 execuções de etapa e 4 artesãos** — compatível com as 7 etapas de produção descritas no processo de negócio (Seção 2, processo 5) e a produção mista (própria + facção terceirizada) relatada na entrevista.
+- **8 ordens de produção, 56 execuções de etapa e 4 artesãos** — compatível com as 7 etapas de produção descritas no processo de negócio (Seção 2, processo 5) e a produção mista (própria + terceirizada) relatada na entrevista.
 - **87 títulos a receber (um por pedido Faturado/Expedido) e 10 a pagar (um por lote de insumo recebido)** — segue 1:1 a regra de geração automática de título (Seção 4).
 
 A variedade também foi dimensionada para que nenhuma consulta gerencial/auditoria venha vazia sem necessidade: a massa inclui pedidos cancelados (4), clientes sem nenhuma compra (3), um insumo abaixo do estoque mínimo (consulta G08), e os 4 canais de venda relatados na entrevista — incluindo "whatsapp", adicionado nesta revisão junto com o ajuste da constraint `ck_pedido_canal`, que antes só aceitava 3 dos 4 canais descritos no processo de negócio.
