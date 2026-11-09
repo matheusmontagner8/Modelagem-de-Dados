@@ -323,7 +323,7 @@
         <tr><td class="attr pk">id_produto</td><td class="phys">INT UNSIGNED (PK)</td><td>Mesmo valor de id_produto do PRODUTO correspondente — identifica a linha na especialização.</td></tr>
         <tr><td class="attr">ds_material</td><td class="phys">VARCHAR(60) NOT NULL</td><td>Ex.: couro legítimo, sintético.</td></tr>
         <tr><td class="attr">ds_cor</td><td class="phys">VARCHAR(40) NOT NULL</td><td>Cor da bolsa.</td></tr>
-        <tr><td class="attr">tp_tamanho</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Domínio: {PP, P, M, G, GG}.</td></tr>
+        <tr><td class="attr">tp_tamanho</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Domínio: {P, M, G}.</td></tr>
         <tr><td class="attr">tp_alca</td><td class="phys">VARCHAR(30) NOT NULL</td><td>Domínio: {mão, tiracolo, transversal}.</td></tr>
       </tbody>
     </table>
@@ -388,15 +388,15 @@
   <!-- ARTESAO -->
   <div class="entity">
     <div class="entity-header">ARTESÃO</div>
-    <div class="entity-note">Entidade desejável, sugerida pelo professor — suporta a regra de "pagamento de facção pela etapa registrada".</div>
+    <div class="entity-note">Entidade desejável, sugerida pelo professor — suporta a regra de "pagamento de terceirizado pela etapa registrada".</div>
     <div class="leitura">ARTESAO(<span class="pk">id_artesao</span>, nm_artesao, tp_vinculo, nr_telefone)</div>
     <table>
       <colgroup><col class="attr-col"><col class="phys-col"><col class="rule-col"></colgroup>
       <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
       <tbody>
         <tr><td class="attr pk">id_artesao</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema.</td></tr>
-        <tr><td class="attr">nm_artesao</td><td class="phys">VARCHAR(120) NOT NULL</td><td>Dado pessoal do prestador de serviço (interno ou facção terceirizada).</td></tr>
-        <tr><td class="attr">tp_vinculo</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Domínio: {interno, facção terceirizada}.</td></tr>
+        <tr><td class="attr">nm_artesao</td><td class="phys">VARCHAR(120) NOT NULL</td><td>Dado pessoal do prestador de serviço (interno ou terceirizado).</td></tr>
+        <tr><td class="attr">tp_vinculo</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Domínio: {interno, terceirizado}.</td></tr>
         <tr><td class="attr">nr_telefone</td><td class="phys">VARCHAR(20) NULL</td><td>Contato direto.</td></tr>
       </tbody>
     </table>
@@ -415,7 +415,7 @@
         <tr><td class="attr pk">id_execucao</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema.</td></tr>
         <tr><td class="attr">dt_inicio</td><td class="phys">DATETIME NOT NULL</td><td>Início da execução da etapa.</td></tr>
         <tr><td class="attr">dt_fim</td><td class="phys">DATETIME NULL</td><td>Nulo enquanto a etapa está em andamento.</td></tr>
-        <tr><td class="attr">pc_aproveitamento</td><td class="phys">DECIMAL(5,2) NULL CHECK (0–100)</td><td>Base para o pagamento do artesão/facção por etapa concluída.</td></tr>
+        <tr><td class="attr">pc_aproveitamento</td><td class="phys">DECIMAL(5,2) NULL CHECK (0–100)</td><td>Base para o pagamento do artesão/terceirizado por etapa concluída.</td></tr>
         <tr><td class="attr">pc_perda</td><td class="phys">DECIMAL(5,2) NULL CHECK (0–100)</td><td>Percentual de material perdido/retrabalhado na etapa.</td></tr>
       </tbody>
     </table>
@@ -569,7 +569,7 @@
       <tr><td class="attr">é_produzido_em</td><td>PRODUTO (1,1) — ORDEM_PRODUÇÃO (0,N)</td><td>Uma ordem de produção refere-se a exatamente um produto; um produto pode ter várias ordens de produção ao longo do tempo.</td></tr>
       <tr><td class="attr">se_desdobra_em</td><td>ORDEM_PRODUÇÃO (1,1) — EXECUÇÃO_ETAPA (0,N)</td><td>Uma ordem de produção se desdobra em zero ou várias execuções de etapa; cada execução pertence a exatamente uma ordem.</td></tr>
       <tr><td class="attr">classifica</td><td>ETAPA_PRODUÇÃO (1,1) — EXECUÇÃO_ETAPA (0,N)</td><td>Cada execução é classificada em exatamente uma etapa padrão; uma etapa padrão classifica várias execuções.</td></tr>
-      <tr><td class="attr">realiza</td><td>ARTESÃO (1,1) — EXECUÇÃO_ETAPA (0,N)</td><td>Cada execução é realizada por exatamente um artesão/facção; um artesão/facção realiza várias execuções — base do pagamento por etapa.</td></tr>
+      <tr><td class="attr">realiza</td><td>ARTESÃO (1,1) — EXECUÇÃO_ETAPA (0,N)</td><td>Cada execução é realizada por exatamente um artesão/terceirizado; um artesão/terceirizado realiza várias execuções — base do pagamento por etapa.</td></tr>
       <tr><td class="attr">Especialização TD</td><td>PRODUTO (1,1) — BOLSA (1,1) / ACESSÓRIO (1,1)</td><td>Todo produto é obrigatoriamente bolsa ou acessório, nunca ambos (Total e Disjunta).</td></tr>
       <tr><td class="attr">realiza (venda)</td><td>CLIENTE (1,1) — PEDIDO (0,N)</td><td>Cada pedido é realizado por exatamente um cliente; um cliente pode realizar vários pedidos.</td></tr>
       <tr><td class="attr">atende</td><td>VENDEDOR (1,1) — PEDIDO (0,N)</td><td>Cada pedido é atendido por exatamente um vendedor; um vendedor atende vários pedidos — base do cálculo de comissão.</td></tr>
@@ -642,7 +642,7 @@
     <tbody>
       <tr><td class="attr">1. Compras</td><td>FORNECEDOR — fornece — LOTE_INSUMO — é_recebido_como — INSUMO — gera — CONTAS_PAGAR</td><td>Cada recebimento de material vira um lote rastreável (fornecedor, data, quantidade, preço pago) e pode gerar um título a pagar.</td></tr>
       <tr><td class="attr">2. Engenharia de produto</td><td>INSUMO — compõe — FICHA_TÉCNICA — é_detalhado_em — PRODUTO</td><td>A ficha técnica é a lista de materiais por produto e informa a quantidade necessária de cada insumo.</td></tr>
-      <tr><td class="attr">3. Produção</td><td>PRODUTO — é_produzido_em — ORDEM_PRODUÇÃO — se_desdobra_em — EXECUÇÃO_ETAPA — classifica/realiza — ETAPA_PRODUÇÃO / ARTESÃO</td><td>Uma ordem de produção percorre as etapas padrão, cada uma executada por um artesão ou facção, com aproveitamento/perda registrados.</td></tr>
+      <tr><td class="attr">3. Produção</td><td>PRODUTO — é_produzido_em — ORDEM_PRODUÇÃO — se_desdobra_em — EXECUÇÃO_ETAPA — classifica/realiza — ETAPA_PRODUÇÃO / ARTESÃO</td><td>Uma ordem de produção percorre as etapas padrão, cada uma executada por um artesão ou terceirizado, com aproveitamento/perda registrados.</td></tr>
       <tr><td class="attr">4. Hierarquia de produto</td><td>PRODUTO — TD — BOLSA / ACESSÓRIO</td><td>Classifica todo produto como bolsa ou acessório, cada um com atributos próprios.</td></tr>
       <tr><td class="attr">5. Vendas</td><td>CLIENTE / VENDEDOR — PEDIDO — contém — ITEM_PEDIDO — é_vendido_em — PRODUTO</td><td>Registra os produtos vendidos, preço praticado, subtotal, total do pedido, o cliente que comprou e o vendedor/canal que atendeu (base da comissão).</td></tr>
       <tr><td class="attr">6. Financeiro</td><td>PEDIDO — gera — CONTAS_RECEBER · LOTE_INSUMO — gera — CONTAS_PAGAR</td><td>Vendas geram títulos a receber; compras geram títulos a pagar — os dois lados do fluxo de caixa da empresa.</td></tr>
