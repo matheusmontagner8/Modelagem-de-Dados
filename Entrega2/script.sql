@@ -136,7 +136,8 @@ CREATE TABLE bolsa (
     tp_alca     VARCHAR(30) NOT NULL,
     CONSTRAINT pk_bolsa         PRIMARY KEY (id_produto),
     CONSTRAINT fk_bolsa_produto FOREIGN KEY (id_produto) REFERENCES produto(id_produto)
-        ON DELETE CASCADE ON UPDATE CASCADE
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT ck_bolsa_tamanho CHECK (tp_tamanho IN ('P','M','G'))
 ) ENGINE = InnoDB;
 
 -- ACESSORIO (subtipo de PRODUTO) --------------------------------------------
@@ -211,7 +212,7 @@ CREATE TABLE artesao (
     tp_vinculo  VARCHAR(20) NOT NULL,
     nr_telefone VARCHAR(20),
     CONSTRAINT pk_artesao          PRIMARY KEY (id_artesao),
-    CONSTRAINT ck_artesao_vinculo CHECK (tp_vinculo IN ('interno','faccao terceirizada'))
+    CONSTRAINT ck_artesao_vinculo CHECK (tp_vinculo IN ('interno','terceirizado'))
 ) ENGINE = InnoDB;
 
 -- EXECUCAO_ETAPA (nova, associativa de três vias) ----------------------------
@@ -483,11 +484,11 @@ INSERT INTO produto (id_produto, nm_produto, ds_descricao, vl_preco_base, tp_cat
 
 -- BOLSA (subtipo) ---------------------------------------------------------
 INSERT INTO bolsa (id_produto, ds_material, ds_cor, tp_tamanho, tp_alca) VALUES
-(1, 'Couro Bovino', 'Caramelo', 'Medio', 'Tiracolo'),
-(2, 'Couro Bovino', 'Preto', 'Medio', 'Tiracolo'),
-(3, 'Couro Sintetico', 'Cafe', 'Pequeno', 'Transversal'),
-(4, 'Couro Bovino', 'Preto', 'Pequeno', 'Transversal'),
-(5, 'Couro Bovino', 'Caramelo', 'Grande', 'Mao');
+(1, 'Couro Bovino', 'Caramelo', 'M', 'Tiracolo'),
+(2, 'Couro Bovino', 'Preto', 'M', 'Tiracolo'),
+(3, 'Couro Sintetico', 'Cafe', 'P', 'Transversal'),
+(4, 'Couro Bovino', 'Preto', 'P', 'Transversal'),
+(5, 'Couro Bovino', 'Caramelo', 'G', 'Mao');
 
 -- ACESSORIO (subtipo) -------------------------------------------------------
 INSERT INTO acessorio (id_produto, ds_material, ds_cor, tp_acessorio, ds_compatibilidade) VALUES
@@ -525,12 +526,12 @@ INSERT INTO etapa_producao (id_etapa, nm_etapa, nr_ordem_sequencial) VALUES
 (4, 'Costura', 4), (5, 'Montagem/Ferragens', 5),
 (6, 'Acabamento/Revisao', 6), (7, 'Embalagem', 7);
 
--- ARTESAO (4: 2 internos, 2 facções terceirizadas) --------------------
+-- ARTESAO (4: 2 internos, 2 oficinas terceirizadas) --------------------
 INSERT INTO artesao (id_artesao, nm_artesao, tp_vinculo, nr_telefone) VALUES
 (1, 'Everton Souza Lima', 'interno', '(11) 98777-1001'),
 (2, 'Rosa Maria Aparecida', 'interno', '(11) 98777-1002'),
-(3, 'Faccao Mao de Obra Franca', 'faccao terceirizada', '(16) 98777-1003'),
-(4, 'Faccao Costura Fina Ltda', 'faccao terceirizada', '(16) 98777-1004');
+(3, 'Oficina Mao de Obra Franca', 'terceirizado', '(16) 98777-1003'),
+(4, 'Oficina Costura Fina Ltda', 'terceirizado', '(16) 98777-1004');
 
 -- EXECUCAO_ETAPA (56 = 8 OPs x 7 etapas) -------------------------------------
 -- pc_aproveitamento/pc_perda só são preenchidos na etapa de Corte (id 2),
@@ -1151,7 +1152,7 @@ JOIN insumo i ON i.id_insumo = ft.insumo_id
 GROUP BY i.id_insumo, i.nm_insumo, i.un_medida
 ORDER BY consumo_projetado DESC;
 
--- G06 - Aproveitamento médio de corte por artesão/facção (base da
+-- G06 - Aproveitamento médio de corte por artesão/terceirizado (base da
 -- remuneração por etapa — RF15)
 -- Atende: K6 (Aproveitamento de corte por artesão)
 SELECT af.nm_artesao, af.tp_vinculo,
