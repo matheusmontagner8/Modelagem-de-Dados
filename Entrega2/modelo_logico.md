@@ -74,7 +74,7 @@ Notação do lógico: cada caixa é uma tabela física, com coluna | tipo em cad
 | **id_produto** | `INT UNSIGNED` | **PK** e **FK** → `produto.id_produto`, `ON DELETE CASCADE` |
 | ds_material | `VARCHAR(60)` | `NOT NULL` |
 | ds_cor | `VARCHAR(40)` | `NOT NULL` |
-| tp_tamanho | `VARCHAR(20)` | `NOT NULL` |
+| tp_tamanho | `VARCHAR(20)` | `NOT NULL`, `CHECK IN ('P','M','G')` |
 | tp_alca | `VARCHAR(30)` | `NOT NULL` |
 
 ## acessorio *(subtipo de produto)*
@@ -123,7 +123,7 @@ Notação do lógico: cada caixa é uma tabela física, com coluna | tipo em cad
 |---|---|---|
 | **id_artesao** | `INT UNSIGNED` | **PK**, `AUTO_INCREMENT` |
 | nm_artesao | `VARCHAR(120)` | `NOT NULL` |
-| tp_vinculo | `VARCHAR(20)` | `NOT NULL`, `CHECK IN ('interno','faccao terceirizada')` |
+| tp_vinculo | `VARCHAR(20)` | `NOT NULL`, `CHECK IN ('interno','terceirizado')` |
 | nr_telefone | `VARCHAR(20)` | |
 
 ## execucao_etapa *(associativa de três vias)*
