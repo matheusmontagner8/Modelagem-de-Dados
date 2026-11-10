@@ -20,7 +20,7 @@
 - **Problemas identificados (resolvidos pelo modelo):**
   - **P1 — Falta de rastreabilidade de insumo por fornecedor:** o estoque não registrava de qual fornecedor/lote cada insumo veio, dificultando o controle de cor/textura entre peças da mesma coleção. Resolvido por `LOTE_INSUMO` (Entrega 2).
   - **P2 — Cálculo de custo de produto sem padronização:** o custo de cada peça era calculado "no olho", sem lista de materiais formal. Resolvido por `FICHA_TÉCNICA`.
-- **O que foi observado diretamente na visita (observação presencial):** oficina de costura com múltiplas máquinas, bancada de corte/produção, estoque segmentado entre insumos e produtos prontos, uso de facções terceirizadas para parte da produção, e processos de controle (estoque, produção) feitos manualmente/no papel (evidências fotográficas abaixo).
+- **O que foi observado diretamente na visita (observação presencial):** oficina de costura com múltiplas máquinas, bancada de corte/produção, estoque segmentado entre insumos e produtos prontos, uso de oficinas terceirizadas para parte da produção, e processos de controle (estoque, produção) feitos manualmente/no papel (evidências fotográficas abaixo).
 - **Entrevista — o que foi dito:** segundo Osmar Lingiard (responsável pela empresa), a equipe tem 12 pessoas, o volume de pedidos é de 50 a 70 por mês, e boa parte da dificuldade operacional vem de processos que ainda ficam só no papel, sem um sistema que registre e integre as informações — o controle de estoque, produção e vendas depende de anotações manuais, o que dificulta o acompanhamento e aumenta o risco de erro.
 - **Entrevista — quem participou:** entrevistado: Osmar Lingiard (responsável pela empresa — vínculo: Dono). Pelo grupo: Guilherme da Silva Ferreira Batista, Guilherme Petrucelli Domingos, Jaime Luiz de Oliveira Neto, Matheus Montagner e Vinicius Marques de Melo.
 - **Entrevista — data e local:** 14/09, nas instalações da Contrasti (Rua Alpiste, 116 - Jd. Eliane - São Paulo/SP).
@@ -100,7 +100,7 @@
 | RNF01 | **Desempenho:** consultas de estoque e ficha técnica devem responder rápido o suficiente para não atrasar a abertura de uma Ordem de Produção. |
 | RNF02 | **Segurança:** controle de acesso por perfil (RF24) e proteção de dados pessoais de clientes/fornecedores (LGPD). |
 | RNF03 | **Disponibilidade:** o módulo de estoque/OP precisa estar disponível no horário de produção, já que a baixa de insumo é automática e bloqueante. |
-| RNF04 | **Usabilidade:** o painel Kanban de produção deve ser operável pelos artesãos/facções sem treinamento extenso. |
+| RNF04 | **Usabilidade:** o painel Kanban de produção deve ser operável pelos artesãos/terceirizados sem treinamento extenso. |
 | RNF05 | **Integridade transacional:** baixa de estoque, geração de título financeiro e emissão de nota fiscal devem ocorrer de forma atômica (tudo ou nada). |
 | RNF06 | **Auditabilidade:** histórico de preços por fornecedor e de status de OP deve ser preservado para consultas gerenciais futuras. |
 
@@ -124,7 +124,7 @@
   - RN08 — Exigência legal de emissão de NF-e (venda mercantil) ou NFC-e (cupom fiscal varejo), conforme o canal de venda.
   - RN09 — Dados pessoais de clientes e fornecedores (nome, CPF/CNPJ, contato) exigem tratamento conforme a LGPD.
   - RN10 — O prazo médio de entrega de cada fornecedor impacta diretamente o planejamento da produção (lead time de insumo).
-  - RN11 — O pagamento de artesãos/facções terceirizadas depende do registro fiel de qual etapa cada um executou — sem esse registro não há como calcular a remuneração por produção.
+  - RN11 — O pagamento de artesãos/oficinas terceirizadas depende do registro fiel de qual etapa cada um executou — sem esse registro não há como calcular a remuneração por produção.
 
 - **Regras de integridade verificadas por auditoria** (consultas A01-A07 do `script.sql`, Seção 9):
   - RN12 — `pedido.vl_total` deve sempre refletir a soma dos itens do pedido (denormalização controlada, não um erro, ver Seção 1.4 abaixo, item 1).
