@@ -41,7 +41,7 @@
   <img src="evidencias/06-fachada.jpg" width="32%" />
 </p>
 
-*Da esquerda para a direita, de cima para baixo: bancada de produção (corte/costura), escritório administrativo (espaço de trabalho do responsável pela empresa), estoque de bolsas prontas (corredor G), oficina com as máquinas de costura, estoque de insumos/materiais, fachada na Rua Alpiste.*
+*Da esquerda para a direita, de cima para baixo: bancada de produção (corte/costura), escritório administrativo, estoque de bolsas prontas (corredor G), oficina com as máquinas de costura, estoque de insumos/materiais, fachada na Rua Alpiste.*
 
 ## 2. Processos de Negócio
 
