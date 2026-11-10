@@ -26,7 +26,8 @@
 - **Entrevista — data e local:** 14/09, nas instalações da Contrasti (Rua Alpiste, 116 - Jd. Eliane - São Paulo/SP).
 - **Como o levantamento foi feito:** visita presencial às instalações (fotos abaixo) e entrevista com o responsável, complementada por questionário estruturado preenchido durante a conversa. Relato completo em [`levantamento/levantamento.md`](levantamento/levantamento.md).
 - **Justificativa da escolha:** organização de acesso facilitado para o grupo, com processos observáveis em uma única visita — nem tão simples a ponto de não ter o que modelar, nem tão complexa a ponto de inviabilizar o levantamento no prazo da disciplina.
-- **Evidências da organização:** Endereço: Rua Alpiste, 116 - Jd. Eliane - São Paulo - SP. Contato na empresa: Osmar Lingiard, telefone para contato: 11 97334-4846, email: osmar@specia.com.br. Fotos JPG/PNG da visita abaixo.
+- **Evidências da organização:** Endereço: Rua Alpiste, 116 - Jd. Eliane - São Paulo - SP. Contato na empresa: Osmar Lingiard, telefone para contato: 11 97334-4846, email: osmar@specia.com.br. Site da empresa: www.lingiard.com.br
+- Fotos JPG/PNG da visita abaixo.
 
 
 <p align="center">
