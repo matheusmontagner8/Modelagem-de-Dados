@@ -19,7 +19,7 @@ A entrevista foi conduzida em formato semiestruturado: o grupo levou perguntas d
 
 ### Perfil da empresa e histórico
 
-Osmar relatou que a Contrasti é uma empresa familiar, atuando há alguns anos na fabricação de bolsas e acessórios de couro, com produção própria e também apoio de facções terceirizadas para parte do volume. A equipe atual é de 15 pessoas, distribuídas entre produção (oficina), estoque/compras, vendas e administrativo/financeiro. O próprio Osmar acumula funções administrativas e de relacionamento com fornecedores e clientes maiores.
+Osmar relatou que a Contrasti é uma empresa familiar, atuando há alguns anos na fabricação de bolsas e acessórios de couro, com produção própria e também apoio de oficinas terceirizadas para parte do volume. A equipe atual é de 15 pessoas, distribuídas entre produção (oficina), estoque/compras, vendas e administrativo/financeiro. O próprio Osmar acumula funções administrativas e de relacionamento com fornecedores e clientes maiores.
 
 Segundo ele, o volume de vendas gira em torno de 50 a 70 pedidos por mês, com picos relevantes em datas comemorativas como Dia das Mães e Natal, nesses períodos, segundo relatou, a equipe de produção trabalha no limite da capacidade, e é quando mais se recorre às oficinas terceirizadas para não atrasar entregas.
 
@@ -33,7 +33,7 @@ Ele também comentou que o prazo de entrega varia bastante entre fornecedores, e
 
 Sobre o processo produtivo, Osmar descreveu, em linhas gerais, a sequência de etapas pela qual passa cada peça: modelagem, corte, preparação/colagem, costura, montagem das ferragens, acabamento/revisão e, por fim, embalagem. Ele destacou a etapa de corte como particularmente sensível, porque é nela que se decide o aproveitamento do couro, um corte malfeito gera mais perda de material e aumenta o custo da peça, então a empresa tenta acompanhar, etapa por etapa, quem fez o quê e como foi o aproveitamento, mas hoje isso também depende de anotação manual ou da memória de quem está acompanhando a produção naquele dia.
 
-Osmar explicou ainda que parte da produção é interna (artesãos que trabalham na própria oficina) e parte é feita por oficinas terceirizadas, que recebem o material cortado ou os insumos e devolvem a peça pronta ou semi-pronta. O pagamento de cada artesão ou facção depende de qual etapa foi executada e, segundo ele, esse é um ponto de atenção: sem um registro confiável de quem fez cada etapa, fica difícil calcular a remuneração com precisão.
+Osmar explicou ainda que parte da produção é interna (artesãos que trabalham na própria oficina) e parte é feita por oficinas terceirizadas, que recebem o material cortado ou os insumos e devolvem a peça pronta ou semi-pronta. O pagamento de cada artesão ou oficina depende de qual etapa foi executada e, segundo ele, esse é um ponto de atenção: sem um registro confiável de quem fez cada etapa, fica difícil calcular a remuneração com precisão.
 
 ### Vendas e canais de atendimento
 
