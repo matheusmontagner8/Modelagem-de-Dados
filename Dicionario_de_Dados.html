@@ -476,8 +476,7 @@
       <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
       <tbody>
         <tr><td class="attr pk">id_pedido</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema.</td></tr>
-        <tr><td class="attr">tp_status</td><td class="phys">VARCHAR(20) NOT NULL DEFAULT 'Aberto'</td><td>Domínio: {aberto, faturado, expedido, cancelado}.</td></tr>
-        <tr><td class="attr">tp_status</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Domínio: {aberto, faturado, expedido, entregue, cancelado}.</td></tr>
+        <tr><td class="attr">tp_status</td><td class="phys">VARCHAR(20) NOT NULL DEFAULT 'Aberto'</td><td>Domínio: {aberto, faturado, expedido, cancelado}.</td></tr>        
         <tr><td class="attr">vl_total</td><td class="phys">DECIMAL(10,2) NOT NULL</td><td>Soma de vl_subtotal de todos os itens do pedido — denormalização deliberada, documentada e já validada em <code>Entrega2/script.sql</code>.</td></tr>
         <tr><td class="attr">tp_pagamento</td><td class="phys">VARCHAR(10) NOT NULL</td><td>Domínio: {PIX, Cartão, Boleto}.</td></tr>
         <tr><td class="attr">tp_canal</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Domínio: {loja física, e-commerce, atacado, whatsapp}. Base do cálculo de comissão do vendedor.</td></tr>
