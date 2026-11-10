@@ -19,7 +19,7 @@ A entrevista foi conduzida em formato semiestruturado: o grupo levou perguntas d
 
 ### Perfil da empresa e histórico
 
-Osmar relatou que a Contrasti é uma empresa familiar, atuando há alguns anos na fabricação de bolsas e acessórios de couro, com produção própria e também apoio de facções terceirizadas para parte do volume. A equipe atual é de 10 pessoas, distribuídas entre produção (oficina), estoque/compras, vendas e administrativo/financeiro. O próprio Osmar acumula funções administrativas e de relacionamento com fornecedores e clientes maiores.
+Osmar relatou que a Contrasti é uma empresa familiar, atuando há alguns anos na fabricação de bolsas e acessórios de couro, com produção própria e também apoio de facções terceirizadas para parte do volume. A equipe atual é de 15 pessoas, distribuídas entre produção (oficina), estoque/compras, vendas e administrativo/financeiro. O próprio Osmar acumula funções administrativas e de relacionamento com fornecedores e clientes maiores.
 
 Segundo ele, o volume de vendas gira em torno de 50 a 70 pedidos por mês, com picos relevantes em datas comemorativas como Dia das Mães e Natal, nesses períodos, segundo relatou, a equipe de produção trabalha no limite da capacidade, e é quando mais se recorre às facções terceirizadas para não atrasar entregas.
 
