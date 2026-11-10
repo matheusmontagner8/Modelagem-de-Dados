@@ -5,7 +5,7 @@
 **Entrevistado:** Osmar Lingiard, responsável pela empresa (vínculo: Dono).
 **Participantes pelo grupo:** Guilherme da Silva Ferreira Batista, Guilherme Petrucelli Domingos, Jaime Luiz de Oliveira Neto, Matheus Montagner e Vinicius Marques de Melo.
 **Data e local:** 14/09, nas instalações da Contrasti.
-**Duração e formato:** cerca de 1h de conversa presencial, seguida de caminhada pelas instalações (oficina, estoques e escritório). O grupo levou um roteiro estruturado de perguntas, organizado pelos mesmos processos de negócio já mapeados pela disciplina (cadastro de clientes/fornecedores, produção, vendas, financeiro), para não deixar nenhuma área de fora e para facilitar a comparação posterior com o que foi observado em campo.
+**Duração e formato:** cerca de 1h de conversa presencial, seguida de caminhada pelas instalações (oficina, estoques e escritório). Nós levamos um roteiro estruturado de perguntas, organizado pelos mesmos processos de negócio já mapeados pela disciplina (cadastro de clientes/fornecedores, produção, vendas, financeiro), para não deixar nenhuma área de fora e para facilitar a comparação posterior com o que foi observado em campo.
 
 ---
 
