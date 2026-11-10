@@ -305,6 +305,7 @@
         <tr><td class="attr">ds_descricao</td><td class="phys">VARCHAR(255) NOT NULL</td><td>Texto livre com detalhes do modelo, uso pretendido ou observações de venda.</td></tr>
         <tr><td class="attr">vl_preco_base</td><td class="phys">DECIMAL(10,2) NOT NULL CHECK (&gt;0)</td><td>Valor de referência para venda, antes de eventuais descontos por item de pedido.</td></tr>
         <tr><td class="attr">tp_categoria</td><td class="phys">VARCHAR(50) </td><td>Classificação comercial (linha/coleção/departamento) — independente da especialização BOLSA/ACESSÓRIO.</td></tr>
+        <tr><td class="attr">qt_estoque_total</td><td class="phys">INT UNSIGNED NOT NULL DEFAULT 0</td><td>Saldo agregado de produto pronto em estoque.</td></tr>
         <tr><td class="attr">tp_produto</td><td class="phys">VARCHAR(30) NOT NULL</td><td>Domínio: {BOLSA, ACESSORIO}. Discriminador da especialização Total e Disjunta — define se a linha também existe em BOLSA ou em ACESSORIO.</td></tr>
       </tbody>
     </table>
@@ -475,7 +476,7 @@
       <thead><tr><th>Atributo</th><th>Tipo físico (MySQL 8.4)</th><th>Descrição e regra de negócio</th></tr></thead>
       <tbody>
         <tr><td class="attr pk">id_pedido</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema.</td></tr>
-        <tr><td class="attr">dt_pedido</td><td class="phys">DATE NOT NULL</td><td>Preenchida no registro do pedido.</td></tr>
+        <tr><td class="attr">tp_status</td><td class="phys">VARCHAR(20) NOT NULL DEFAULT 'Aberto'</td><td>Domínio: {aberto, faturado, expedido, cancelado}.</td></tr>
         <tr><td class="attr">tp_status</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Domínio: {aberto, faturado, expedido, entregue, cancelado}.</td></tr>
         <tr><td class="attr">vl_total</td><td class="phys">DECIMAL(10,2) NOT NULL</td><td>Soma de vl_subtotal de todos os itens do pedido — denormalização deliberada, documentada e já validada em <code>Entrega2/script.sql</code>.</td></tr>
         <tr><td class="attr">tp_pagamento</td><td class="phys">VARCHAR(10) NOT NULL</td><td>Domínio: {PIX, Cartão, Boleto}.</td></tr>
