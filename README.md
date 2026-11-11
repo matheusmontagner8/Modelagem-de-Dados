@@ -179,8 +179,7 @@ Este recorte de 17 entidades cobre, os módulos: produção detalhada (ORDEM_PRO
 
 ## 7. Uso de Inteligência Artificial
 
-O uso de IA ao longo de todo o projeto (Entrega 1 e Entrega 2) está documentado em um único bloco consolidado, ao final deste README, na seção **"Uso de Inteligência Artificial (Entregas 1 e 2)"**.
-
+O uso de IA ao longo de todo o projeto (Entrega 1 e Entrega 2) está documentado em tabelas individuais, uma por momento/prompt, ao final deste README, nas seções **"Uso de Inteligência Artificial — Entrega 1"** e **"Uso de Inteligência Artificial — Entrega 2"**.
 
 ---
 
@@ -386,18 +385,155 @@ A variedade também foi dimensionada para que nenhuma consulta gerencial/auditor
 
 ---
 
-## Uso de Inteligência Artificial (Entregas 1 e 2)
+## Uso de Inteligência Artificial — Entrega 1
+
+### Momento 1 — Leitura do questionário e primeiro modelo conceitual
 
 | Item | Registro |
 |---|---|
-| **Ferramenta e etapa** | **Entrega 1:** Claude (Claude Code / Sonnet 5, Anthropic) — usado em oito momentos: (1) leitura do questionário de requisitos e construção de um primeiro modelo conceitual (21 entidades) e dicionário de dados; (2) geração de um primeiro diagrama ER (notação "pé-de-galinha"); (3) preenchimento deste README a partir do esqueleto oficial da Entrega 1; (4) reconstrução desse primeiro diagrama na notação de Chen usada pelo BrModeloWeb, a pedido explícito do professor; (5) depois que o grupo (Guilherme) remodelou o DER para um recorte mais enxuto de 9 entidades direto no BrModeloWeb, reorganização do dicionário HTML já produzido pelo grupo e reescrita das Seções 5–8 para descrever esse modelo; (6) substituição do diagrama do repositório pela versão corrigida que o grupo enviou (PDF exportado do BrModeloWeb, com nomes de atributo, PKs/FKs e cardinalidades revisados), com o dicionário HTML e as Seções 5–8 atualizados para bater com essa versão; (7) a pedido do grupo, correção pontual de duas cardinalidades da própria imagem do diagrama ("compõe" e "detalha", ao redor de FICHA_TÉCNICA) para o padrão 1:N esperado de uma entidade associativa, e atualização do dicionário HTML e do README para refletir a correção; (8) **em resposta à avaliação formal do professor na [issue #1](https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1)**, reconstrução completa do DER (de 9 para 17 entidades, cardinalidade mínima e máxima em todas as 16 relações, remoção de toda marcação de FK do diagrama, troca da chave composta de FICHA_TÉCNICA por chave própria, inclusão de ORDEM_PRODUÇÃO e LOTE_INSUMO), reescrita completa do dicionário de dados em HTML (convenções, SGBD/collation/prefixos, expressão formal, tipo físico, índices sugeridos, log de acesso e matriz de acesso por operação/LGPD) e revisão das Seções 1, 2, 4, 5 e 6 deste README para refletir o modelo corrigido.<br><br>**Entrega 2:** Claude (Claude Code / Sonnet 5, Anthropic) — usado em múltiplos momentos nesta Entrega 2: conversão do modelo conceitual para o lógico (tabelas/colunas/tipos, normalização 1FN/2FN/3FN); escrita do `script.sql` (DDL + massa de dados + consultas) e desta seção do relatório; ampliação da massa de dados (de 15 para 109 pedidos, 43 clientes com CPF/CNPJ); verificação de conformidade da massa de dados com o enunciado oficial e correção dos 3 gaps encontrados, adição de clientes sem nenhuma compra, do canal de venda "whatsapp" e da justificativa textual do volume de registros; instalação de um MySQL Community Server 8.4.10 LTS local e execução completa do `script.sql` nele; reescrita para o modelo de 17 entidades em resposta à issue #1; renomeação de `artesao_faccao` para `artesao`; adição de índices secundários, triggers de exclusividade (especialização TD) e demonstração de transação atômica (RNF05); reestruturação das consultas gerenciais/auditoria para o padrão G/A (`-- Atende:`/`-- Verifica:`) e numeração RN01-RN18 das regras de negócio, após leitura do esqueleto oficial da Entrega 2 fornecido pelo professor; fusão deste relatório técnico no `README.md` da raiz, por exigência da regra de correção do repositório ("o relatório é o README.md da raiz; outro .md não é corrigido"). |
-| **Motivação** | **Entrega 1:** Acelerar a tradução do levantamento de requisitos para um modelo estruturado e para o formato de entrega exigido pela disciplina; depois, manter o README, o diagrama e o dicionário sempre consistentes entre si; corrigir duas cardinalidades que a própria IA havia sinalizado como pouco usuais, com autorização explícita do grupo; por fim, responder item a item à avaliação formal do professor, corrigindo exatamente o que foi apontado como ausente ou inconsistente, sem contestar os pontos levantados.<br><br>**Entrega 2:** Acelerar a conversão sistemática de entidades conceituais em tabelas relacionais; validar o script em um SGBD real a cada mudança; manter o modelo sincronizado com o DER/dicionário corrigidos da Entrega 1; e, nesta rodada final, alinhar toda a estrutura do repositório ao esqueleto oficial da Entrega 2 (nomenclatura de consultas, rastreabilidade de problemas/KPIs, localização do relatório técnico). |
-| **Prompt(s) utilizados** | **Entrega 1:** 1. "Preciso montar um diagrama e o dicionário desse diagrama, como se fosse no modelo BrModeloWeb..."<br>2. "Consegue gerar um arquivo pdf com esse arquivo que montou? Contendo somente o diagrama e o dicionário"<br>3. "adicione essas fotos no readme, na parte de evidências"<br>4. "De acordo com o dicionário e o diagrama que estão agora, crie o arquivo de dicionário de dados em html"<br>5. "Arrume o diagrama para esse pdf, agora ele está correto. No readme faça todas as correções necessárias, de acordo com esse diagrama novo e finalizado"<br>6. "Pode ajustar" (autorizando a correção das cardinalidades sinalizadas).<br><br>**Entrega 2:** 1. "Me ajude com o esqueleto da entrega 2"<br>2. "De acordo com esse projeto do professor, veja se nosso projeto está de acordo"<br>3. "Prepare a etapa 2 e 3 dos ainda pendentes". |
-| **Resposta recebida** | **Entrega 1:** Um primeiro modelo (21 entidades); o DER redesenhado em notação de Chen; a troca do diagrama de 9 entidades pela versão corrigida enviada pelo grupo, com dicionário e README reescritos atributo a atributo; a edição direta dos pixels do PNG para duas cardinalidades pontuais; e, nesta última etapa, um DER inteiramente regerado por script (não mais edição de pixel) — 17 entidades, 16 relacionamentos com `mínimo,máximo` nas duas pontas, sem nenhuma FK — mais o dicionário HTML reescrito do zero (convenções, tipo físico, índices, log de acesso, matriz LGPD) e as Seções 1, 2, 4–6 deste README revisadas.<br><br>**Entrega 2:** O modelo lógico e o script SQL completos (17 tabelas), validados em MySQL real a cada rodada de mudança; a massa de dados ampliada e com CPF/CNPJ; os triggers de exclusividade da especialização TD; as consultas renomeadas para o padrão G/A com rastreabilidade formal a problemas/KPIs e regras de negócio numeradas; o endereço de cliente/fornecedor decomposto em logradouro/número/bairro/cidade/UF/CEP; e, por fim, este relatório técnico movido para dentro do README.md da raiz. |
-| **Fontes consultadas e verificadas** | **Entrega 1:** Nenhuma fonte externa em nenhuma das seis etapas. Nesta última, a única fonte foi o corpo da issue #1 do próprio repositório (avaliação literal do professor, obtida via `gh api repos/.../issues/1`), usada como lista de verificação exaustiva do que corrigir.<br><br>**Entrega 2:** O esqueleto oficial da Entrega 2 (PDF fornecido pelo professor, extraído e lido integralmente); a avaliação literal da issue #1 do próprio repositório; nenhuma fonte externa além desses dois documentos do próprio curso. |
-| **Trechos rejeitados ou corrigidos** | **Entrega 1:** Histórico completo nas etapas 1–7 acima. Nesta etapa (8): a relação direta FORNECEDOR–INSUMO (1,1) foi substituída por FORNECEDOR–LOTE_INSUMO–INSUMO, porque contradizia a regra de rastreabilidade por lote; a chave composta de FICHA_TÉCNICA (`produto_id (PK,FK)` + `insumo_id (PK,FK)`) foi substituída por `id_ficha` próprio; toda marcação `(FK)` foi removida das entidades; os rótulos de cardinalidade, que só mostravam `1`/`N`, passaram a mostrar sempre `mínimo,máximo`; a linguagem condicional da Seção 1 ("sugerem", "prováveis de estarem") foi substituída por uma separação explícita entre o que foi observado e o que ainda está pendente de confirmação; a legenda "Jaime no escritório" (ambígua frente ao nome do arquivo "responsável") foi trocada por uma descrição neutra do ambiente fotografado.<br><br>**Entrega 2:** A primeira versão do `script.sql` (9 tabelas, `insumo.fornecedor_id` como FK direta, `ficha_tecnica` com PK composta) foi inteiramente substituída. A numeração de consultas `8.x`/`9.x` foi trocada para `Gxx`/`Axx` após a leitura do esqueleto oficial, que exige esse padrão com cabeçalho `-- Atende:`/`-- Verifica:`. O campo único `ds_endereco` foi decomposto em 6 colunas após o esqueleto oficial pedir o nível de detalhe de campo (logradouro/número/bairro/CEP). |
-| **Justificativa da escolha final** | **Entrega 1:** O DER e o dicionário agora atacam diretamente os dois critérios de maior peso reprovados na avaliação (DER, -0,40; Dicionário, -0,20), que juntos respondiam por mais de um terço da nota máxima possível. A Seção 1 e a Seção 2 foram ajustadas para os critérios parciais que o grupo podia corrigir sem nova coleta de dados (linguagem de inferência; fluxo/integração dos processos). O número de pessoas na equipe e o relato da dificuldade operacional (também citados como lacuna no Critério 4) foram preenchidos nesta revisão, a partir de um contato posterior do grupo com a organização, equipe de 15 pessoas e dificuldade concentrada em processos que ainda ficam só no papel.<br><br>**Entrega 2:** O modelo lógico/físico passa a refletir fielmente as 17 entidades do conceitual corrigido e a estrutura de nomenclatura exigida pelo esqueleto oficial da disciplina, sem nenhuma FK "a mais" nem "a menos" em relação à tabela de relacionamentos do Dicionario_de_Dados.html. |
-| **Reflexão crítica** | **Entrega 1:** O professor observou, nas Observações da issue #1, que a IA produziu praticamente todo o trabalho (modelo, README, dicionário) nesta entrega, incluindo a edição direta dos pixels do PNG do DER em uma etapa anterior. Essa observação é correta e continua valendo: a reconstrução do DER, a reescrita do dicionário e a revisão do README foram majoritariamente executadas pela IA, com o grupo autorizando e direcionando cada etapa (abertura desta correção, confirmação de que o diagrama regenerado estava satisfatório), mas sem reescrever o conteúdo manualmente. O grupo deve se apropriar ativamente deste material antes de uma eventual reapresentação, relendo cada entidade nova (ORDEM_PRODUÇÃO, LOTE_INSUMO, EXECUÇÃO_ETAPA etc.), cada regra de negócio e cada cardinalidade, para conseguir defendê-los oralmente.<br><br>**Entrega 2:** Este material ainda não foi validado com a organização real (Osmar, Contrasti) em todos os seus números — os valores de `lote_insumo`, `execucao_etapa`, `vendedor` e os títulos financeiros são fictícios, criados para demonstrar a estrutura, não a operação real com precisão. `apresentacao.pptx` foi atualizado e passou pela validação estrutural, mas recomenda-se abrir no PowerPoint antes de apresentar. |
+| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — leitura do questionário de requisitos e construção de um primeiro modelo conceitual (21 entidades) e dicionário de dados. |
+| **Motivação** | Acelerar a tradução do levantamento de requisitos para um modelo estruturado e para o formato de entrega exigido pela disciplina. |
+| **Prompt(s) utilizados** | Não há prompt textual isolado registrado para esta etapa específica — é o início do uso de IA no projeto, anterior ao detalhamento de prompts que passou a ser mantido nas etapas seguintes. |
+| **Resposta recebida** | Um primeiro modelo conceitual com 21 entidades e um dicionário de dados inicial, a partir da leitura do questionário de requisitos preenchido pelo grupo. |
+| **Fontes consultadas e verificadas** | Nenhuma fonte externa — apenas o questionário de requisitos preenchido pelo grupo. |
+| **Trechos rejeitados ou corrigidos** | Não aplicável nesta etapa — é o primeiro rascunho do modelo, ainda sem correção. |
+| **Justificativa da escolha final** | Serviu como ponto de partida estruturado para as etapas seguintes de refinamento do modelo. |
+| **Reflexão crítica** | O professor observou, nas Observações da issue #1, que a IA produziu praticamente todo o trabalho (modelo, README, dicionário) nesta entrega. Essa observação é correta e vale desde esta primeira etapa: o grupo deve se apropriar ativamente do modelo antes de uma eventual reapresentação. |
+
+### Momento 2 — Primeiro diagrama ER (notação "pé-de-galinha")
+
+| Item | Registro |
+|---|---|
+| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — geração de um primeiro diagrama ER (notação "pé-de-galinha") a partir do modelo conceitual da etapa anterior. |
+| **Motivação** | Acelerar a tradução do levantamento de requisitos para um modelo estruturado e para o formato de entrega exigido pela disciplina. |
+| **Prompt(s) utilizados** | Não há prompt textual isolado registrado para esta etapa específica. |
+| **Resposta recebida** | Um primeiro diagrama ER em notação "pé-de-galinha", representando visualmente o modelo de 21 entidades. |
+| **Fontes consultadas e verificadas** | Nenhuma fonte externa — apenas o material já produzido pelo grupo e pela IA na etapa anterior. |
+| **Trechos rejeitados ou corrigidos** | Não há registro individual de trechos rejeitados/corrigidos nesta etapa — a notação "pé-de-galinha" foi inteiramente substituída pela notação de Chen na etapa seguinte, a pedido do professor. |
+| **Justificativa da escolha final** | Deu uma primeira representação visual do modelo, facilitando a discussão inicial do grupo antes do enquadramento formal exigido pela disciplina. |
+| **Reflexão crítica** | O professor observou, nas Observações da issue #1, que a IA produziu praticamente todo o trabalho (modelo, README, dicionário) nesta entrega. Essa observação é correta e vale desde esta etapa: o grupo deve se apropriar ativamente do modelo antes de uma eventual reapresentação. |
+
+### Momento 3 — Preenchimento do README a partir do esqueleto oficial da Entrega 1
+
+| Item | Registro |
+|---|---|
+| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — preenchimento deste README a partir do esqueleto oficial da Entrega 1. |
+| **Motivação** | Traduzir o levantamento de requisitos para o formato de entrega exigido pela disciplina e manter o README consistente com o restante do material. |
+| **Prompt(s) utilizados** | "adicione essas fotos no readme, na parte de evidências" |
+| **Resposta recebida** | O README preenchido com a estrutura do esqueleto oficial da Entrega 1, incluindo a seção de evidências com as fotos da visita. |
+| **Fontes consultadas e verificadas** | Nenhuma fonte externa — o esqueleto oficial da Entrega 1 fornecido pela disciplina e o material fotográfico do grupo. |
+| **Trechos rejeitados ou corrigidos** | Não há registro individual de trechos rejeitados/corrigidos nesta etapa específica. |
+| **Justificativa da escolha final** | Seguir o esqueleto oficial da Entrega 1 era exigência da disciplina para a entrega ser aceita no formato esperado. |
+| **Reflexão crítica** | O professor observou, nas Observações da issue #1, que a IA produziu praticamente todo o trabalho (modelo, README, dicionário) nesta entrega. Essa observação é correta e vale desde esta etapa: o grupo deve se apropriar ativamente do conteúdo antes de uma eventual reapresentação. |
+
+### Momento 4 — Reconstrução do diagrama na notação de Chen (BrModeloWeb)
+
+| Item | Registro |
+|---|---|
+| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — reconstrução do primeiro diagrama na notação de Chen usada pelo BrModeloWeb, a pedido explícito do professor. |
+| **Motivação** | Manter o README, o diagrama e o dicionário sempre consistentes entre si, e adequar o diagrama à notação exigida pelo professor. |
+| **Prompt(s) utilizados** | 1. "Preciso montar um diagrama e o dicionário desse diagrama, como se fosse no modelo BrModeloWeb..."<br>2. "Consegue gerar um arquivo pdf com esse arquivo que montou? Contendo somente o diagrama e o dicionário" |
+| **Resposta recebida** | O DER redesenhado em notação de Chen, exportado como PDF contendo apenas o diagrama e o dicionário, para revisão do grupo. |
+| **Fontes consultadas e verificadas** | Nenhuma fonte externa — apenas a orientação explícita do professor quanto à notação exigida. |
+| **Trechos rejeitados ou corrigidos** | A notação "pé-de-galinha" da etapa anterior foi inteiramente substituída pela notação de Chen. |
+| **Justificativa da escolha final** | A notação de Chen foi exigida explicitamente pelo professor; adequar o diagrama evitava perda de nota por notação incorreta. |
+| **Reflexão crítica** | O professor observou, nas Observações da issue #1, que a IA produziu praticamente todo o trabalho (modelo, README, dicionário) nesta entrega. Essa observação é correta e vale desde esta etapa: o grupo deve se apropriar ativamente do diagrama antes de uma eventual reapresentação. |
+
+### Momento 5 — Recorte para 9 entidades e reorganização do dicionário HTML
+
+| Item | Registro |
+|---|---|
+| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — depois que o grupo (Guilherme) remodelou o DER para um recorte mais enxuto de 9 entidades direto no BrModeloWeb, reorganização do dicionário HTML já produzido pelo grupo e reescrita das Seções 5–8 para descrever esse modelo. |
+| **Motivação** | Manter o README, o diagrama e o dicionário sempre consistentes entre si, mesmo após o grupo ter remodelado o DER por conta própria. |
+| **Prompt(s) utilizados** | "De acordo com o dicionário e o diagrama que estão agora, crie o arquivo de dicionário de dados em html" |
+| **Resposta recebida** | O dicionário HTML reorganizado e as Seções 5–8 do README reescritas para descrever o modelo de 9 entidades montado pelo grupo. |
+| **Fontes consultadas e verificadas** | Nenhuma fonte externa — o DER de 9 entidades e o dicionário já produzidos pelo grupo no BrModeloWeb. |
+| **Trechos rejeitados ou corrigidos** | Não há registro individual de trechos rejeitados/corrigidos nesta etapa específica. |
+| **Justificativa da escolha final** | Manter dicionário e README sincronizados com o DER reduzido que o próprio grupo montou evitava inconsistência entre os documentos da entrega. |
+| **Reflexão crítica** | O professor observou, nas Observações da issue #1, que a IA produziu praticamente todo o trabalho (modelo, README, dicionário) nesta entrega. Essa observação é correta e vale desde esta etapa: o grupo deve se apropriar ativamente do conteúdo antes de uma eventual reapresentação. |
+
+### Momento 6 — Substituição do diagrama pela versão corrigida enviada pelo grupo
+
+| Item | Registro |
+|---|---|
+| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — substituição do diagrama do repositório pela versão corrigida que o grupo enviou (PDF exportado do BrModeloWeb, com nomes de atributo, PKs/FKs e cardinalidades revisados), com o dicionário HTML e as Seções 5–8 atualizados para bater com essa versão. |
+| **Motivação** | Manter o README, o diagrama e o dicionário sempre consistentes entre si. |
+| **Prompt(s) utilizados** | "Arrume o diagrama para esse pdf, agora ele está correto. No readme faça todas as correções necessárias, de acordo com esse diagrama novo e finalizado" |
+| **Resposta recebida** | A troca do diagrama de 9 entidades pela versão corrigida enviada pelo grupo, com dicionário e README reescritos atributo a atributo. |
+| **Fontes consultadas e verificadas** | Nenhuma fonte externa — o PDF corrigido enviado pelo grupo. |
+| **Trechos rejeitados ou corrigidos** | A versão anterior do diagrama/dicionário (antes da revisão de atributos, PKs/FKs e cardinalidades enviada pelo grupo) foi inteiramente substituída. |
+| **Justificativa da escolha final** | Substituir o diagrama do repositório pela versão revisada enviada pelo grupo garantia que todos os documentos refletissem exatamente o modelo que seria defendido. |
+| **Reflexão crítica** | O professor observou, nas Observações da issue #1, que a IA produziu praticamente todo o trabalho (modelo, README, dicionário) nesta entrega. Essa observação é correta e vale desde esta etapa: o grupo deve se apropriar ativamente do conteúdo antes de uma eventual reapresentação. |
+
+### Momento 7 — Correção pontual de duas cardinalidades
+
+| Item | Registro |
+|---|---|
+| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — a pedido do grupo, correção pontual de duas cardinalidades da própria imagem do diagrama ("compõe" e "detalha", ao redor de FICHA_TÉCNICA) para o padrão 1:N esperado de uma entidade associativa, e atualização do dicionário HTML e do README para refletir a correção. |
+| **Motivação** | Corrigir duas cardinalidades que a própria IA havia sinalizado como pouco usuais, com autorização explícita do grupo. |
+| **Prompt(s) utilizados** | "Pode ajustar" (autorizando a correção das cardinalidades sinalizadas) |
+| **Resposta recebida** | A edição direta dos pixels do PNG do diagrama para corrigir as duas cardinalidades pontuais, com dicionário e README atualizados de acordo. |
+| **Fontes consultadas e verificadas** | Nenhuma fonte externa — a própria análise da IA sobre a imagem do diagrama. |
+| **Trechos rejeitados ou corrigidos** | As cardinalidades "compõe" e "detalha" ao redor de FICHA_TÉCNICA, fora do padrão 1:N esperado de uma entidade associativa, foram corrigidas na própria imagem. |
+| **Justificativa da escolha final** | As duas cardinalidades sinalizadas pela própria IA como atípicas só foram corrigidas após autorização explícita do grupo, evitando alteração não solicitada do modelo. |
+| **Reflexão crítica** | O professor observou, nas Observações da issue #1, que a IA produziu praticamente todo o trabalho nesta entrega, incluindo a edição direta dos pixels do PNG do DER nesta etapa. Essa observação é correta: o grupo deve se apropriar ativamente de cada cardinalidade antes de uma eventual reapresentação. |
+
+### Momento 8 — Resposta à avaliação formal do professor (issue #1)
+
+| Item | Registro |
+|---|---|
+| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — **em resposta à avaliação formal do professor na [issue #1](https://github.com/matheusmontagner8/Modelagem-de-Dados/issues/1)**, reconstrução completa do DER (de 9 para 17 entidades, cardinalidade mínima e máxima em todas as 16 relações, remoção de toda marcação de FK do diagrama, troca da chave composta de FICHA_TÉCNICA por chave própria, inclusão de ORDEM_PRODUÇÃO e LOTE_INSUMO), reescrita completa do dicionário de dados em HTML (convenções, SGBD/collation/prefixos, expressão formal, tipo físico, índices sugeridos, log de acesso e matriz de acesso por operação/LGPD) e revisão das Seções 1, 2, 4, 5 e 6 deste README para refletir o modelo corrigido. |
+| **Motivação** | Responder item a item à avaliação formal do professor, corrigindo exatamente o que foi apontado como ausente ou inconsistente, sem contestar os pontos levantados. |
+| **Prompt(s) utilizados** | Não há prompt textual isolado registrado — a instrução foi o próprio corpo da issue #1 (avaliação do professor, compartilhada pelo grupo), seguida do pedido para corrigir item a item o que foi apontado. |
+| **Resposta recebida** | Um DER inteiramente regerado por script (não mais edição de pixel) — 17 entidades, 16 relacionamentos com `mínimo,máximo` nas duas pontas, sem nenhuma FK — mais o dicionário HTML reescrito do zero e as Seções 1, 2, 4–6 deste README revisadas. |
+| **Fontes consultadas e verificadas** | A única fonte foi o corpo da issue #1 do próprio repositório (avaliação literal do professor, obtida via `gh api repos/.../issues/1`), usada como lista de verificação exaustiva do que corrigir. |
+| **Trechos rejeitados ou corrigidos** | A relação direta FORNECEDOR–INSUMO (1,1) foi substituída por FORNECEDOR–LOTE_INSUMO–INSUMO, porque contradizia a regra de rastreabilidade por lote; a chave composta de FICHA_TÉCNICA (`produto_id (PK,FK)` + `insumo_id (PK,FK)`) foi substituída por `id_ficha` próprio; toda marcação `(FK)` foi removida das entidades; os rótulos de cardinalidade, que só mostravam `1`/`N`, passaram a mostrar sempre `mínimo,máximo`; a linguagem condicional da Seção 1 ("sugerem", "prováveis de estarem") foi substituída por uma separação explícita entre o que foi observado e o que ainda está pendente de confirmação; a legenda "Jaime no escritório" foi trocada por uma descrição neutra do ambiente fotografado. |
+| **Justificativa da escolha final** | O DER e o dicionário agora atacam diretamente os dois critérios de maior peso reprovados na avaliação (DER, -0,40; Dicionário, -0,20), que juntos respondiam por mais de um terço da nota máxima possível. A Seção 1 e a Seção 2 foram ajustadas para os critérios parciais que o grupo podia corrigir sem nova coleta de dados. O número de pessoas na equipe e o relato da dificuldade operacional foram preenchidos nesta revisão, a partir de um contato posterior do grupo com a organização, equipe de 15 pessoas e dificuldade concentrada em processos que ainda ficam só no papel. |
+| **Reflexão crítica** | O professor observou, nas Observações da issue #1, que a IA produziu praticamente todo o trabalho (modelo, README, dicionário) nesta entrega. Essa observação é correta e continua valendo: a reconstrução do DER, a reescrita do dicionário e a revisão do README foram majoritariamente executadas pela IA, com o grupo autorizando e direcionando cada etapa, mas sem reescrever o conteúdo manualmente. O grupo deve se apropriar ativamente deste material antes de uma eventual reapresentação, relendo cada entidade nova, cada regra de negócio e cada cardinalidade, para conseguir defendê-los oralmente. |
+
+---
+
+## Uso de Inteligência Artificial — Entrega 2
+
+### Momento 1 — Esqueleto da Entrega 2: modelo lógico e script SQL
+
+| Item | Registro |
+|---|---|
+| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — conversão do modelo conceitual para o lógico (tabelas/colunas/tipos, normalização 1FN/2FN/3FN); escrita do `script.sql` (DDL + massa de dados + consultas); ampliação da massa de dados (de 15 para 109 pedidos, 43 clientes com CPF/CNPJ); instalação de um MySQL Community Server 8.4.10 LTS local e execução completa do `script.sql` nele. |
+| **Motivação** | Acelerar a conversão sistemática de entidades conceituais em tabelas relacionais e validar o script em um SGBD real a cada mudança. |
+| **Prompt(s) utilizados** | "Me ajude com o esqueleto da entrega 2" |
+| **Resposta recebida** | O modelo lógico e o script SQL completos (17 tabelas), validados em MySQL real a cada rodada de mudança; a massa de dados ampliada e com CPF/CNPJ. |
+| **Fontes consultadas e verificadas** | O esqueleto oficial da Entrega 2 (PDF fornecido pelo professor, extraído e lido integralmente). Nenhuma fonte externa além desse documento do próprio curso. |
+| **Trechos rejeitados ou corrigidos** | A primeira versão do `script.sql` (9 tabelas, `insumo.fornecedor_id` como FK direta, `ficha_tecnica` com PK composta) foi inteiramente substituída. |
+| **Justificativa da escolha final** | Um script SQL validado em servidor real reduz o risco de erros de sintaxe/tipo não detectados até a apresentação ao vivo. |
+| **Reflexão crítica** | Este material ainda não foi validado com a organização real (Osmar, Contrasti) em todos os seus números — os valores de `lote_insumo`, `execucao_etapa`, `vendedor` e os títulos financeiros são fictícios, criados para demonstrar a estrutura, não a operação real com precisão. |
+
+### Momento 2 — Verificação de conformidade com o enunciado oficial
+
+| Item | Registro |
+|---|---|
+| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — verificação de conformidade da massa de dados com o enunciado oficial e correção dos 3 gaps encontrados: adição de clientes sem nenhuma compra, do canal de venda "whatsapp" e da justificativa textual do volume de registros. |
+| **Motivação** | Manter o modelo sincronizado com o DER/dicionário corrigidos da Entrega 1 e com o enunciado oficial da disciplina. |
+| **Prompt(s) utilizados** | "De acordo com esse projeto do professor, veja se nosso projeto está de acordo" |
+| **Resposta recebida** | O endereço de cliente/fornecedor decomposto em logradouro/número/bairro/cidade/UF/CEP, e os 3 gaps de conformidade corrigidos. |
+| **Fontes consultadas e verificadas** | O enunciado oficial da massa de dados/consultas da disciplina, para checagem de conformidade. Nenhuma fonte externa além desse documento do próprio curso. |
+| **Trechos rejeitados ou corrigidos** | O campo único `ds_endereco` foi decomposto em 6 colunas após o enunciado oficial pedir o nível de detalhe de campo (logradouro/número/bairro/CEP). |
+| **Justificativa da escolha final** | Checar a massa de dados contra o enunciado oficial evita perda de nota por critérios formais não cumpridos (ex.: clientes sem compra, canal de venda exigido). |
+| **Reflexão crítica** | Este material ainda não foi validado com a organização real (Osmar, Contrasti) em todos os seus números — os valores são fictícios, criados para demonstrar a estrutura, não a operação real com precisão. |
+
+### Momento 3 — Modelo de 17 entidades, índices/triggers e padrão de consultas G/A
+
+| Item | Registro |
+|---|---|
+| **Ferramenta e etapa** | Claude (Claude Code / Sonnet 5, Anthropic) — reescrita para o modelo de 17 entidades em resposta à issue #1; renomeação de `artesao_faccao` para `artesao`; adição de índices secundários, triggers de exclusividade (especialização TD) e demonstração de transação atômica (RNF05); reestruturação das consultas gerenciais/auditoria para o padrão G/A (`-- Atende:`/`-- Verifica:`) e numeração RN01-RN18 das regras de negócio; fusão deste relatório técnico no `README.md` da raiz. |
+| **Motivação** | Alinhar toda a estrutura do repositório ao esqueleto oficial da Entrega 2 (nomenclatura de consultas, rastreabilidade de problemas/KPIs, localização do relatório técnico), nesta rodada final. |
+| **Prompt(s) utilizados** | "Prepare a etapa 2 e 3 dos ainda pendentes" |
+| **Resposta recebida** | O modelo reescrito para 17 entidades; os triggers de exclusividade da especialização TD; as consultas renomeadas para o padrão G/A com rastreabilidade formal a problemas/KPIs e regras de negócio numeradas; e, por fim, este relatório técnico movido para dentro do README.md da raiz. |
+| **Fontes consultadas e verificadas** | A avaliação literal da issue #1 do próprio repositório e o esqueleto oficial da Entrega 2. Nenhuma fonte externa além desses dois documentos do próprio curso. |
+| **Trechos rejeitados ou corrigidos** | A numeração de consultas `8.x`/`9.x` foi trocada para `Gxx`/`Axx` após a leitura do esqueleto oficial, que exige esse padrão com cabeçalho `-- Atende:`/`-- Verifica:`. |
+| **Justificativa da escolha final** | O modelo lógico/físico passa a refletir fielmente as 17 entidades do conceitual corrigido e a estrutura de nomenclatura exigida pelo esqueleto oficial da disciplina, sem nenhuma FK "a mais" nem "a menos" em relação à tabela de relacionamentos do Dicionario_de_Dados.html. |
+| **Reflexão crítica** | `apresentacao.pptx` foi atualizado e passou pela validação estrutural, mas recomenda-se abrir no PowerPoint antes de apresentar. Os valores de `lote_insumo`, `execucao_etapa`, `vendedor` e os títulos financeiros continuam fictícios, criados para demonstrar a estrutura, não a operação real com precisão. |
+
 
 
 
