@@ -182,8 +182,8 @@
   <table class="conv-table">
     <colgroup><col style="width:22%"><col style="width:78%"></colgroup>
     <tbody>
-      <tr><td class="k">SGBD alvo</td><td>MySQL Community Server 8.4 LTS — mesma versão já instalada e validada na Entrega 2 (<code>Entrega2/script.sql</code>, testado sem erros em 8.4.10).</td></tr>
-      <tr><td class="k">Collation</td><td><code>utf8mb4_0900_ai_ci</code> — charset padrão do MySQL 8.x, com suporte completo a acentuação e caracteres especiais do português (ex.: "ACESSÓRIO", "é_efetuado_por").</td></tr>
+      <tr><td class="k">SGBD alvo</td><td>MySQL Community Server 8.4 LTS, mesma versão já instalada e validada na Entrega 2 (<code>Docs/script.sql</code>, testado sem erros em 8.4.10).
+      <tr><td class="k">Collation</td><td><code>utf8mb4_0900_ai_ci</code>, charset padrão do MySQL 8.x, com suporte completo a acentuação e caracteres especiais do português (ex.: "ACESSÓRIO", "é_efetuado_por").</td></tr>
       <tr><td class="k">Notação do DER</td><td>Chen conceitual. Entidade = retângulo; relacionamento = losango; atributo = elipse (chave primária sublinhada, em vermelho); especialização = triângulo "TD" (Total e Disjunta); toda aresta de relacionamento traz o rótulo de cardinalidade <code>mínimo,máximo</code> em cada uma das duas pontas.</td></tr>
       <tr><td class="k">Expressão formal</td><td>Cada entidade é descrita como <code>ENTIDADE(atributo1, atributo2, …)</code>, com a chave primária <span style="text-decoration:underline;color:var(--pk);font-weight:700">sublinhada</span> — convenção padrão de álgebra relacional, usada na linha "Leitura" de cada entidade abaixo.</td></tr>
       <tr><td class="k">Versão deste dicionário</td><td>v2.0 — 15/10/2026. A v1.0 (9 entidades, Entrega 1 original) permanece no histórico do Git; não é mais a referência vigente.</td></tr>
@@ -477,7 +477,7 @@
       <tbody>
         <tr><td class="attr pk">id_pedido</td><td class="phys">INT UNSIGNED AUTO_INCREMENT (PK)</td><td>Gerado pelo sistema.</td></tr>
         <tr><td class="attr">tp_status</td><td class="phys">VARCHAR(20) NOT NULL DEFAULT 'Aberto'</td><td>Domínio: {aberto, faturado, expedido, cancelado}.</td></tr>        
-        <tr><td class="attr">vl_total</td><td class="phys">DECIMAL(10,2) NOT NULL</td><td>Soma de vl_subtotal de todos os itens do pedido — denormalização deliberada, documentada e já validada em <code>Entrega2/script.sql</code>.</td></tr>
+        <tr><td class="attr">vl_total</td><td class="phys">DECIMAL(10,2) NOT NULL</td><td>Soma de vl_subtotal de todos os itens do pedido — denormalização deliberada, documentada e já validada em <code>Docs/script.sql</code>./td></tr>
         <tr><td class="attr">tp_pagamento</td><td class="phys">VARCHAR(10) NOT NULL</td><td>Domínio: {PIX, Cartão, Boleto}.</td></tr>
         <tr><td class="attr">tp_canal</td><td class="phys">VARCHAR(20) NOT NULL</td><td>Domínio: {loja física, e-commerce, atacado, whatsapp}. Base do cálculo de comissão do vendedor.</td></tr>
         <tr><td class="attr">ds_observacoes</td><td class="phys">VARCHAR(255) NULL</td><td>Campo livre para instruções específicas do cliente ou da venda.</td></tr>
