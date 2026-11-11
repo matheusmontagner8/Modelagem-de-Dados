@@ -365,6 +365,9 @@ CREATE TABLE contas_pagar (
 --      implementam os "Índices sugeridos" documentados por entidade em
 --      Dicionario_de_Dados.html, cobrindo as colunas usadas em WHERE/
 --      GROUP BY/ORDER BY das consultas das Seções 5, 8 e 9.
+--      Atende: RNF01 (Desempenho — consultas de estoque/ficha técnica e
+--      as consultas gerenciais/auditoria devem responder rápido o
+--      suficiente para não atrasar a abertura de uma Ordem de Produção).
 -- =====================================================================
 CREATE INDEX idx_fornecedor_categoria ON fornecedor(tp_categoria);
 CREATE INDEX idx_insumo_tipo          ON insumo(tp_insumo);
@@ -926,7 +929,8 @@ SET vl_total = (
 -- =====================================================================
 
 -- 5.1 Pedidos com nome do cliente, vendedor e total do pedido
--- Atende: RF16 - Registrar pedidos de venda por canal, com vendedor responsável
+-- Atende: RF16 - Registrar pedidos de venda por canal (loja física, e-commerce,
+-- WhatsApp, representante), com forma de pagamento e parcelamento
 SELECT p.id_pedido, c.nm_cliente AS cliente, v.nm_vendedor AS vendedor, p.dt_pedido, p.tp_status, p.vl_total
 FROM pedido p
 JOIN cliente c  ON c.id_cliente  = p.cliente_id
@@ -1121,7 +1125,8 @@ ORDER BY unidades_vendidas DESC;
 
 -- G03 - Margem estimada por produto (preço base - custo de matéria-prima
 -- calculado a partir da ficha técnica, pelo preço de referência do insumo)
--- Atende: K3 (Margem por produto/categoria), P2 (custo de produto sem padronização)
+-- Atende: K3 (Margem por produto/categoria), P2 (custo de produto sem padronização),
+-- RF10 (calcular automaticamente o custo a partir da Ficha Técnica)
 SELECT pr.nm_produto AS produto,
        pr.vl_preco_base,
        ROUND(SUM(ft.qt_necessaria * i.vl_preco_referencia), 2) AS custo_materia_prima,
@@ -1180,9 +1185,10 @@ FROM contas_pagar WHERE tp_status = 'em aberto'
 ORDER BY dias_desde_vencimento DESC;
 
 -- G08 - Quais insumos estão abaixo do estoque mínimo?
--- Atende: K8 (Insumos abaixo do estoque mínimo) — massa de dados tem o
--- insumo 7 (Ziper Metalico 15cm) deliberadamente abaixo do mínimo, para
--- esta consulta não vir vazia (consulta vazia não demonstra nada).
+-- Atende: K8 (Insumos abaixo do estoque mínimo), RF12 (estoque mínimo e
+-- alerta automático) — massa de dados tem o insumo 7 (Ziper Metalico 15cm)
+-- deliberadamente abaixo do mínimo, para esta consulta não vir vazia
+-- (consulta vazia não demonstra nada).
 SELECT id_insumo, nm_insumo, un_medida, qt_estoque_minimo, qt_estoque_atual,
        (qt_estoque_minimo - qt_estoque_atual) AS falta_para_o_minimo
 FROM insumo
